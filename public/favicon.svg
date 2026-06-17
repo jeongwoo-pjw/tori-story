@@ -8,29 +8,29 @@
     </clipPath>
   </defs>
 
-  <!-- Background circle — primary-500 pink -->
-  <circle cx="32" cy="32" r="32" fill="oklch(0.78 0.118 14)"/>
+  <!-- Background circle — primary-300 -->
+  <circle cx="32" cy="32" r="32" fill="oklch(0.88 0.062 10)"/>
 
-  <!-- Open book - left page outer -->
-  <path d="M6 19 Q6 15 10 15.5 L30 17 L30 49 L10 47.5 Q6 47 6 43 Z" fill="#fff0f3" stroke="oklch(0.55 0.15 16)" stroke-width="1"/>
+  <!-- Open book - left page outer — stroke: primary-500 -->
+  <path d="M6 19 Q6 15 10 15.5 L30 17 L30 49 L10 47.5 Q6 47 6 43 Z" fill="#fff0f3" stroke="oklch(0.78 0.118 14)" stroke-width="1"/>
   <!-- Left page inner white -->
   <path d="M8.5 20.5 Q8.5 17.5 11.5 18 L28 19.2 L28 46.5 L11.5 45.3 Q8.5 45 8.5 42 Z" fill="#ffffff"/>
 
-  <!-- Open book - right page outer -->
-  <path d="M34 17 L54 15.5 Q58 15 58 19 L58 43 Q58 47 54 47.5 L34 49 Z" fill="#fff0f3" stroke="oklch(0.55 0.15 16)" stroke-width="1"/>
+  <!-- Open book - right page outer — stroke: primary-500 -->
+  <path d="M34 17 L54 15.5 Q58 15 58 19 L58 43 Q58 47 54 47.5 L34 49 Z" fill="#fff0f3" stroke="oklch(0.78 0.118 14)" stroke-width="1"/>
   <!-- Right page inner white -->
   <path d="M36 19.2 L52.5 18 Q55.5 17.5 55.5 20.5 L55.5 42 Q55.5 45 52.5 45.3 L36 46.5 Z" fill="#ffffff"/>
 
-  <!-- Spine — thin line, same color as stroke -->
-  <rect x="30.5" y="14.5" width="3" height="35" rx="1.5" fill="oklch(0.55 0.15 16)"/>
+  <!-- Spine — primary-500 -->
+  <rect x="30.5" y="14.5" width="3" height="35" rx="1.5" fill="oklch(0.78 0.118 14)"/>
 
-  <!-- Left eye: white sclera -->
-  <ellipse cx="19" cy="33" rx="6.5" ry="5.5" fill="white" stroke="oklch(0.55 0.15 16)" stroke-width="1.2"/>
-  <!-- Large black pupil clipped to sclera, shifted right for "looking right" -->
+  <!-- Left eye: white sclera, thin black stroke -->
+  <ellipse cx="19" cy="33" rx="6.5" ry="5.5" fill="white" stroke="#333333" stroke-width="0.8"/>
+  <!-- Large black pupil clipped to sclera, shifted right -->
   <circle cx="22.5" cy="33" r="5.8" fill="#1a1a1a" clip-path="url(#cl)"/>
 
-  <!-- Right eye: white sclera -->
-  <ellipse cx="45" cy="33" rx="6.5" ry="5.5" fill="white" stroke="oklch(0.55 0.15 16)" stroke-width="1.2"/>
+  <!-- Right eye: white sclera, thin black stroke -->
+  <ellipse cx="45" cy="33" rx="6.5" ry="5.5" fill="white" stroke="#333333" stroke-width="0.8"/>
   <!-- Large black pupil clipped to sclera, shifted right -->
   <circle cx="48.5" cy="33" r="5.8" fill="#1a1a1a" clip-path="url(#cr)"/>
 
