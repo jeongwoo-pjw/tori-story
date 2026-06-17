@@ -4,3 +4,4 @@ out
 .env
 .env.local
 *.local
+auto-imports.d.ts
