@@ -1,5 +1,28 @@
 # 토리동화 개발일지
 
+## 2026-06-18 — v0.1.2 로고 폰트 교체
+
+### 작업 내용
+
+#### 로고 텍스트 폰트 변경
+
+GNB(TopNav)와 Footer의 "토리동화" 로고 텍스트 폰트를 **망고보드 별별체(산돌구름)**로 교체했습니다.
+
+- 기존: `font-heading` (Gowun Batang 계열)
+- 변경: `font-logo` → `MangoBoardByeolbyeol`
+- CDN: `https://cdn.jsdelivr.net/gh/projectnoonnu/2405-3@1.1/MangoByeolbyeol.woff2`
+
+#### 구현 방식
+
+- `index.css`에 `@font-face` 선언 추가 (`font-display: swap` 적용)
+- `:root`에 `--font-logo` CSS 변수 분리 — 헤딩 전체가 아닌 로고에만 영향
+- `tailwind.config.ts`에 `font-logo` 유틸리티 추가
+- TopNav / Footer 로고 span에 `font-logo` 클래스 적용
+
+> 폰트 적용 범위를 `--font-heading`과 분리함으로써 나머지 제목 스타일에 영향을 주지 않습니다.
+
+---
+
 ## 2026-06-18 — v0.1.1 브랜드 에셋 정제
 
 ### 작업 내용

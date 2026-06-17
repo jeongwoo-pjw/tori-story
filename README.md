@@ -28,7 +28,7 @@
 - **Frontend** — React 19, TypeScript, Vite 8
 - **Routing** — React Router DOM v7
 - **Styling** — Tailwind CSS v3 (oklch 색상 토큰)
-- **UI** — Remix Icon, Font Awesome, Google Fonts (Jua, Gowun Dodum 등)
+- **UI** — Remix Icon, Font Awesome, Google Fonts (Jua, Gowun Dodum 등), 망고보드 별별체(산돌구름)
 - **국제화** — i18next
 - **드래그&드롭** — @dnd-kit/core
 - **배포** — GitHub Pages (GitHub Actions 자동 CI/CD)
