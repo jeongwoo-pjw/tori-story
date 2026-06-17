@@ -80,6 +80,7 @@ export default {
         display: ["var(--font-heading)", "system-ui", "sans-serif"],
         label: ["var(--font-label)", "system-ui", "sans-serif"],
         serif: ["var(--font-heading)", "serif"],
+        logo: ["var(--font-logo)", "system-ui", "sans-serif"],
       },
       keyframes: {
         float: {

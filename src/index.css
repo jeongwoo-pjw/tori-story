@@ -2,6 +2,29 @@
 @tailwind components;
 @tailwind utilities;
 
+/* 망고보드 또박체 (산돌구름) */
+@font-face {
+  font-family: 'MangoBoardTtobaks';
+  src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/2405-3@1.1/MangoDdobak-L.woff2') format('woff2');
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'MangoBoardTtobaks';
+  src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/2405-3@1.1/MangoDdobak-R.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'MangoBoardTtobaks';
+  src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/2405-3@1.1/MangoDdobak-B.woff2') format('woff2');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
 :root {
   /* Background — 따뜻한 크림 베이스 */
   --background-50: 0.995 0.003 60;
@@ -72,6 +95,7 @@
   --font-heading: "Gowun Batang", "Gothic A1", "Jua", "Gowun Dodum", system-ui, sans-serif;
   --font-body: "Gowun Dodum", "Pretendard", system-ui, sans-serif;
   --font-label: "NanumSquareRound", "Gaegu", "Gowun Dodum", system-ui, sans-serif;
+  --font-logo: "MangoBoardTtobaks", "Gowun Batang", system-ui, sans-serif;
 
   /* Sidebar width for dynamic content offset */
   --sidebar-width: 56px;
