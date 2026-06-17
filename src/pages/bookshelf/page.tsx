@@ -1,0 +1,270 @@
+import { useState } from "react";
+import { Link } from "react-router-dom";
+import TopNav from "@/components/feature/TopNav";
+import FoldSidebar from "@/components/feature/FoldSidebar";
+import {
+  RECENT_STORIES,
+  ALL_STORIES,
+  BOOKSHELF_FILTERS,
+} from "@/mocks/bookshelf";
+
+const STATUS_LABEL: Record<string, string> = {
+  reading: "읽는 중",
+  completed: "완독",
+  deleted: "지움",
+};
+
+const STATUS_STYLE: Record<string, string> = {
+  reading: "bg-secondary-100 text-secondary-900",
+  completed: "bg-primary-100 text-primary-900",
+  deleted: "bg-foreground-100 text-foreground-900",
+};
+
+export default function BookshelfPage() {
+  const [showPopup, setShowPopup] = useState(false);
+  const [activeFilter, setActiveFilter] = useState("all");
+
+  const filteredStories = ALL_STORIES.filter((story) => {
+    if (activeFilter === "all") return true;
+    if (activeFilter === "deleted") return false;
+    return story.status === activeFilter;
+  });
+
+  const displayStories = filteredStories.slice(0, 3);
+
+  const handleAddClick = () => {
+    setShowPopup(true);
+  };
+
+  return (
+    <main className="min-h-screen bg-background-50 text-foreground-950">
+      <TopNav isLoggedIn={true} />
+      <FoldSidebar />
+
+      <div className="pl-[var(--sidebar-width)] pt-14 md:pt-16 pb-12">
+        <div className="px-4 md:px-8 lg:px-12">
+          <div className="max-w-5xl mx-auto">
+            {/* Header */}
+            <div className="flex items-center justify-between mb-8">
+              <div>
+                <h1 className="font-heading text-2xl md:text-3xl text-foreground-950 mb-1">
+                  내 책장
+                </h1>
+                <p className="text-sm text-foreground-500">총 3권</p>
+              </div>
+              {/* Premium link button */}
+              <button
+                type="button"
+                onClick={() => setShowPopup(true)}
+                className="px-4 py-2 rounded-full text-xs font-label border border-accent-300 bg-accent-100 text-accent-900 hover:bg-accent-200 transition-colors cursor-pointer whitespace-nowrap"
+              >
+                프리미엄 보기
+              </button>
+            </div>
+
+            {/* Recent stories cards */}
+            <div className="relative mb-10">
+              <h2 className="text-sm font-label text-foreground-700 mb-4">
+                최근에 읽은 동화
+              </h2>
+              <div className="flex items-center gap-4">
+                <div className="grid grid-cols-3 gap-4 flex-1">
+                  {RECENT_STORIES.map((story) => (
+                    <div
+                      key={story.id}
+                      className="rounded-2xl bg-background-50 border border-background-200/70 overflow-hidden"
+                    >
+                      <div className="w-full aspect-[16/10] relative overflow-hidden bg-secondary-100">
+                        <img
+                          src={story.image}
+                          alt={story.title}
+                          className="w-full h-full object-cover object-top"
+                        />
+                      </div>
+                      <div className="p-4">
+                        <h3 className="text-sm font-label text-foreground-950 mb-1">
+                          {story.title}
+                        </h3>
+                        <p className="text-xs text-foreground-500 mb-3">
+                          마지막으로 읽은 날: {story.lastRead}
+                        </p>
+                        <div className="flex items-center justify-between">
+                          <span className="text-xs text-foreground-500">
+                            {story.progress}% 읽음
+                          </span>
+                          <button
+                            type="button"
+                            className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-primary-500 hover:bg-primary-600 text-foreground-950 dark:text-foreground-950 text-xs font-label transition-colors cursor-pointer whitespace-nowrap"
+                          >
+                            {story.progress === 100 ? "다시 읽기" : "이어 읽기"}
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+                {/* Add button */}
+                <button
+                  type="button"
+                  onClick={handleAddClick}
+                  className="w-12 h-12 rounded-full flex items-center justify-center border border-foreground-300 text-foreground-400 hover:bg-primary-50 hover:text-primary-500 hover:border-primary-300 transition-colors cursor-pointer flex-shrink-0"
+                >
+                  <i className="ri-add-line w-6 h-6 flex items-center justify-center text-2xl"></i>
+                </button>
+              </div>
+            </div>
+
+            {/* Saved stories table */}
+            <div>
+              <div className="flex items-center justify-between mb-4">
+                <h2 className="text-sm font-label text-foreground-700">
+                  저장된 동화 전체
+                </h2>
+              </div>
+
+              {/* Filter tabs */}
+              <div className="flex items-center gap-2 mb-4">
+                {BOOKSHELF_FILTERS.map((filter) => (
+                  <button
+                    key={filter.id}
+                    type="button"
+                    onClick={() => setActiveFilter(filter.id)}
+                    className={`px-3 py-1.5 rounded-full text-xs font-label transition-colors cursor-pointer whitespace-nowrap ${
+                      filter.id === activeFilter
+                        ? "bg-foreground-800 text-background-50"
+                        : "bg-secondary-100 text-foreground-700 border border-secondary-200 hover:bg-secondary-200"
+                    }`}
+                  >
+                    {filter.label}
+                  </button>
+                ))}
+              </div>
+
+              {/* Table */}
+              <div className="rounded-2xl border border-background-200/70 overflow-hidden">
+                <div className="overflow-x-auto">
+                  <table className="w-full text-sm">
+                    <thead>
+                      <tr className="bg-background-100 border-b border-background-200/70">
+                        <th className="text-left py-3 px-4 text-xs font-label text-foreground-500">
+                          동화 제목
+                        </th>
+                        <th className="text-left py-3 px-4 text-xs font-label text-foreground-500">
+                          생성일
+                        </th>
+                        <th className="text-left py-3 px-4 text-xs font-label text-foreground-500">
+                          진행 상태
+                        </th>
+                        <th className="text-left py-3 px-4 text-xs font-label text-foreground-500">
+                          마지막 열림
+                        </th>
+                        <th className="text-left py-3 px-4 text-xs font-label text-foreground-500">
+                          액션
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {displayStories.map((story, idx) => (
+                        <tr
+                          key={story.id}
+                          className={`border-b border-background-200/70 ${
+                            idx % 2 === 0 ? "bg-background-50" : "bg-background-100"
+                          }`}
+                        >
+                          <td className="py-3 px-4 text-foreground-950 font-label">
+                            {story.title}
+                          </td>
+                          <td className="py-3 px-4 text-foreground-500">
+                            {story.createdAt}
+                          </td>
+                          <td className="py-3 px-4">
+                            <span
+                              className={`inline-block px-2 py-1 rounded-md text-xs font-label ${STATUS_STYLE[story.status]}`}
+                            >
+                              {STATUS_LABEL[story.status]}
+                            </span>
+                          </td>
+                          <td className="py-3 px-4 text-foreground-500">
+                            {story.lastRead}
+                          </td>
+                          <td className="py-3 px-4">
+                            <button
+                              type="button"
+                              className="inline-flex items-center px-3 py-1.5 rounded-lg bg-primary-500 hover:bg-primary-600 text-foreground-950 dark:text-foreground-950 text-xs font-label transition-colors cursor-pointer whitespace-nowrap"
+                            >
+                              {story.status === "completed" ? "다시 읽기" : "이어 읽기"}
+                            </button>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Popup: Bookshelf is full */}
+      {showPopup && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-foreground-950/40">
+          <div className="relative w-full max-w-md mx-4 rounded-3xl bg-foreground-800 p-6 md:p-8">
+            {/* Close button */}
+            <button
+              type="button"
+              onClick={() => setShowPopup(false)}
+              className="absolute top-4 right-4 md:top-6 md:right-6 w-8 h-8 flex items-center justify-center text-background-50 hover:text-background-200 transition-colors cursor-pointer"
+            >
+              <i className="ri-close-line w-6 h-6 flex items-center justify-center text-2xl"></i>
+            </button>
+
+            <h2 className="font-heading text-2xl text-background-50 mb-3">
+              책장이 가득 찼어요
+            </h2>
+            <p className="text-sm text-background-200 mb-6">
+              프리미엄으로 아이의 이야기를 더 오래 간직해보세요.
+            </p>
+
+            <p className="text-sm text-background-200 mb-3">
+              책장 업그레이드로 아이의 이야기가 쌓이는 중...
+            </p>
+
+            {/* Feature list */}
+            <div className="grid grid-cols-2 gap-3 mb-6">
+              <div className="rounded-xl bg-foreground-700 p-3">
+                <p className="text-sm text-background-50 font-label">
+                  삽화 애니메이션
+                </p>
+              </div>
+              <div className="rounded-xl bg-foreground-700 p-3">
+                <p className="text-sm text-background-50 font-label">
+                  다국어 번역 및 원어민 TTS
+                </p>
+              </div>
+              <div className="rounded-xl bg-foreground-700 p-3">
+                <p className="text-sm text-background-50 font-label">
+                  고퀄 텍스트 (3줄 이상 풍부한 묘사)
+                </p>
+              </div>
+              <div className="rounded-xl bg-foreground-700 p-3">
+                <p className="text-sm text-background-50 font-label">
+                  무제한 생성 & 저장
+                </p>
+              </div>
+            </div>
+
+            <button
+              type="button"
+              onClick={() => setShowPopup(false)}
+              className="w-full inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-background-50 hover:bg-background-200 text-foreground-950 font-label text-sm transition-colors cursor-pointer whitespace-nowrap"
+            >
+              <i className="ri-vip-crown-line w-5 h-5 flex items-center justify-center text-lg text-primary-500"></i>
+              지금 시작하기
+            </button>
+          </div>
+        </div>
+      )}
+    </main>
+  );
+}
