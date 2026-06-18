@@ -158,7 +158,7 @@ export default function TopNav({ isLoggedIn = false, onToggleLogin }: TopNavProp
       <header
         className={`fixed top-0 inset-x-0 z-50 transition-all duration-300 ${
           scrolled
-            ? "bg-background-50/20 backdrop-blur-md border-b border-background-200/60"
+            ? "bg-background-50/95 backdrop-blur-md border-b border-background-200/60"
             : "bg-background-50/20 backdrop-blur-sm border-b border-background-200/30"
         }`}
       >
@@ -180,7 +180,7 @@ export default function TopNav({ isLoggedIn = false, onToggleLogin }: TopNavProp
               <button
                 type="button"
                 onClick={() => setLang((prev) => (prev === "KO" ? "EN" : "KO"))}
-                className="flex items-center justify-center w-9 h-9 rounded-lg hover:bg-primary-100/50 transition-colors cursor-pointer"
+                className="flex items-center justify-center w-9 h-9 rounded-full bg-background-100/70 dark:bg-background-200/80 hover:bg-background-200/90 dark:hover:bg-background-300/90 transition-colors cursor-pointer"
                 title={lang === "KO" ? "Switch to English" : "한국어로 전환"}
               >
                 <span className="text-xs font-label text-foreground-800 whitespace-nowrap">
@@ -193,7 +193,7 @@ export default function TopNav({ isLoggedIn = false, onToggleLogin }: TopNavProp
                 <button
                   type="button"
                   onClick={() => setThemePickOpen((v) => !v)}
-                  className="flex items-center justify-center w-9 h-9 rounded-lg hover:bg-primary-100/50 transition-colors cursor-pointer"
+                  className="flex items-center justify-center w-9 h-9 rounded-full bg-background-100/70 dark:bg-background-200/80 hover:bg-background-200/90 dark:hover:bg-background-300/90 transition-colors cursor-pointer"
                   title={themes[themeIdx].name}
                 >
                   <span className="grid grid-cols-2 gap-0.5">
@@ -228,10 +228,10 @@ export default function TopNav({ isLoggedIn = false, onToggleLogin }: TopNavProp
               <button
                 type="button"
                 onClick={toggleDark}
-                className={`flex items-center justify-center w-9 h-9 rounded-lg transition-colors cursor-pointer ${
+                className={`flex items-center justify-center w-9 h-9 rounded-full transition-colors cursor-pointer ${
                   darkMode
                     ? "bg-foreground-800 text-background-50"
-                    : "hover:bg-primary-100/50 text-foreground-700"
+                    : "bg-background-100/70 dark:bg-background-200/80 hover:bg-background-200/90 dark:hover:bg-background-300/90 text-foreground-700"
                 }`}
                 title={darkMode ? "라이트 모드" : "나이트 모드"}
               >
@@ -307,7 +307,7 @@ export default function TopNav({ isLoggedIn = false, onToggleLogin }: TopNavProp
                   <button
                     type="button"
                     onClick={onToggleLogin}
-                    className="flex items-center justify-center w-9 h-9 rounded-lg hover:bg-primary-100/50 transition-colors cursor-pointer"
+                    className="flex items-center justify-center w-9 h-9 rounded-full bg-background-100/70 dark:bg-background-200/80 hover:bg-background-200/90 dark:hover:bg-background-300/90 transition-colors cursor-pointer"
                     title="로그아웃"
                   >
                     <i className="ri-logout-circle-r-line text-foreground-700 w-4 h-4 flex items-center justify-center text-sm"></i>

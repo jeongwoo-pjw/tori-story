@@ -25,8 +25,20 @@ export default function HeroSection({ isLoggedIn = false }: HeroSectionProps) {
 
       {/* Hero content - centered */}
       <div className="relative z-10 w-full px-4 md:px-8 text-center pt-16 md:pt-20">
-        <p className="text-[10px] md:text-xs text-white/90 tracking-widest mb-3 animate-fade-up">
-          상상이 이야기가 되는 곳
+        <p className="text-[10px] md:text-xs mb-3 flex justify-center flex-wrap">
+          {"상상이 이야기가 되는 곳".split("").map((char, i) => (
+            <span
+              key={i}
+              className="inline-block text-accent-400"
+              style={{
+                animation: "bounce-letter 2s ease-in-out infinite",
+                animationDelay: `${i * 0.1}s`,
+                letterSpacing: "0.12em",
+              }}
+            >
+              {char === " " ? " " : char}
+            </span>
+          ))}
         </p>
 
         <h2

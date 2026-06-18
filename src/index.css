@@ -390,3 +390,8 @@ body.theme-moonstar {
 /* 다크모드 스크롤바 */
 .dark ::-webkit-scrollbar-track { background: oklch(var(--background-100)); }
 .dark ::-webkit-scrollbar-thumb { background: oklch(var(--primary-700)); }
+
+@keyframes bounce-letter {
+  0%, 60%, 100% { transform: translateY(0); }
+  30% { transform: translateY(-7px); }
+}
