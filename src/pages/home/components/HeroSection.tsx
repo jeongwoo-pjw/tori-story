@@ -16,7 +16,7 @@ export default function HeroSection({ isLoggedIn = false }: HeroSectionProps) {
       {/* Fullscreen background image */}
       <div className="absolute inset-0 z-0">
         <img
-          src="https://public.readdy.ai/ai/img_res/edited_dd1863f684338522303bfdc920439c64_76e232da.jpg"
+          src={`${__BASE_PATH__}hero-bg.png`}
           alt="토리동화 히어로 배경"
           className="w-full h-full object-cover object-top"
         />
