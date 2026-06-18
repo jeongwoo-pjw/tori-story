@@ -52,6 +52,21 @@ function ProtagonistSection({
   age: number;
   setAge: (v: number) => void;
 }) {
+  const [ageInput, setAgeInput] = useState(String(age));
+
+  const handleSliderChange = (val: number) => {
+    setAge(val);
+    setAgeInput(String(val));
+  };
+
+  const handleAgeInputChange = (v: string) => {
+    setAgeInput(v);
+    const n = parseInt(v, 10);
+    if (!isNaN(n) && n >= 2 && n <= 9) {
+      setAge(n);
+    }
+  };
+
   return (
     <div className="rounded-2xl bg-background-50 border border-background-200/70 p-5 md:p-6">
       <div className="flex items-center gap-2 mb-5">
@@ -83,16 +98,22 @@ function ProtagonistSection({
               min={2}
               max={9}
               value={age}
-              onChange={(e) => setAge(Number(e.target.value))}
+              onChange={(e) => handleSliderChange(Number(e.target.value))}
               className="flex-1 h-2 rounded-full appearance-none cursor-pointer"
               style={{
                 background: `linear-gradient(to right, oklch(var(--primary-500)) 0%, oklch(var(--primary-500)) ${((age - 2) / 7) * 100}%, oklch(var(--primary-100)) ${((age - 2) / 7) * 100}%, oklch(var(--primary-100)) 100%)`,
                 accentColor: "oklch(var(--primary-500))",
               }}
             />
-            <span className="text-sm font-label text-foreground-950 w-10 text-center">
-              {age}세
-            </span>
+            <div className="flex items-center gap-1 shrink-0">
+              <input
+                type="text"
+                value={ageInput}
+                onChange={(e) => handleAgeInputChange(e.target.value)}
+                className="w-12 px-2 py-1.5 rounded-lg border border-background-200 bg-background-50 text-foreground-950 focus:outline-none focus:ring-2 focus:ring-primary-400 text-sm text-center"
+              />
+              <span className="text-sm font-label text-foreground-600">세</span>
+            </div>
           </div>
         </div>
       </div>

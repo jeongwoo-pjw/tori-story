@@ -25,10 +25,21 @@ const GENDER_OPTIONS = [
   { value: "none", label: "선택 안 함" },
 ];
 
-const LENGTH_OPTIONS = [
-  "짧은 동화 (5분 분량)",
-  "보통 동화 (10분 분량)",
-  "긴 동화 (15분 분량)",
+const LENGTH_CARDS = [
+  { id: "short", label: "짧음", pages: "5~6페이지", isPro: false },
+  { id: "normal", label: "보통", pages: "8~14페이지", isPro: true },
+  { id: "long", label: "길게", pages: "15~20페이지", isPro: true },
+];
+
+const KOREAN_MOTIF_CHIPS = [
+  "🏯 고즈넉한 한옥",
+  "👘 고운 전통 한복",
+  "🎒 도깨비 요술",
+  "🎭 신명나는 탈춤",
+  "🏡 풍성한 한옥 정원",
+  "🐯 꼬마 호랑이 신선",
+  "🥮 요술 꿀 약과",
+  "✨ 달님 별님 전설",
 ];
 
 const ART_STYLES = [
@@ -66,7 +77,9 @@ export default function CreateChatPage() {
   const [moral, setMoral] = useState("");
   const [artStyle, setArtStyle] = useState("");
   const [artStyleDesc, setArtStyleDesc] = useState("");
-  const [length, setLength] = useState("");
+  const [length, setLength] = useState("short");
+  const [koreanMotifs, setKoreanMotifs] = useState<string[]>([]);
+  const [showPremiumModal, setShowPremiumModal] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const toggleTopic = (tag: string) => {
@@ -415,23 +428,92 @@ export default function CreateChatPage() {
             {/* ===== STEP 4: 동화 설정 ===== */}
             {currentStep === 4 && (
               <div className="space-y-5">
-                {/* Length */}
+                {/* Length cards */}
                 <div className="rounded-2xl bg-background-50 border border-background-200/70 p-5 md:p-6">
-                  <label className="block text-sm font-label text-foreground-700 mb-3">
+                  <label className="block text-sm font-label text-foreground-700 mb-4">
                     동화의 분량을 선택해 주세요.
                   </label>
-                  <select
-                    value={length}
-                    onChange={(e) => setLength(e.target.value)}
-                    className="w-full px-4 py-3 rounded-xl border border-background-200 bg-background-50 text-foreground-950 focus:outline-none focus:ring-2 focus:ring-primary-400 text-sm cursor-pointer"
-                  >
-                    <option value="">분량을 선택하세요</option>
-                    {LENGTH_OPTIONS.map((opt) => (
-                      <option key={opt} value={opt}>
-                        {opt}
-                      </option>
-                    ))}
-                  </select>
+                  <div className="grid grid-cols-3 gap-3">
+                    {LENGTH_CARDS.map((card) => {
+                      const active = length === card.id;
+                      return (
+                        <button
+                          key={card.id}
+                          type="button"
+                          onClick={() => {
+                            if (card.isPro) {
+                              setShowPremiumModal(true);
+                            } else {
+                              setLength(card.id);
+                            }
+                          }}
+                          className={`relative flex flex-col items-center justify-center gap-1 py-5 px-3 rounded-2xl border transition-all cursor-pointer ${
+                            active
+                              ? "border-primary-500 bg-primary-50 ring-2 ring-primary-300"
+                              : "border-background-200 bg-background-50 hover:border-primary-300 hover:bg-primary-50/40"
+                          }`}
+                        >
+                          {card.isPro && (
+                            <span className="absolute top-2 right-2 px-1.5 py-0.5 rounded-md bg-amber-400 text-amber-900 text-[10px] font-label font-semibold leading-none">
+                              PRO
+                            </span>
+                          )}
+                          <span className="font-heading text-base md:text-lg text-foreground-950">
+                            {card.label}
+                          </span>
+                          <span className="text-xs text-foreground-500 whitespace-nowrap">
+                            {card.pages}
+                          </span>
+                          {active && (
+                            <span className="absolute bottom-2 right-2 w-5 h-5 rounded-full bg-primary-500 flex items-center justify-center">
+                              <i className="ri-check-line text-background-50 text-xs flex items-center justify-center"></i>
+                            </span>
+                          )}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+
+                {/* Korean motif section */}
+                <div className="rounded-2xl bg-background-50 border-2 border-secondary-300 p-5 md:p-6">
+                  <div className="flex items-center gap-2 mb-1">
+                    <span className="w-7 h-7 rounded-full bg-secondary-100 flex items-center justify-center">
+                      <i className="ri-landscape-line text-secondary-700 w-4 h-4 flex items-center justify-center text-sm"></i>
+                    </span>
+                    <h3 className="font-heading text-base md:text-lg text-foreground-950">토리동화 시그니처 한국형 모티브</h3>
+                    <span className="ml-1 px-2 py-0.5 rounded-full bg-background-100 border border-background-200 text-xs text-foreground-500 font-label">
+                      선택사항
+                    </span>
+                  </div>
+                  <p className="text-xs text-foreground-500 mb-4 ml-9">
+                    한옥, 전통 한복, 도깨비 주머니, 탈춤, 풍성한 정원 등 원하는 모티프를 자유롭게 다중 선택해보세요!
+                  </p>
+                  <div className="flex flex-wrap gap-2">
+                    {KOREAN_MOTIF_CHIPS.map((chip) => {
+                      const active = koreanMotifs.includes(chip);
+                      return (
+                        <button
+                          key={chip}
+                          type="button"
+                          onClick={() => {
+                            if (active) {
+                              setKoreanMotifs(koreanMotifs.filter((m) => m !== chip));
+                            } else {
+                              setKoreanMotifs([...koreanMotifs, chip]);
+                            }
+                          }}
+                          className={`px-4 py-2 rounded-full text-sm font-label transition-colors cursor-pointer whitespace-nowrap ${
+                            active
+                              ? "bg-secondary-500 text-foreground-950 dark:text-foreground-950"
+                              : "bg-secondary-100 text-foreground-700 border border-secondary-200 hover:border-secondary-400 hover:bg-secondary-50"
+                          }`}
+                        >
+                          {chip}
+                        </button>
+                      );
+                    })}
+                  </div>
                 </div>
 
                 {/* Bottom nav */}
@@ -468,6 +550,58 @@ export default function CreateChatPage() {
           </div>
         </div>
       </div>
+      {/* Premium subscription modal */}
+      {showPremiumModal && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm px-4"
+          onClick={() => setShowPremiumModal(false)}
+        >
+          <div
+            className="w-full max-w-sm rounded-3xl bg-background-50 border border-background-200 p-7 shadow-xl"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex items-center justify-between mb-5">
+              <div className="flex items-center gap-2">
+                <span className="px-2 py-1 rounded-lg bg-amber-400 text-amber-900 text-xs font-label font-semibold">
+                  PRO
+                </span>
+                <h2 className="font-heading text-lg text-foreground-950">프리미엄 기능</h2>
+              </div>
+              <button
+                type="button"
+                onClick={() => setShowPremiumModal(false)}
+                className="w-8 h-8 rounded-full flex items-center justify-center hover:bg-background-100 transition-colors cursor-pointer"
+              >
+                <i className="ri-close-line text-foreground-600"></i>
+              </button>
+            </div>
+            <p className="text-sm text-foreground-600 mb-2 leading-relaxed">
+              <span className="font-label text-foreground-950">보통</span>과{" "}
+              <span className="font-label text-foreground-950">길게</span> 분량은
+              프리미엄 구독 회원만 이용할 수 있어요.
+            </p>
+            <p className="text-sm text-foreground-500 mb-6 leading-relaxed">
+              구독하면 더 길고 풍성한 동화를 무제한으로 만들 수 있어요! ✨
+            </p>
+            <div className="flex gap-3">
+              <button
+                type="button"
+                onClick={() => setShowPremiumModal(false)}
+                className="flex-1 py-3 rounded-full border border-background-200 bg-background-50 hover:bg-background-100 text-foreground-700 font-label text-sm transition-colors cursor-pointer"
+              >
+                닫기
+              </button>
+              <button
+                type="button"
+                onClick={() => { setShowPremiumModal(false); navigate("/subscription"); }}
+                className="flex-1 py-3 rounded-full bg-amber-400 hover:bg-amber-500 text-amber-900 font-label text-sm transition-colors cursor-pointer"
+              >
+                구독하기
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </main>
   );
 }
