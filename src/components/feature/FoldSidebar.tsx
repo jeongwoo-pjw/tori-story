@@ -57,17 +57,13 @@ export default function FoldSidebar() {
           onClick={toggleExpand}
           className="flex items-center justify-center rounded-lg py-1.5 px-1.5 hover:bg-primary-50/30 transition-colors cursor-pointer"
         >
-          {expanded ? (
-            <div className="grid grid-cols-1 gap-[3px] w-[18px] h-[18px]">
-              <div className="bg-foreground-400 rounded-[1px] h-[5px]"></div>
-              <div className="bg-foreground-400 rounded-[1px] h-[5px]"></div>
-            </div>
-          ) : (
-            <div className="grid grid-cols-1 gap-[3px] w-[18px] h-[18px]">
-              <div className="bg-foreground-400 rounded-[1px] h-[6px]"></div>
-              <div className="bg-foreground-400 rounded-[1px] h-[6px]"></div>
-            </div>
-          )}
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 448 512"
+            className="w-[18px] h-[18px] fill-foreground-400"
+          >
+            <path d="M0 96C0 78.3 14.3 64 32 64H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 128 0 113.7 0 96zm0 128c0-17.7 14.3-32 32-32H288c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zm224 128c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H192c17.7 0 32 14.3 32 32z" />
+          </svg>
         </button>
         {expanded && (
           <button

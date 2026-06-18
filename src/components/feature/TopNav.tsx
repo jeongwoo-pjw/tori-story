@@ -222,25 +222,25 @@ export default function TopNav({ isLoggedIn = false, onToggleLogin }: TopNavProp
                   <button
                     type="button"
                     onClick={() => setParentLockOpen(true)}
-                    className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-primary-50/40 border border-primary-200 hover:bg-primary-100/60 hover:border-primary-300 transition-colors cursor-pointer whitespace-nowrap"
+                    className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-accent-100/60 border border-accent-300 hover:bg-accent-200/80 hover:border-accent-400 transition-colors cursor-pointer whitespace-nowrap"
                     title="부모잠금"
                   >
-                    <i className="ri-lock-unlock-line text-foreground-700 w-3.5 h-3.5 flex items-center justify-center text-xs"></i>
-                    <span className="text-[11px] font-label text-foreground-800 whitespace-nowrap">부모잠금</span>
+                    <i className="ri-lock-unlock-line text-accent-800 w-3.5 h-3.5 flex items-center justify-center text-xs"></i>
+                    <span className="text-[11px] font-label text-accent-900 whitespace-nowrap">부모잠금</span>
                   </button>
 
-                  {/* Child switcher — gold accent color */}
+                  {/* Child switcher — primary/pink color */}
                   <div className="relative">
                     <button
                       type="button"
                       onClick={() => setChildOpen((v) => !v)}
-                      className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-accent-100/60 border border-accent-300 hover:bg-accent-200/80 hover:border-accent-400 transition-colors cursor-pointer whitespace-nowrap`}
+                      className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-primary-50/40 border border-primary-200 hover:bg-primary-100/60 hover:border-primary-300 transition-colors cursor-pointer whitespace-nowrap`}
                     >
-                      <i className="ri-user-smile-line text-accent-800 w-4 h-4 flex items-center justify-center text-sm"></i>
-                      <span className="text-xs font-label text-accent-900 whitespace-nowrap">
+                      <i className="ri-user-smile-line text-foreground-700 w-4 h-4 flex items-center justify-center text-sm"></i>
+                      <span className="text-xs font-label text-foreground-800 whitespace-nowrap">
                         {selectedChild.name}
                       </span>
-                      <i className="ri-arrow-down-s-line text-accent-700 w-3 h-3 flex items-center justify-center text-xs"></i>
+                      <i className="ri-arrow-down-s-line text-foreground-600 w-3 h-3 flex items-center justify-center text-xs"></i>
                     </button>
                     {childOpen && (
                       <div className="absolute top-full right-0 mt-2 w-48 rounded-2xl bg-background-50 border border-primary-200 p-2 z-50">
@@ -254,11 +254,11 @@ export default function TopNav({ isLoggedIn = false, onToggleLogin }: TopNavProp
                             }}
                             className={`w-full flex items-center gap-2 px-3 py-2.5 rounded-xl text-sm font-label transition-colors cursor-pointer whitespace-nowrap ${
                               selectedChild.id === child.id
-                                ? "bg-accent-100 text-accent-900"
-                                : "text-foreground-800 hover:bg-accent-50"
+                                ? "bg-primary-100 text-primary-900"
+                                : "text-foreground-800 hover:bg-primary-50"
                             }`}
                           >
-                            <span className="w-6 h-6 rounded-full bg-accent-200 flex items-center justify-center text-xs text-accent-800">
+                            <span className="w-6 h-6 rounded-full bg-primary-200 flex items-center justify-center text-xs text-primary-800">
                               {child.age}
                             </span>
                             {child.name} ({child.age}세)
@@ -392,7 +392,7 @@ export default function TopNav({ isLoggedIn = false, onToggleLogin }: TopNavProp
                     <button
                       type="button"
                       onClick={() => setParentLockOpen(true)}
-                      className="w-full flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-label text-foreground-900 bg-primary-50/40 border border-primary-200 cursor-pointer whitespace-nowrap"
+                      className="w-full flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-label text-accent-900 bg-accent-100/60 border border-accent-300 cursor-pointer whitespace-nowrap"
                     >
                       <i className="ri-lock-unlock-line w-4 h-4 flex items-center justify-center"></i>
                       부모잠금
@@ -407,8 +407,8 @@ export default function TopNav({ isLoggedIn = false, onToggleLogin }: TopNavProp
                             onClick={() => setSelectedChild(child)}
                             className={`px-3 py-1.5 rounded-full text-xs font-label transition-colors cursor-pointer whitespace-nowrap ${
                               selectedChild.id === child.id
-                                ? "bg-accent-500 text-foreground-950 dark:text-foreground-950"
-                                : "bg-accent-50 text-accent-900 border border-accent-200"
+                                ? "bg-primary-500 text-foreground-950 dark:text-foreground-950"
+                                : "bg-primary-50 text-primary-900 border border-primary-200"
                             }`}
                           >
                             {child.name} ({child.age}세)

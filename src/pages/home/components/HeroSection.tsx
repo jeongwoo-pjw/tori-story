@@ -80,7 +80,7 @@ export default function HeroSection({ isLoggedIn = false }: HeroSectionProps) {
             </div>
             <Link
               to="/create/select"
-              className="mt-auto inline-flex items-center justify-center gap-2 px-6 py-2.5 rounded-full bg-foreground-900 hover:bg-foreground-800 text-background-50 font-label text-sm transition-colors whitespace-nowrap"
+              className="mt-auto inline-flex items-center justify-center gap-2 px-6 py-2.5 rounded-full bg-primary-500 hover:bg-primary-600 text-foreground-950 dark:text-foreground-950 font-label text-sm transition-colors whitespace-nowrap"
             >
               체험해보기
             </Link>
