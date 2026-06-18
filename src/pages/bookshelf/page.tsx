@@ -30,12 +30,6 @@ export default function BookshelfPage() {
     return story.status === activeFilter;
   });
 
-  const displayStories = filteredStories.slice(0, 3);
-
-  const handleAddClick = () => {
-    setShowPopup(true);
-  };
-
   return (
     <main className="min-h-screen bg-background-50 text-foreground-950">
       <TopNav isLoggedIn={true} />
@@ -50,7 +44,7 @@ export default function BookshelfPage() {
                 <h1 className="font-heading text-2xl md:text-3xl text-foreground-950 mb-1">
                   내 책장
                 </h1>
-                <p className="text-sm text-foreground-500">총 3권</p>
+                <p className="text-sm text-foreground-500">총 {ALL_STORIES.length}권</p>
               </div>
               {/* Premium link button */}
               <button
@@ -67,50 +61,43 @@ export default function BookshelfPage() {
               <h2 className="text-sm font-label text-foreground-700 mb-4">
                 최근에 읽은 동화
               </h2>
-              <div className="flex items-center gap-4">
-                <div className="grid grid-cols-3 gap-4 flex-1">
-                  {RECENT_STORIES.map((story) => (
-                    <div
-                      key={story.id}
-                      className="rounded-2xl bg-background-50 dark:bg-background-100 border border-background-200/70 dark:border-background-300/50 overflow-hidden"
-                    >
-                      <div className="w-full aspect-[16/10] relative overflow-hidden bg-secondary-100">
-                        <img
-                          src={story.image}
-                          alt={story.title}
-                          className="w-full h-full object-cover object-top"
-                        />
-                      </div>
-                      <div className="p-4">
-                        <h3 className="text-sm font-label text-foreground-950 mb-1">
-                          {story.title}
-                        </h3>
-                        <p className="text-xs text-foreground-500 mb-3">
-                          마지막으로 읽은 날: {story.lastRead}
-                        </p>
-                        <div className="flex items-center justify-between">
-                          <span className="text-xs text-foreground-500">
-                            {story.progress}% 읽음
-                          </span>
-                          <button
-                            type="button"
-                            className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-primary-500 hover:bg-primary-600 text-foreground-950 dark:text-foreground-950 text-xs font-label transition-colors cursor-pointer whitespace-nowrap"
-                          >
-                            {story.progress === 100 ? "다시 읽기" : "이어 읽기"}
-                          </button>
-                        </div>
+              <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                {RECENT_STORIES.map((story) => (
+                  <div
+                    key={story.id}
+                    className="rounded-2xl bg-background-50 dark:bg-background-100 border border-background-200/70 dark:border-background-300/50 overflow-hidden"
+                  >
+                    <div className="w-full aspect-[16/10] relative overflow-hidden bg-secondary-100">
+                      <img
+                        src={story.image}
+                        alt={story.title}
+                        className="w-full h-full object-cover object-top"
+                      />
+                      <span className="absolute top-2 left-2 px-2 py-0.5 rounded-full bg-background-50/95 backdrop-blur text-xs font-label text-foreground-900 whitespace-nowrap">
+                        {story.tag}
+                      </span>
+                    </div>
+                    <div className="p-4">
+                      <h3 className="text-sm font-label text-foreground-950 mb-1 line-clamp-1">
+                        {story.title}
+                      </h3>
+                      <p className="text-xs text-foreground-500 mb-3">
+                        마지막으로 읽은 날: {story.lastRead}
+                      </p>
+                      <div className="flex items-center justify-between">
+                        <span className="text-xs text-foreground-500">
+                          {story.progress}% 읽음
+                        </span>
+                        <Link
+                          to={`/viewer/${story.id}`}
+                          className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-primary-500 hover:bg-primary-600 text-foreground-950 dark:text-foreground-950 text-xs font-label transition-colors cursor-pointer whitespace-nowrap"
+                        >
+                          {story.progress === 100 ? "다시 읽기" : "이어 읽기"}
+                        </Link>
                       </div>
                     </div>
-                  ))}
-                </div>
-                {/* Add button */}
-                <button
-                  type="button"
-                  onClick={handleAddClick}
-                  className="w-12 h-12 rounded-full flex items-center justify-center border border-foreground-300 text-foreground-400 hover:bg-primary-50 hover:text-primary-500 hover:border-primary-300 transition-colors cursor-pointer flex-shrink-0"
-                >
-                  <i className="ri-add-line w-6 h-6 flex items-center justify-center text-2xl"></i>
-                </button>
+                  </div>
+                ))}
               </div>
             </div>
 
@@ -149,13 +136,16 @@ export default function BookshelfPage() {
                         <th className="text-left py-3 px-4 text-xs font-label text-foreground-500">
                           동화 제목
                         </th>
-                        <th className="text-left py-3 px-4 text-xs font-label text-foreground-500">
+                        <th className="text-left py-3 px-4 text-xs font-label text-foreground-500 hidden sm:table-cell">
+                          태그
+                        </th>
+                        <th className="text-left py-3 px-4 text-xs font-label text-foreground-500 hidden md:table-cell">
                           생성일
                         </th>
                         <th className="text-left py-3 px-4 text-xs font-label text-foreground-500">
                           진행 상태
                         </th>
-                        <th className="text-left py-3 px-4 text-xs font-label text-foreground-500">
+                        <th className="text-left py-3 px-4 text-xs font-label text-foreground-500 hidden md:table-cell">
                           마지막 열림
                         </th>
                         <th className="text-left py-3 px-4 text-xs font-label text-foreground-500">
@@ -164,7 +154,7 @@ export default function BookshelfPage() {
                       </tr>
                     </thead>
                     <tbody>
-                      {displayStories.map((story, idx) => (
+                      {filteredStories.map((story, idx) => (
                         <tr
                           key={story.id}
                           className={`border-b border-background-200/70 dark:border-background-300/50 ${
@@ -174,7 +164,12 @@ export default function BookshelfPage() {
                           <td className="py-3 px-4 text-foreground-950 font-label">
                             {story.title}
                           </td>
-                          <td className="py-3 px-4 text-foreground-500">
+                          <td className="py-3 px-4 hidden sm:table-cell">
+                            <span className="inline-block px-2 py-0.5 rounded-full bg-secondary-100 text-foreground-600 text-xs font-label whitespace-nowrap">
+                              {story.tag}
+                            </span>
+                          </td>
+                          <td className="py-3 px-4 text-foreground-500 hidden md:table-cell">
                             {story.createdAt}
                           </td>
                           <td className="py-3 px-4">
@@ -184,16 +179,16 @@ export default function BookshelfPage() {
                               {STATUS_LABEL[story.status]}
                             </span>
                           </td>
-                          <td className="py-3 px-4 text-foreground-500">
+                          <td className="py-3 px-4 text-foreground-500 hidden md:table-cell">
                             {story.lastRead}
                           </td>
                           <td className="py-3 px-4">
-                            <button
-                              type="button"
+                            <Link
+                              to={`/viewer/${story.id}`}
                               className="inline-flex items-center px-3 py-1.5 rounded-lg bg-primary-500 hover:bg-primary-600 text-foreground-950 dark:text-foreground-950 text-xs font-label transition-colors cursor-pointer whitespace-nowrap"
                             >
                               {story.status === "completed" ? "다시 읽기" : "이어 읽기"}
-                            </button>
+                            </Link>
                           </td>
                         </tr>
                       ))}
