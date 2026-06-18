@@ -476,7 +476,7 @@ export default function CreateChatPage() {
                 </div>
 
                 {/* Korean motif section */}
-                <div className="rounded-2xl bg-background-50 border-2 border-secondary-300 p-5 md:p-6">
+                <div className="rounded-2xl bg-primary-50/30 border-2 border-primary-500 ring-2 ring-primary-200/60 p-5 md:p-6">
                   <div className="flex items-center gap-2 mb-1">
                     <span className="w-7 h-7 rounded-full bg-secondary-100 flex items-center justify-center">
                       <i className="ri-landscape-line text-secondary-700 w-4 h-4 flex items-center justify-center text-sm"></i>

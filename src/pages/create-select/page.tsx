@@ -9,9 +9,15 @@ const TOPIC_TAGS = [
   "바다탐험", "우주여행", "동물원", "숲속", "왕국", "마법", "요정", "드래곤",
 ];
 
-const KOREAN_TAGS = [
-  "도깨비", "해님 달님", "신라의 나무꾼", "토끼전", "흑부리 영감", "잠숩",
-  "한복", "추석", "설날", "단청", "기와집", "연못", "소리굿", "강강술래",
+const KOREAN_MOTIF_CHIPS = [
+  "🏯 고즈넉한 한옥",
+  "👘 고운 전통 한복",
+  "🎒 도깨비 요술",
+  "🎭 신명나는 탈춤",
+  "🏡 풍성한 한옥 정원",
+  "🐯 꼬마 호랑이 신선",
+  "🥮 요술 꿀 약과",
+  "✨ 달님 별님 전설",
 ];
 
 const ART_STYLES = [
@@ -197,74 +203,6 @@ function TopicSection({
   );
 }
 
-function KoreanMaterialSection({
-  selected,
-  setSelected,
-}: {
-  selected: string[];
-  setSelected: (v: string[]) => void;
-}) {
-  const [open, setOpen] = useState(false);
-
-  const toggleTag = (tag: string) => {
-    if (selected.includes(tag)) {
-      setSelected(selected.filter((t) => t !== tag));
-    } else {
-      setSelected([...selected, tag]);
-    }
-  };
-
-  return (
-    <div className="rounded-2xl bg-background-50 border-2 border-primary-500 p-5 md:p-6">
-      <div className="flex items-center justify-between mb-5">
-        <div className="flex items-center gap-2">
-          <span className="w-7 h-7 rounded-full bg-secondary-100 flex items-center justify-center">
-            <i className="ri-landscape-line text-secondary-700 w-4 h-4 flex items-center justify-center text-sm"></i>
-          </span>
-          <h3 className="font-heading text-base md:text-lg text-foreground-950">한국 소재 선택</h3>
-        </div>
-        <button
-          type="button"
-          onClick={() => setOpen(!open)}
-          className="flex items-center gap-1.5 px-4 py-2 rounded-full border border-primary-500/40 text-primary-500 font-label text-sm hover:bg-primary-50 transition-colors cursor-pointer whitespace-nowrap"
-        >
-          {open ? "한국 소재 접기" : "한국 소재 선택하기"}
-          {open ? (
-            <i className="ri-arrow-up-s-line w-4 h-4 flex items-center justify-center"></i>
-          ) : (
-            <i className="ri-arrow-down-s-line w-4 h-4 flex items-center justify-center"></i>
-          )}
-        </button>
-      </div>
-
-      {!open ? (
-        <p className="text-sm text-foreground-500">
-          동화에 담고 싶은 한국적 요소를 골라보세요.
-        </p>
-      ) : (
-        <div className="flex flex-wrap gap-2">
-          {KOREAN_TAGS.map((tag) => {
-            const active = selected.includes(tag);
-            return (
-              <button
-                key={tag}
-                type="button"
-                onClick={() => toggleTag(tag)}
-                className={`px-4 py-2 rounded-full text-sm font-label transition-colors cursor-pointer whitespace-nowrap ${
-                  active
-                    ? "bg-secondary-500 text-foreground-950 dark:text-foreground-950"
-                    : "bg-secondary-100 text-foreground-700 border border-secondary-200 hover:border-secondary-300 hover:bg-secondary-50/50"
-                }`}
-              >
-                {tag}
-              </button>
-            );
-          })}
-        </div>
-      )}
-    </div>
-  );
-}
 
 function ArtStyleSection({
   selected,
@@ -329,7 +267,7 @@ export default function CreateSelectPage() {
   const [topics, setTopics] = useState<string[]>([]);
   const [customTopic, setCustomTopic] = useState("");
   const [customTopicOpen, setCustomTopicOpen] = useState(false);
-  const [materials, setMaterials] = useState<string[]>([]);
+  const [koreanMotifs, setKoreanMotifs] = useState<string[]>([]);
   const [artStyle, setArtStyle] = useState("watercolor");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -404,7 +342,46 @@ export default function CreateSelectPage() {
                 setCustomOpen={setCustomTopicOpen}
               />
 
-              <KoreanMaterialSection selected={materials} setSelected={setMaterials} />
+              {/* Korean motif section */}
+              <div className="rounded-2xl bg-primary-50/30 border-2 border-primary-500 ring-2 ring-primary-200/60 p-5 md:p-6">
+                <div className="flex items-center gap-2 mb-1">
+                  <span className="w-7 h-7 rounded-full bg-secondary-100 flex items-center justify-center">
+                    <i className="ri-landscape-line text-secondary-700 w-4 h-4 flex items-center justify-center text-sm"></i>
+                  </span>
+                  <h3 className="font-heading text-base md:text-lg text-foreground-950">토리동화 시그니처 한국형 모티브</h3>
+                  <span className="ml-1 px-2 py-0.5 rounded-full bg-background-100 border border-background-200 text-xs text-foreground-500 font-label">
+                    선택사항
+                  </span>
+                </div>
+                <p className="text-xs text-foreground-500 mb-4 ml-9">
+                  한옥, 전통 한복, 도깨비 주머니, 탈춤, 풍성한 정원 등 원하는 모티프를 자유롭게 다중 선택해보세요!
+                </p>
+                <div className="flex flex-wrap gap-2">
+                  {KOREAN_MOTIF_CHIPS.map((chip) => {
+                    const active = koreanMotifs.includes(chip);
+                    return (
+                      <button
+                        key={chip}
+                        type="button"
+                        onClick={() => {
+                          if (active) {
+                            setKoreanMotifs(koreanMotifs.filter((m) => m !== chip));
+                          } else {
+                            setKoreanMotifs([...koreanMotifs, chip]);
+                          }
+                        }}
+                        className={`px-4 py-2 rounded-full text-sm font-label transition-colors cursor-pointer whitespace-nowrap ${
+                          active
+                            ? "bg-secondary-500 text-foreground-950 dark:text-foreground-950"
+                            : "bg-secondary-100 text-foreground-700 border border-secondary-200 hover:border-secondary-400 hover:bg-secondary-50"
+                        }`}
+                      >
+                        {chip}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
 
               <ArtStyleSection selected={artStyle} setSelected={setArtStyle} />
             </div>
