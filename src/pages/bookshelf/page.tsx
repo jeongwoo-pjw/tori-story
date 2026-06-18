@@ -257,7 +257,7 @@ export default function BookshelfPage() {
             <button
               type="button"
               onClick={() => setShowPopup(false)}
-              className="w-full inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-background-50 hover:bg-background-200 text-foreground-950 font-label text-sm transition-colors cursor-pointer whitespace-nowrap"
+              className="w-full inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-accent-500 hover:bg-accent-600 text-foreground-950 dark:text-foreground-950 font-label text-sm transition-colors cursor-pointer whitespace-nowrap"
             >
               <i className="ri-vip-crown-line w-5 h-5 flex items-center justify-center text-lg text-primary-500"></i>
               지금 시작하기

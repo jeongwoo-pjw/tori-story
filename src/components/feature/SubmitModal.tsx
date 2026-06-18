@@ -57,7 +57,7 @@ export default function SubmitModal({ isOpen, onClose }: SubmitModalProps) {
               onClose();
               navigate("/");
             }}
-            className="flex-1 inline-flex items-center justify-center px-4 py-3 rounded-xl bg-primary-500 hover:bg-primary-600 text-foreground-950 dark:text-foreground-950 font-label text-sm transition-colors cursor-pointer whitespace-nowrap"
+            className="flex-1 inline-flex items-center justify-center px-4 py-3 rounded-xl border border-background-200 bg-background-50 hover:bg-background-100 text-foreground-700 font-label text-sm transition-colors cursor-pointer whitespace-nowrap"
           >
             홈화면 이동하기
           </button>
@@ -67,7 +67,7 @@ export default function SubmitModal({ isOpen, onClose }: SubmitModalProps) {
               onClose();
               navigate("/bookshelf");
             }}
-            className="flex-1 inline-flex items-center justify-center px-4 py-3 rounded-xl bg-secondary-100 hover:bg-secondary-200 text-foreground-700 font-label text-sm transition-colors cursor-pointer whitespace-nowrap"
+            className="flex-1 inline-flex items-center justify-center px-4 py-3 rounded-xl bg-accent-500 hover:bg-accent-600 text-foreground-950 dark:text-foreground-950 font-label text-sm transition-colors cursor-pointer whitespace-nowrap"
           >
             책장 이동하기
           </button>
