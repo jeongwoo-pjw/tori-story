@@ -98,20 +98,20 @@ export const EMOTION_DATA = [
 export const RECOMMENDATIONS = [
   {
     id: 1,
-    title: "공룡 이야기를 자주 선택해요",
-    icon: "ri-earthquake-line",
+    title: "'한옥' 관련 탐색 낱말을 찾아보고 질문해요",
+    icon: "🏯",
     color: "text-primary-600",
   },
   {
     id: 2,
-    title: "밤 배경 이야기에서 집중 시간이 길어요",
-    icon: "ri-moon-line",
+    title: "'바다' 공간이 연출될 때 마음 퀴즈 버튼을 집중해서 가장 먼저 터치해요",
+    icon: "🌊",
     color: "text-accent-600",
   },
   {
     id: 3,
-    title: "우서준 장면은 빠르게 넘기는 경향이 있어요",
-    icon: "ri-arrow-right-line",
+    title: "동화 줄거리 순서와 퀴즈의 대화 맥락을 골고루 파악하며 대답 수치도 고르게 뛰어나요",
+    icon: "🧠",
     color: "text-secondary-600",
   },
 ];

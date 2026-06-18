@@ -201,17 +201,6 @@ export default function DashboardPage() {
 
                     {/* Bars area */}
                     <div className="flex-1 flex items-end gap-2 relative justify-evenly overflow-hidden">
-                      {/* Horizontal grid lines */}
-                      {yAxisTicks.map((tick) => (
-                        <div
-                          key={tick}
-                          className="absolute left-0 right-0 border-t border-background-200/40"
-                          style={{
-                            bottom: `${(tick / yAxisTicks[yAxisTicks.length - 1]) * 100}%`,
-                          }}
-                        ></div>
-                      ))}
-
                       {/* Bars */}
                       {readingData.map((item, idx) => {
                         const isMax = item.value === maxValue;
@@ -260,18 +249,79 @@ export default function DashboardPage() {
                     <p className="text-xs text-foreground-500 dark:text-foreground-500">
                       ※ 독서 완료 및 놀이마당 낱말 퀴즈 시 실시간 가산
                     </p>
-                    <p className="text-xs font-label text-foreground-700 dark:text-foreground-400 whitespace-nowrap">
-                      이번 주 동화에서 학습한 누적 단어: {readingData[readingData.length - 1]?.value ?? 0}개
+                    <p className="text-xs font-label text-primary-500 whitespace-nowrap">
+                      이번 주 동화에서 학습한 누적 단어:{" "}
+                      <span className="font-bold text-sm">{readingData[readingData.length - 1]?.value ?? 0}</span>개
                     </p>
                   </div>
                 </div>
 
-                {/* Bottom row: Focus settings + Recommendations + Emotion chart */}
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+                {/* Bottom 2×2 grid */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
 
-                  {/* ── 집중 시간 설정 (compact) ── */}
+                  {/* ── 자녀별 요약 ── */}
+                  <div className="rounded-2xl bg-background-50 dark:bg-background-100 border border-background-200/70 dark:border-background-300/50 p-5">
+                    <h2 className="font-heading text-base text-foreground-950 mb-0.5">자녀별 요약</h2>
+                    <p className="text-[10px] text-foreground-400 dark:text-foreground-600 mb-3 leading-snug">로그인 중인 아이의 독서 진척도 및 지능 교감 상태</p>
+                    <div className="rounded-xl bg-background-100 dark:bg-background-200 border border-background-200/60 dark:border-background-300/50 p-3 space-y-3">
+                      {/* Profile row */}
+                      <div className="flex items-center gap-3">
+                        <img
+                          src={CHILD_PROFILE.avatar}
+                          alt={CHILD_PROFILE.name}
+                          className="w-10 h-10 rounded-full object-cover flex-shrink-0"
+                        />
+                        <div>
+                          <p className="text-sm font-label text-foreground-950">{CHILD_PROFILE.name}({CHILD_PROFILE.age}세)</p>
+                          <p className="text-[10px] text-primary-500 mt-0.5">이번주 완독 8편 · 신규 어휘 학습 30개</p>
+                        </div>
+                      </div>
+                      {/* Stat boxes */}
+                      <div className="flex gap-1.5">
+                        <div className="flex-1 rounded-lg bg-primary-50 dark:bg-primary-950/20 border border-primary-200/60 dark:border-primary-800/30 p-2 text-center">
+                          <p className="text-[9px] text-foreground-400">주요 관심사</p>
+                          <p className="text-xs font-label text-primary-600 dark:text-primary-400 font-semibold mt-0.5">한옥</p>
+                        </div>
+                        <div className="flex-1 rounded-lg bg-accent-50 dark:bg-accent-950/20 border border-accent-200/60 dark:border-accent-800/30 p-2 text-center">
+                          <p className="text-[9px] text-foreground-400">교감 감정</p>
+                          <p className="text-xs font-label text-accent-600 dark:text-accent-400 font-semibold mt-0.5">기쁨</p>
+                        </div>
+                        <div className="flex-1 rounded-lg bg-secondary-50 dark:bg-secondary-950/20 border border-secondary-200/60 dark:border-secondary-800/30 p-2 text-center">
+                          <p className="text-[9px] text-foreground-400">연속 독서</p>
+                          <p className="text-xs font-label text-secondary-600 dark:text-secondary-400 font-semibold mt-0.5">5일 연속</p>
+                        </div>
+                      </div>
+                      {/* Personality */}
+                      <div className="flex items-start gap-1.5">
+                        <i className="ri-sparkling-2-line text-accent-400 text-xs flex-shrink-0 mt-0.5"></i>
+                        <p className="text-[10px] text-foreground-500 dark:text-foreground-600 leading-relaxed">
+                          아이 성향 분석: <span className="font-semibold text-foreground-800 dark:text-foreground-400">"balanced"</span> 성향으로, 풍부한 시각 자극에 흥미를 느끼며 독서를 아름다운 놀이 기회로 인지하고 있어요.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* ── 반복 요청 테마 ── */}
+                  <div className="rounded-2xl bg-background-50 dark:bg-background-100 border border-background-200/70 dark:border-background-300/50 p-5">
+                    <h2 className="font-heading text-base text-foreground-950 mb-0.5">반복 요청 테마</h2>
+                    <p className="text-[10px] text-foreground-400 dark:text-foreground-600 mb-3 leading-snug">아이가 주도적으로 누적하여 열람한 단어 및 핵심 취향</p>
+                    <div className="space-y-2">
+                      {RECOMMENDATIONS.map((rec) => (
+                        <div
+                          key={rec.id}
+                          className="flex items-start gap-2.5 rounded-xl bg-background-100 dark:bg-background-200 p-3"
+                        >
+                          <span className="text-base flex-shrink-0 leading-none mt-0.5">{rec.icon}</span>
+                          <p className="text-[11px] font-label text-foreground-700 dark:text-foreground-400 leading-snug">
+                            {rec.title}
+                          </p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* ── 집중 시간 설정 ── */}
                   <div className="rounded-2xl bg-background-50 dark:bg-background-100 border border-background-200/70 dark:border-background-300/50 p-4 flex flex-col">
-                    {/* 헤더 */}
                     <div className="flex items-start justify-between mb-3">
                       <div>
                         <p className="text-sm font-label text-foreground-700 dark:text-foreground-900">집중 시간 설정</p>
@@ -279,7 +329,6 @@ export default function DashboardPage() {
                           규칙적인 독서습관 및 눈 피로 보호 기능
                         </p>
                       </div>
-                      {/* 자동제한 토글 */}
                       <button
                         type="button"
                         onClick={handleAutoLimitToggle}
@@ -294,58 +343,60 @@ export default function DashboardPage() {
                       </button>
                     </div>
 
-                    {/* 시간/분 박스 가로 배치 */}
-                    <div className="flex gap-2 mb-4">
-                      {/* 시간 박스 */}
-                      <div className="flex-1 rounded-xl bg-background-100 dark:bg-background-200 border border-background-200/60 dark:border-background-300/50 p-2.5 flex flex-col items-center gap-1.5">
-                        <p className="text-[10px] text-foreground-400 dark:text-foreground-500">시간</p>
-                        <button
-                          type="button"
-                          onClick={() => setFocusHours((h) => Math.min(h + 1, 23))}
-                          className="w-6 h-6 rounded-md flex items-center justify-center bg-background-200 dark:bg-background-300 hover:bg-primary-100 cursor-pointer transition-colors"
-                        >
-                          <i className="ri-arrow-up-s-line text-foreground-500 text-sm"></i>
-                        </button>
-                        <span className="text-xl font-heading text-foreground-950 leading-none w-7 text-center">
-                          {focusHours}
-                        </span>
-                        <button
-                          type="button"
-                          onClick={() => setFocusHours((h) => Math.max(h - 1, 0))}
-                          className="w-6 h-6 rounded-md flex items-center justify-center bg-background-200 dark:bg-background-300 hover:bg-primary-100 cursor-pointer transition-colors"
-                        >
-                          <i className="ri-arrow-down-s-line text-foreground-500 text-sm"></i>
-                        </button>
+                    {/* 시간/분 박스 — 숫자+단위 나란히, 화살표 아래 가로 배치 */}
+                    <div className="flex gap-2 mb-3">
+                      <div className="flex-1 rounded-xl bg-background-100 dark:bg-background-200 border border-background-200/60 dark:border-background-300/50 p-3 flex flex-col items-center gap-2">
+                        <div className="flex items-baseline gap-1">
+                          <span className="text-2xl font-heading text-foreground-950 leading-none tabular-nums">{focusHours}</span>
+                          <span className="text-xs text-foreground-400 dark:text-foreground-500">시간</span>
+                        </div>
+                        <div className="flex items-center gap-1.5">
+                          <button
+                            type="button"
+                            onClick={() => setFocusHours((h) => Math.min(h + 1, 23))}
+                            className="w-7 h-6 rounded-md flex items-center justify-center bg-background-200 dark:bg-background-300 hover:bg-primary-100 cursor-pointer transition-colors"
+                          >
+                            <i className="ri-arrow-up-s-line text-foreground-500 text-sm"></i>
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => setFocusHours((h) => Math.max(h - 1, 0))}
+                            className="w-7 h-6 rounded-md flex items-center justify-center bg-background-200 dark:bg-background-300 hover:bg-primary-100 cursor-pointer transition-colors"
+                          >
+                            <i className="ri-arrow-down-s-line text-foreground-500 text-sm"></i>
+                          </button>
+                        </div>
                       </div>
-                      {/* 분 박스 */}
-                      <div className="flex-1 rounded-xl bg-background-100 dark:bg-background-200 border border-background-200/60 dark:border-background-300/50 p-2.5 flex flex-col items-center gap-1.5">
-                        <p className="text-[10px] text-foreground-400 dark:text-foreground-500">분</p>
-                        <button
-                          type="button"
-                          onClick={() => setFocusMinutes((m) => Math.min(m + 5, 55))}
-                          className="w-6 h-6 rounded-md flex items-center justify-center bg-background-200 dark:bg-background-300 hover:bg-primary-100 cursor-pointer transition-colors"
-                        >
-                          <i className="ri-arrow-up-s-line text-foreground-500 text-sm"></i>
-                        </button>
-                        <span className="text-xl font-heading text-foreground-950 leading-none w-7 text-center">
-                          {focusMinutes}
-                        </span>
-                        <button
-                          type="button"
-                          onClick={() => setFocusMinutes((m) => Math.max(m - 5, 0))}
-                          className="w-6 h-6 rounded-md flex items-center justify-center bg-background-200 dark:bg-background-300 hover:bg-primary-100 cursor-pointer transition-colors"
-                        >
-                          <i className="ri-arrow-down-s-line text-foreground-500 text-sm"></i>
-                        </button>
+                      <div className="flex-1 rounded-xl bg-background-100 dark:bg-background-200 border border-background-200/60 dark:border-background-300/50 p-3 flex flex-col items-center gap-2">
+                        <div className="flex items-baseline gap-1">
+                          <span className="text-2xl font-heading text-foreground-950 leading-none tabular-nums">{focusMinutes}</span>
+                          <span className="text-xs text-foreground-400 dark:text-foreground-500">분</span>
+                        </div>
+                        <div className="flex items-center gap-1.5">
+                          <button
+                            type="button"
+                            onClick={() => setFocusMinutes((m) => Math.min(m + 5, 55))}
+                            className="w-7 h-6 rounded-md flex items-center justify-center bg-background-200 dark:bg-background-300 hover:bg-primary-100 cursor-pointer transition-colors"
+                          >
+                            <i className="ri-arrow-up-s-line text-foreground-500 text-sm"></i>
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => setFocusMinutes((m) => Math.max(m - 5, 0))}
+                            className="w-7 h-6 rounded-md flex items-center justify-center bg-background-200 dark:bg-background-300 hover:bg-primary-100 cursor-pointer transition-colors"
+                          >
+                            <i className="ri-arrow-down-s-line text-foreground-500 text-sm"></i>
+                          </button>
+                        </div>
                       </div>
                     </div>
 
-                    {/* 잔여 이용 시간 + 원형 타이머 */}
-                    <div className="mt-auto flex items-center gap-2.5 pt-3 border-t border-background-200/50 dark:border-background-300/30">
+                    {/* 잔여 이용 시간 박스 */}
+                    <div className="mt-auto rounded-xl bg-background-100 dark:bg-background-200 border border-background-200/60 dark:border-background-300/50 p-3 flex items-center gap-2.5">
                       <span className="text-[10px] text-foreground-500 dark:text-foreground-600 whitespace-nowrap flex-shrink-0">
                         잔여 이용 시간
                       </span>
-                      <div className="flex-1 min-w-0">
+                      <div className="flex-1 min-w-0 flex items-center">
                         {autoLimit ? (
                           <span className="font-mono text-sm text-foreground-950 dark:text-foreground-800 tabular-nums">
                             {formattedTimer}
@@ -356,111 +407,66 @@ export default function DashboardPage() {
                           </span>
                         )}
                       </div>
-                      {/* 원형 카운트다운 */}
-                      <svg
-                        viewBox="0 0 36 36"
-                        className="w-9 h-9 flex-shrink-0"
-                        style={{ transform: "rotate(-90deg)" }}
-                      >
-                        {/* 트랙 */}
-                        <circle
-                          cx="18" cy="18" r="14"
-                          fill="none"
-                          stroke="oklch(var(--primary-100))"
-                          strokeWidth="3.5"
-                        />
-                        {/* 진행 */}
-                        <circle
-                          cx="18" cy="18" r="14"
-                          fill="none"
-                          stroke={autoLimit ? "oklch(var(--primary-500))" : "oklch(var(--background-300))"}
-                          strokeWidth="3.5"
-                          strokeLinecap="round"
-                          strokeDasharray={`${timerArc.toFixed(2)} ${CIRC}`}
-                          style={{ transition: "stroke-dasharray 1s linear, stroke 0.3s" }}
-                        />
-                      </svg>
-                    </div>
-                  </div>
-                  {/* Recommendations */}
-                  <div className="rounded-2xl bg-background-50 dark:bg-background-100 border border-background-200/70 dark:border-background-300/50 p-5 md:p-6">
-                    <div className="space-y-3">
-                      {RECOMMENDATIONS.map((rec) => (
-                        <div
-                          key={rec.id}
-                          className="flex items-center gap-3 rounded-xl bg-background-100 dark:bg-background-200 p-3"
+                      {/* 원형 카운트다운 + 타이머 아이콘 */}
+                      <div className="relative w-9 h-9 flex-shrink-0 flex items-center justify-center">
+                        <svg
+                          viewBox="0 0 36 36"
+                          className="w-full h-full absolute inset-0"
+                          style={{ transform: "rotate(-90deg)" }}
                         >
-                          <div className="w-8 h-8 rounded-lg bg-secondary-100 flex items-center justify-center flex-shrink-0">
-                            <i className={`${rec.icon} w-4 h-4 flex items-center justify-center ${rec.color}`}></i>
-                          </div>
-                          <p className="text-xs font-label text-foreground-700">
-                            {rec.title}
-                          </p>
-                        </div>
-                      ))}
+                          <circle cx="18" cy="18" r="14" fill="none" stroke="oklch(var(--primary-100))" strokeWidth="3.5" />
+                          <circle
+                            cx="18" cy="18" r="14"
+                            fill="none"
+                            stroke={autoLimit ? "oklch(var(--primary-500))" : "oklch(var(--background-300))"}
+                            strokeWidth="3.5"
+                            strokeLinecap="round"
+                            strokeDasharray={`${timerArc.toFixed(2)} ${CIRC}`}
+                            style={{ transition: "stroke-dasharray 1s linear, stroke 0.3s" }}
+                          />
+                        </svg>
+                        <i className="ri-timer-line text-[9px] text-foreground-400 relative z-10"></i>
+                      </div>
                     </div>
                   </div>
 
-                  {/* Emotion pie chart */}
-                  <div className="rounded-2xl bg-background-50 dark:bg-background-100 border border-background-200/70 dark:border-background-300/50 p-5 md:p-6">
-                    <div className="flex items-center justify-center">
-                      <div className="relative w-32 h-32">
-                        <svg viewBox="0 0 36 36" className="w-full h-full">
-                          <circle
-                            cx="18"
-                            cy="18"
-                            r="15.915"
-                            fill="none"
-                            stroke="oklch(var(--primary-500))"
-                            strokeWidth="3"
-                            strokeDasharray={`${pieAnimating ? EMOTION_DATA[0].value : 0} ${100 - (pieAnimating ? EMOTION_DATA[0].value : 0)}`}
-                            strokeDashoffset="0"
-                            style={{ transition: pieAnimating ? "stroke-dasharray 1.2s ease-out" : "none" }}
-                          />
-                          <circle
-                            cx="18"
-                            cy="18"
-                            r="15.915"
-                            fill="none"
-                            stroke="oklch(var(--accent-500))"
-                            strokeWidth="3"
-                            strokeDasharray={`${pieAnimating ? EMOTION_DATA[1].value : 0} ${100 - (pieAnimating ? EMOTION_DATA[1].value : 0)}`}
-                            strokeDashoffset={`${pieAnimating ? -EMOTION_DATA[0].value : 0}`}
-                            style={{ transition: pieAnimating ? "stroke-dasharray 1.2s ease-out 0.2s, stroke-dashoffset 1.2s ease-out 0.2s" : "none" }}
-                          />
-                          <circle
-                            cx="18"
-                            cy="18"
-                            r="15.915"
-                            fill="none"
-                            stroke="oklch(var(--secondary-500))"
-                            strokeWidth="3"
-                            strokeDasharray={`${pieAnimating ? EMOTION_DATA[2].value : 0} ${100 - (pieAnimating ? EMOTION_DATA[2].value : 0)}`}
-                            strokeDashoffset={`${pieAnimating ? -(EMOTION_DATA[0].value + EMOTION_DATA[1].value) : 0}`}
-                            style={{ transition: pieAnimating ? "stroke-dasharray 1.2s ease-out 0.4s, stroke-dashoffset 1.2s ease-out 0.4s" : "none" }}
-                          />
-                        </svg>
-                        <div className="absolute inset-0 flex items-center justify-center">
-                          <div className="text-center">
-                            <p className="text-xs font-label text-foreground-500">기쁨</p>
-                            <p className="text-lg font-heading text-primary-500">
-                              {EMOTION_DATA[0].value}%
-                            </p>
+                  {/* ── 감정 반응 (버블 클라우드) ── */}
+                  <div className="rounded-2xl bg-background-50 dark:bg-background-100 border border-background-200/70 dark:border-background-300/50 p-5">
+                    <h2 className="font-heading text-base text-foreground-950 mb-0.5">감정 반응</h2>
+                    <p className="text-[10px] text-foreground-400 dark:text-foreground-600 mb-3 leading-snug">놀이마당 후 아이가 발각한 자율 정서 교감 분포도 (실시간 누계)</p>
+                    <div className="rounded-xl bg-background-100 dark:bg-background-200 border border-background-200/60 dark:border-background-300/50 p-4 flex items-end justify-center gap-5">
+                      {EMOTION_DATA.map((e, i) => {
+                        const size = Math.round(36 + (e.value / EMOTION_DATA[0].value) * 44);
+                        const bgColors = [
+                          "oklch(var(--primary-400))",
+                          "oklch(var(--accent-400))",
+                          "oklch(var(--secondary-400))",
+                        ];
+                        const delays = ["0s", "0.4s", "0.8s"];
+                        return (
+                          <div
+                            key={e.label}
+                            className="flex flex-col items-center gap-1.5"
+                            style={{ marginBottom: i === 1 ? "10px" : "0" }}
+                          >
+                            <div
+                              className="rounded-full flex items-center justify-center animate-pulse-bubble"
+                              style={{
+                                width: `${size}px`,
+                                height: `${size}px`,
+                                backgroundColor: bgColors[i],
+                                animationDelay: delays[i],
+                              }}
+                            >
+                              <span className="text-white font-heading font-bold text-xs leading-none">{e.value}%</span>
+                            </div>
+                            <span className="text-[10px] font-label text-foreground-500">{e.label}</span>
                           </div>
-                        </div>
-                      </div>
-                    </div>
-                    <div className="flex items-center justify-center gap-4 mt-4">
-                      {EMOTION_DATA.map((e) => (
-                        <div key={e.label} className="flex items-center gap-1.5">
-                          <span className={`w-2.5 h-2.5 rounded-full ${e.color}`}></span>
-                          <span className="text-xs font-label text-foreground-700">
-                            {e.label} {e.value}%
-                          </span>
-                        </div>
-                      ))}
+                        );
+                      })}
                     </div>
                   </div>
+
                 </div>
               </div>
 

@@ -103,6 +103,10 @@ export default {
           "0%, 100%": { transform: "translateY(-6px)" },
           "50%": { transform: "translateY(10px)" },
         },
+        "pulse-bubble": {
+          "0%, 100%": { transform: "scale(1)" },
+          "50%": { transform: "scale(1.07)" },
+        },
       },
       animation: {
         float: "float 5s ease-in-out infinite",
@@ -110,6 +114,7 @@ export default {
         twinkle: "twinkle 2.4s ease-in-out infinite",
         "fade-up": "fade-up 0.7s ease-out both",
         "bounce-slow": "bounce-slow 2.2s ease-in-out infinite",
+        "pulse-bubble": "pulse-bubble 2.5s ease-in-out infinite",
       },
     },
   },
