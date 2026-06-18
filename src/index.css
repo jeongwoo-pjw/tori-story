@@ -391,7 +391,7 @@ body.theme-moonstar {
 .dark ::-webkit-scrollbar-track { background: oklch(var(--background-100)); }
 .dark ::-webkit-scrollbar-thumb { background: oklch(var(--primary-700)); }
 
-@keyframes bounce-letter {
-  0%, 60%, 100% { transform: translateY(0); }
-  30% { transform: translateY(-7px); }
+@keyframes char-to-yellow {
+  from { color: white; }
+  to { color: oklch(var(--accent-400)); }
 }

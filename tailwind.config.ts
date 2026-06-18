@@ -99,12 +99,17 @@ export default {
           "0%": { opacity: "0", transform: "translateY(20px)" },
           "100%": { opacity: "1", transform: "translateY(0)" },
         },
+        "bounce-slow": {
+          "0%, 100%": { transform: "translateY(0)" },
+          "50%": { transform: "translateY(8px)" },
+        },
       },
       animation: {
         float: "float 5s ease-in-out infinite",
         wiggle: "wiggle 3s ease-in-out infinite",
         twinkle: "twinkle 2.4s ease-in-out infinite",
         "fade-up": "fade-up 0.7s ease-out both",
+        "bounce-slow": "bounce-slow 2s ease-in-out infinite",
       },
     },
   },
