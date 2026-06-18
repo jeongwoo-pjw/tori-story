@@ -10,9 +10,10 @@ const children = [
 
 // Theme cycle
 const themes = [
-  { name: "핑크베리", className: "theme-pinkberry", icon: "bg-primary-400" },
-  { name: "골든허니", className: "theme-goldenhoney", icon: "bg-accent-400" },
-  { name: "은빛포레스트", className: "theme-forest", icon: "bg-secondary-400" },
+  { name: "핑크베리", className: "theme-pinkberry", color: "#f4a8bc" },
+  { name: "새벽민트", className: "theme-dawnmint",  color: "#BFECE9" },
+  { name: "황금노을", className: "theme-goldendusk", color: "#FFE4A5" },
+  { name: "달빛별",   className: "theme-moonstar",   color: "#C9DAFF" },
 ];
 
 // Parent lock popup
@@ -192,7 +193,7 @@ export default function TopNav({ isLoggedIn = false, onToggleLogin }: TopNavProp
                             : "text-foreground-800 hover:bg-primary-50"
                         }`}
                       >
-                        <span className={`w-3.5 h-3.5 rounded-full ${theme.icon}`}></span>
+                        <span className="w-3.5 h-3.5 rounded-full flex-shrink-0" style={{ backgroundColor: theme.color }}></span>
                         {theme.name}
                       </button>
                     ))}
@@ -365,7 +366,7 @@ export default function TopNav({ isLoggedIn = false, onToggleLogin }: TopNavProp
                                 : "text-foreground-800 hover:bg-primary-50"
                             }`}
                           >
-                            <span className={`w-3.5 h-3.5 rounded-full ${theme.icon}`}></span>
+                            <span className="w-3.5 h-3.5 rounded-full flex-shrink-0" style={{ backgroundColor: theme.color }}></span>
                             {theme.name}
                           </button>
                         ))}

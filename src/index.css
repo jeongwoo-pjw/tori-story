@@ -132,3 +132,247 @@ body {
   background-clip: text;
   color: transparent;
 }
+
+/* ═══════════════════════════════════════════════════════
+   THEME SYSTEM — 4 themes × light / dark
+   dark class on <html>, theme class on <body>
+═══════════════════════════════════════════════════════ */
+
+/* ── 1. 핑크베리 PinkBerry (= :root 기본값 명시) ── */
+body.theme-pinkberry {
+  --background-50: 0.995 0.003 60; --background-100: 0.985 0.006 55;
+  --background-200: 0.97 0.012 50; --background-300: 0.94 0.02 45;
+  --background-400: 0.88 0.03 40;  --background-500: 0.78 0.04 35;
+  --background-600: 0.65 0.04 30;  --background-700: 0.5 0.04 28;
+  --background-800: 0.38 0.04 26;  --background-900: 0.28 0.04 25;
+  --background-950: 0.18 0.03 25;
+
+  --primary-50: 0.98 0.008 8;   --primary-100: 0.96 0.018 8;
+  --primary-200: 0.93 0.038 8;  --primary-300: 0.88 0.062 10;
+  --primary-400: 0.83 0.088 12; --primary-500: 0.78 0.118 14;
+  --primary-600: 0.7 0.15 16;   --primary-700: 0.6 0.165 18;
+  --primary-800: 0.5 0.155 20;  --primary-900: 0.4 0.13 22;
+  --primary-950: 0.3 0.1 24;
+
+  --secondary-50: 0.985 0.005 60;  --secondary-100: 0.97 0.012 55;
+  --secondary-200: 0.95 0.025 50;  --secondary-300: 0.92 0.042 48;
+  --secondary-400: 0.88 0.062 45;  --secondary-500: 0.83 0.085 42;
+  --secondary-600: 0.74 0.1 40;    --secondary-700: 0.62 0.105 38;
+  --secondary-800: 0.5 0.1 35;     --secondary-900: 0.39 0.085 32;
+  --secondary-950: 0.28 0.065 30;
+
+  --accent-50: 0.98 0.015 90;  --accent-100: 0.96 0.03 88;
+  --accent-200: 0.93 0.06 86;  --accent-300: 0.9 0.09 85;
+  --accent-400: 0.87 0.115 84; --accent-500: 0.85 0.13 83;
+  --accent-600: 0.76 0.13 80;  --accent-700: 0.64 0.12 75;
+  --accent-800: 0.52 0.1 70;   --accent-900: 0.4 0.08 65;
+  --accent-950: 0.28 0.06 60;
+
+  --foreground-50: 0.97 0.005 270;  --foreground-100: 0.93 0.01 270;
+  --foreground-200: 0.85 0.02 270;  --foreground-300: 0.74 0.03 270;
+  --foreground-400: 0.62 0.04 270;  --foreground-500: 0.5 0.05 270;
+  --foreground-600: 0.4 0.055 270;  --foreground-700: 0.32 0.055 270;
+  --foreground-800: 0.26 0.055 270; --foreground-900: 0.2 0.05 270;
+  --foreground-950: 0.15 0.05 268;
+}
+
+.dark body.theme-pinkberry {
+  --background-50: 0.17 0.038 268; --background-100: 0.21 0.042 268;
+  --background-200: 0.27 0.046 268; --background-300: 0.34 0.043 268;
+  --background-400: 0.43 0.038 268; --background-500: 0.53 0.032 268;
+  --background-600: 0.63 0.025 268; --background-700: 0.73 0.018 268;
+  --background-800: 0.83 0.010 268; --background-900: 0.91 0.005 268;
+  --background-950: 0.97 0.002 268;
+
+  --foreground-50: 0.18 0.038 268;  --foreground-100: 0.24 0.042 268;
+  --foreground-200: 0.32 0.046 268; --foreground-300: 0.42 0.043 268;
+  --foreground-400: 0.53 0.036 268; --foreground-500: 0.62 0.028 268;
+  --foreground-600: 0.71 0.020 268; --foreground-700: 0.79 0.013 268;
+  --foreground-800: 0.86 0.008 268; --foreground-900: 0.92 0.004 268;
+  --foreground-950: 0.97 0.002 268;
+
+  --primary-500: 0.84 0.110 14; --primary-600: 0.75 0.135 15;
+  --secondary-100: 0.27 0.035 50; --secondary-200: 0.33 0.040 48;
+  --accent-500: 0.86 0.125 83;   --accent-600: 0.78 0.128 80;
+}
+
+/* ── 2. 새벽민트 DawnMint ── */
+/* Primary #BFECE9 · Secondary #E3EBFC · Accent #EEE0FF · Dark #21325A */
+body.theme-dawnmint {
+  --background-50: 0.99 0.004 188;  --background-100: 0.98 0.008 188;
+  --background-200: 0.965 0.013 188; --background-300: 0.945 0.022 188;
+  --background-400: 0.91 0.032 188;  --background-500: 0.83 0.042 188;
+  --background-600: 0.69 0.042 188;  --background-700: 0.55 0.038 188;
+  --background-800: 0.41 0.032 188;  --background-900: 0.30 0.026 188;
+  --background-950: 0.20 0.020 188;
+
+  --primary-50: 0.98 0.008 188;  --primary-100: 0.96 0.018 188;
+  --primary-200: 0.93 0.031 188; --primary-300: 0.91 0.043 188;
+  --primary-400: 0.86 0.062 188; --primary-500: 0.79 0.082 188;
+  --primary-600: 0.69 0.088 188; --primary-700: 0.57 0.078 188;
+  --primary-800: 0.46 0.065 188; --primary-900: 0.36 0.050 188;
+  --primary-950: 0.25 0.036 188;
+
+  --secondary-50: 0.985 0.005 262;  --secondary-100: 0.97 0.012 262;
+  --secondary-200: 0.95 0.022 262;  --secondary-300: 0.93 0.028 262;
+  --secondary-400: 0.88 0.046 262;  --secondary-500: 0.81 0.066 262;
+  --secondary-600: 0.70 0.076 262;  --secondary-700: 0.58 0.070 262;
+  --secondary-800: 0.46 0.060 262;  --secondary-900: 0.36 0.046 262;
+  --secondary-950: 0.26 0.034 262;
+
+  --accent-50: 0.98 0.010 305;  --accent-100: 0.96 0.022 305;
+  --accent-200: 0.93 0.038 305; --accent-300: 0.91 0.048 305;
+  --accent-400: 0.86 0.070 305; --accent-500: 0.78 0.096 305;
+  --accent-600: 0.68 0.106 305; --accent-700: 0.56 0.096 305;
+  --accent-800: 0.45 0.080 305; --accent-900: 0.35 0.062 305;
+  --accent-950: 0.25 0.044 305;
+
+  --foreground-50: 0.97 0.005 262;  --foreground-100: 0.93 0.010 262;
+  --foreground-200: 0.85 0.020 262; --foreground-300: 0.74 0.032 262;
+  --foreground-400: 0.62 0.042 262; --foreground-500: 0.50 0.052 262;
+  --foreground-600: 0.40 0.058 262; --foreground-700: 0.32 0.064 262;
+  --foreground-800: 0.26 0.068 262; --foreground-900: 0.22 0.072 262;
+  --foreground-950: 0.16 0.066 262;
+}
+
+.dark body.theme-dawnmint {
+  --background-50: 0.17 0.054 262; --background-100: 0.21 0.058 262;
+  --background-200: 0.27 0.060 262; --background-300: 0.34 0.056 262;
+  --background-400: 0.43 0.048 262; --background-500: 0.53 0.040 262;
+  --background-600: 0.63 0.030 262; --background-700: 0.73 0.020 262;
+  --background-800: 0.83 0.011 262; --background-900: 0.91 0.005 262;
+  --background-950: 0.97 0.002 262;
+
+  --foreground-50: 0.18 0.050 262;  --foreground-100: 0.25 0.056 262;
+  --foreground-200: 0.34 0.060 262; --foreground-300: 0.44 0.055 262;
+  --foreground-400: 0.55 0.044 262; --foreground-500: 0.63 0.034 262;
+  --foreground-600: 0.72 0.024 262; --foreground-700: 0.80 0.016 262;
+  --foreground-800: 0.87 0.010 262; --foreground-900: 0.93 0.005 262;
+  --foreground-950: 0.97 0.002 262;
+
+  --primary-500: 0.83 0.078 188; --primary-600: 0.73 0.082 188;
+  --secondary-100: 0.26 0.038 262; --secondary-200: 0.32 0.045 262;
+  --accent-500: 0.82 0.090 305;   --accent-600: 0.72 0.100 305;
+}
+
+/* ── 3. 황금노을 GoldenDusk ── */
+/* Primary #FFE4A5 · Secondary #5873BF · Accent #C94F45 · Dark #111B38 */
+body.theme-goldendusk {
+  --background-50: 0.99 0.006 80;   --background-100: 0.98 0.012 80;
+  --background-200: 0.965 0.020 80; --background-300: 0.945 0.030 80;
+  --background-400: 0.91 0.044 80;  --background-500: 0.83 0.058 80;
+  --background-600: 0.69 0.058 80;  --background-700: 0.55 0.052 80;
+  --background-800: 0.42 0.044 80;  --background-900: 0.30 0.033 80;
+  --background-950: 0.20 0.024 80;
+
+  --primary-50: 0.98 0.012 80;  --primary-100: 0.96 0.026 80;
+  --primary-200: 0.94 0.044 80; --primary-300: 0.92 0.064 80;
+  --primary-400: 0.88 0.082 80; --primary-500: 0.84 0.100 80;
+  --primary-600: 0.74 0.108 80; --primary-700: 0.62 0.098 80;
+  --primary-800: 0.50 0.082 80; --primary-900: 0.38 0.062 80;
+  --primary-950: 0.27 0.044 80;
+
+  --secondary-50: 0.975 0.012 264;  --secondary-100: 0.95 0.026 264;
+  --secondary-200: 0.90 0.046 264;  --secondary-300: 0.84 0.068 264;
+  --secondary-400: 0.76 0.090 264;  --secondary-500: 0.52 0.110 264;
+  --secondary-600: 0.44 0.115 264;  --secondary-700: 0.37 0.110 264;
+  --secondary-800: 0.30 0.095 264;  --secondary-900: 0.24 0.078 264;
+  --secondary-950: 0.18 0.058 264;
+
+  --accent-50: 0.975 0.012 25;  --accent-100: 0.95 0.028 25;
+  --accent-200: 0.90 0.052 25;  --accent-300: 0.83 0.082 25;
+  --accent-400: 0.72 0.110 25;  --accent-500: 0.50 0.130 25;
+  --accent-600: 0.42 0.132 25;  --accent-700: 0.35 0.120 25;
+  --accent-800: 0.28 0.100 25;  --accent-900: 0.23 0.080 25;
+  --accent-950: 0.17 0.058 25;
+
+  --foreground-50: 0.97 0.005 262;  --foreground-100: 0.93 0.010 262;
+  --foreground-200: 0.85 0.020 262; --foreground-300: 0.74 0.032 262;
+  --foreground-400: 0.62 0.042 262; --foreground-500: 0.50 0.052 262;
+  --foreground-600: 0.40 0.060 262; --foreground-700: 0.32 0.064 262;
+  --foreground-800: 0.26 0.068 262; --foreground-900: 0.20 0.070 262;
+  --foreground-950: 0.14 0.066 262;
+}
+
+.dark body.theme-goldendusk {
+  --background-50: 0.15 0.056 262; --background-100: 0.19 0.060 262;
+  --background-200: 0.25 0.064 262; --background-300: 0.32 0.060 262;
+  --background-400: 0.42 0.052 262; --background-500: 0.52 0.042 262;
+  --background-600: 0.62 0.030 262; --background-700: 0.72 0.020 262;
+  --background-800: 0.82 0.011 262; --background-900: 0.91 0.005 262;
+  --background-950: 0.97 0.002 262;
+
+  --foreground-50: 0.16 0.054 262;  --foreground-100: 0.22 0.062 262;
+  --foreground-200: 0.30 0.066 262; --foreground-300: 0.40 0.060 262;
+  --foreground-400: 0.52 0.046 262; --foreground-500: 0.62 0.034 262;
+  --foreground-600: 0.71 0.024 262; --foreground-700: 0.80 0.015 262;
+  --foreground-800: 0.87 0.009 262; --foreground-900: 0.93 0.004 262;
+  --foreground-950: 0.97 0.002 262;
+
+  --primary-500: 0.86 0.095 80; --primary-600: 0.77 0.103 80;
+  --secondary-100: 0.25 0.040 264; --secondary-200: 0.31 0.048 264;
+  --accent-500: 0.55 0.125 25;   --accent-600: 0.46 0.128 25;
+}
+
+/* ── 4. 달빛별 MoonStar ── */
+/* Primary #C9DAFF · Secondary #FFF7F3 · Accent #F3CC67 · Dark #1F3C88 */
+body.theme-moonstar {
+  --background-50: 0.99 0.004 268;   --background-100: 0.98 0.008 268;
+  --background-200: 0.965 0.015 268; --background-300: 0.945 0.025 268;
+  --background-400: 0.91 0.040 268;  --background-500: 0.83 0.056 268;
+  --background-600: 0.69 0.056 268;  --background-700: 0.55 0.050 268;
+  --background-800: 0.42 0.042 268;  --background-900: 0.30 0.032 268;
+  --background-950: 0.20 0.022 268;
+
+  --primary-50: 0.98 0.010 268;  --primary-100: 0.96 0.022 268;
+  --primary-200: 0.93 0.040 268; --primary-300: 0.90 0.058 268;
+  --primary-400: 0.86 0.078 268; --primary-500: 0.79 0.100 268;
+  --primary-600: 0.69 0.110 268; --primary-700: 0.57 0.104 268;
+  --primary-800: 0.46 0.088 268; --primary-900: 0.36 0.068 268;
+  --primary-950: 0.26 0.048 268;
+
+  --secondary-50: 0.99 0.005 55;   --secondary-100: 0.98 0.010 55;
+  --secondary-200: 0.965 0.018 55; --secondary-300: 0.945 0.030 55;
+  --secondary-400: 0.91 0.046 55;  --secondary-500: 0.83 0.064 55;
+  --secondary-600: 0.70 0.066 55;  --secondary-700: 0.57 0.058 55;
+  --secondary-800: 0.44 0.048 55;  --secondary-900: 0.34 0.036 55;
+  --secondary-950: 0.24 0.026 55;
+
+  --accent-50: 0.98 0.012 80;  --accent-100: 0.96 0.028 80;
+  --accent-200: 0.94 0.050 80; --accent-300: 0.91 0.074 80;
+  --accent-400: 0.88 0.096 80; --accent-500: 0.85 0.116 80;
+  --accent-600: 0.76 0.122 80; --accent-700: 0.64 0.112 80;
+  --accent-800: 0.52 0.095 80; --accent-900: 0.40 0.072 80;
+  --accent-950: 0.29 0.052 80;
+
+  --foreground-50: 0.97 0.006 265;  --foreground-100: 0.93 0.013 265;
+  --foreground-200: 0.85 0.026 265; --foreground-300: 0.74 0.042 265;
+  --foreground-400: 0.62 0.056 265; --foreground-500: 0.50 0.070 265;
+  --foreground-600: 0.40 0.080 265; --foreground-700: 0.32 0.086 265;
+  --foreground-800: 0.26 0.090 265; --foreground-900: 0.22 0.095 265;
+  --foreground-950: 0.17 0.088 265;
+}
+
+.dark body.theme-moonstar {
+  --background-50: 0.18 0.082 265; --background-100: 0.22 0.088 265;
+  --background-200: 0.28 0.090 265; --background-300: 0.35 0.085 265;
+  --background-400: 0.44 0.075 265; --background-500: 0.54 0.062 265;
+  --background-600: 0.64 0.046 265; --background-700: 0.73 0.030 265;
+  --background-800: 0.83 0.016 265; --background-900: 0.91 0.007 265;
+  --background-950: 0.97 0.002 265;
+
+  --foreground-50: 0.19 0.075 265;  --foreground-100: 0.26 0.082 265;
+  --foreground-200: 0.34 0.085 265; --foreground-300: 0.44 0.078 265;
+  --foreground-400: 0.55 0.065 265; --foreground-500: 0.63 0.050 265;
+  --foreground-600: 0.72 0.035 265; --foreground-700: 0.80 0.022 265;
+  --foreground-800: 0.87 0.013 265; --foreground-900: 0.93 0.006 265;
+  --foreground-950: 0.97 0.002 265;
+
+  --primary-500: 0.83 0.095 268; --primary-600: 0.73 0.105 268;
+  --secondary-100: 0.28 0.038 55; --secondary-200: 0.34 0.044 55;
+  --accent-500: 0.87 0.112 80;    --accent-600: 0.78 0.118 80;
+}
+
+/* 다크모드 스크롤바 */
+.dark ::-webkit-scrollbar-track { background: oklch(var(--background-100)); }
+.dark ::-webkit-scrollbar-thumb { background: oklch(var(--primary-700)); }
