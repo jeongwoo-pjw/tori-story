@@ -46,7 +46,7 @@ export default function FoldSidebar() {
 
   return (
     <aside
-      className={`fixed left-0 top-14 md:top-16 bottom-0 z-40 bg-background-50/95 backdrop-blur border-r border-background-200/50 transition-all duration-300 flex flex-col ${
+      className={`fixed left-0 top-14 md:top-16 bottom-0 z-40 bg-background-50/95 dark:bg-background-50 backdrop-blur border-r border-background-200/50 transition-all duration-300 flex flex-col ${
         expanded ? "w-56" : "w-14"
       }`}
     >

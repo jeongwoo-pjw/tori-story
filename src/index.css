@@ -176,27 +176,34 @@ body.theme-pinkberry {
   --foreground-950: 0.15 0.05 268;
 }
 
+/* ── 공통 다크 베이스: html 배경 고정 (페이지·사이드바 불일치 방지) ── */
+.dark {
+  background-color: oklch(0.14 0.018 265);
+}
+
 .dark body.theme-pinkberry {
-  --background-50: 0.17 0.038 268; --background-100: 0.21 0.042 268;
-  --background-200: 0.27 0.046 268; --background-300: 0.34 0.043 268;
-  --background-400: 0.43 0.038 268; --background-500: 0.53 0.032 268;
-  --background-600: 0.63 0.025 268; --background-700: 0.73 0.018 268;
-  --background-800: 0.83 0.010 268; --background-900: 0.91 0.005 268;
-  --background-950: 0.97 0.002 268;
+  /* 통일 다크 배경 / 텍스트 */
+  --background-50:  0.14 0.018 265; --background-100: 0.17 0.022 265;
+  --background-200: 0.22 0.028 265; --background-300: 0.29 0.028 265;
+  --background-400: 0.40 0.024 265; --background-500: 0.52 0.020 265;
+  --background-600: 0.63 0.014 265; --background-700: 0.74 0.009 265;
+  --background-800: 0.84 0.005 265; --background-900: 0.92 0.002 265;
+  --background-950: 0.97 0.001 265;
 
-  --foreground-50: 0.18 0.038 268;  --foreground-100: 0.24 0.042 268;
-  --foreground-200: 0.32 0.046 268; --foreground-300: 0.42 0.043 268;
-  --foreground-400: 0.53 0.036 268; --foreground-500: 0.62 0.028 268;
-  --foreground-600: 0.71 0.020 268; --foreground-700: 0.79 0.013 268;
-  --foreground-800: 0.86 0.008 268; --foreground-900: 0.92 0.004 268;
-  --foreground-950: 0.97 0.002 268;
+  --foreground-50: 0.16 0.018 265; --foreground-100: 0.22 0.022 265;
+  --foreground-200: 0.30 0.026 265; --foreground-300: 0.40 0.022 265;
+  --foreground-400: 0.52 0.018 265; --foreground-500: 0.63 0.014 265;
+  --foreground-600: 0.72 0.010 265; --foreground-700: 0.80 0.007 265;
+  --foreground-800: 0.87 0.004 265; --foreground-900: 0.93 0.002 265;
+  --foreground-950: 0.97 0.001 265;
 
-  /* topnav(non-scrolled) bg-primary-50 통일 */
-  --primary-50: 0.20 0.032 14; --primary-100: 0.25 0.038 14;
-  --primary-500: 0.84 0.110 14; --primary-600: 0.75 0.135 15;
-  --secondary-100: 0.27 0.035 50; --secondary-200: 0.33 0.040 48;
-  /* 다크모드 악센트: 선명한 골드, 카드용 다크 앰버 */
-  --accent-100: 0.24 0.042 83; --accent-200: 0.30 0.055 83;
+  /* 핑크베리 테마 고유 */
+  --primary-50: 0.21 0.034 14; --primary-100: 0.26 0.040 14;
+  --primary-500: 0.84 0.112 14; --primary-600: 0.75 0.135 15;
+  /* 보조컬러: 다크 로즈 (주컬러 단색 계열로 조화) */
+  --secondary-100: 0.24 0.025 14; --secondary-200: 0.30 0.032 14;
+  /* 악센트: 골드 옐로 유지, 카드용 딥 골드 */
+  --accent-100: 0.21 0.040 85; --accent-200: 0.26 0.052 85;
   --accent-500: 0.88 0.135 85; --accent-600: 0.80 0.132 83;
 }
 
@@ -240,19 +247,19 @@ body.theme-dawnmint {
 }
 
 .dark body.theme-dawnmint {
-  --background-50: 0.17 0.054 262; --background-100: 0.21 0.058 262;
-  --background-200: 0.27 0.060 262; --background-300: 0.34 0.056 262;
-  --background-400: 0.43 0.048 262; --background-500: 0.53 0.040 262;
-  --background-600: 0.63 0.030 262; --background-700: 0.73 0.020 262;
-  --background-800: 0.83 0.011 262; --background-900: 0.91 0.005 262;
-  --background-950: 0.97 0.002 262;
+  --background-50:  0.14 0.018 265; --background-100: 0.17 0.022 265;
+  --background-200: 0.22 0.028 265; --background-300: 0.29 0.028 265;
+  --background-400: 0.40 0.024 265; --background-500: 0.52 0.020 265;
+  --background-600: 0.63 0.014 265; --background-700: 0.74 0.009 265;
+  --background-800: 0.84 0.005 265; --background-900: 0.92 0.002 265;
+  --background-950: 0.97 0.001 265;
 
-  --foreground-50: 0.18 0.050 262;  --foreground-100: 0.25 0.056 262;
-  --foreground-200: 0.34 0.060 262; --foreground-300: 0.44 0.055 262;
-  --foreground-400: 0.55 0.044 262; --foreground-500: 0.63 0.034 262;
-  --foreground-600: 0.72 0.024 262; --foreground-700: 0.80 0.016 262;
-  --foreground-800: 0.87 0.010 262; --foreground-900: 0.93 0.005 262;
-  --foreground-950: 0.97 0.002 262;
+  --foreground-50: 0.16 0.018 265; --foreground-100: 0.22 0.022 265;
+  --foreground-200: 0.30 0.026 265; --foreground-300: 0.40 0.022 265;
+  --foreground-400: 0.52 0.018 265; --foreground-500: 0.63 0.014 265;
+  --foreground-600: 0.72 0.010 265; --foreground-700: 0.80 0.007 265;
+  --foreground-800: 0.87 0.004 265; --foreground-900: 0.93 0.002 265;
+  --foreground-950: 0.97 0.001 265;
 
   --primary-50: 0.20 0.030 188; --primary-100: 0.25 0.035 188;
   --primary-500: 0.83 0.078 188; --primary-600: 0.73 0.082 188;
@@ -300,19 +307,19 @@ body.theme-goldendusk {
 }
 
 .dark body.theme-goldendusk {
-  --background-50: 0.15 0.056 262; --background-100: 0.19 0.060 262;
-  --background-200: 0.25 0.064 262; --background-300: 0.32 0.060 262;
-  --background-400: 0.42 0.052 262; --background-500: 0.52 0.042 262;
-  --background-600: 0.62 0.030 262; --background-700: 0.72 0.020 262;
-  --background-800: 0.82 0.011 262; --background-900: 0.91 0.005 262;
-  --background-950: 0.97 0.002 262;
+  --background-50:  0.14 0.018 265; --background-100: 0.17 0.022 265;
+  --background-200: 0.22 0.028 265; --background-300: 0.29 0.028 265;
+  --background-400: 0.40 0.024 265; --background-500: 0.52 0.020 265;
+  --background-600: 0.63 0.014 265; --background-700: 0.74 0.009 265;
+  --background-800: 0.84 0.005 265; --background-900: 0.92 0.002 265;
+  --background-950: 0.97 0.001 265;
 
-  --foreground-50: 0.16 0.054 262;  --foreground-100: 0.22 0.062 262;
-  --foreground-200: 0.30 0.066 262; --foreground-300: 0.40 0.060 262;
-  --foreground-400: 0.52 0.046 262; --foreground-500: 0.62 0.034 262;
-  --foreground-600: 0.71 0.024 262; --foreground-700: 0.80 0.015 262;
-  --foreground-800: 0.87 0.009 262; --foreground-900: 0.93 0.004 262;
-  --foreground-950: 0.97 0.002 262;
+  --foreground-50: 0.16 0.018 265; --foreground-100: 0.22 0.022 265;
+  --foreground-200: 0.30 0.026 265; --foreground-300: 0.40 0.022 265;
+  --foreground-400: 0.52 0.018 265; --foreground-500: 0.63 0.014 265;
+  --foreground-600: 0.72 0.010 265; --foreground-700: 0.80 0.007 265;
+  --foreground-800: 0.87 0.004 265; --foreground-900: 0.93 0.002 265;
+  --foreground-950: 0.97 0.001 265;
 
   --primary-50: 0.18 0.038 80; --primary-100: 0.23 0.044 80;
   --primary-500: 0.86 0.095 80; --primary-600: 0.77 0.103 80;
@@ -360,19 +367,19 @@ body.theme-moonstar {
 }
 
 .dark body.theme-moonstar {
-  --background-50: 0.18 0.082 265; --background-100: 0.22 0.088 265;
-  --background-200: 0.28 0.090 265; --background-300: 0.35 0.085 265;
-  --background-400: 0.44 0.075 265; --background-500: 0.54 0.062 265;
-  --background-600: 0.64 0.046 265; --background-700: 0.73 0.030 265;
-  --background-800: 0.83 0.016 265; --background-900: 0.91 0.007 265;
-  --background-950: 0.97 0.002 265;
+  --background-50:  0.14 0.018 265; --background-100: 0.17 0.022 265;
+  --background-200: 0.22 0.028 265; --background-300: 0.29 0.028 265;
+  --background-400: 0.40 0.024 265; --background-500: 0.52 0.020 265;
+  --background-600: 0.63 0.014 265; --background-700: 0.74 0.009 265;
+  --background-800: 0.84 0.005 265; --background-900: 0.92 0.002 265;
+  --background-950: 0.97 0.001 265;
 
-  --foreground-50: 0.19 0.075 265;  --foreground-100: 0.26 0.082 265;
-  --foreground-200: 0.34 0.085 265; --foreground-300: 0.44 0.078 265;
-  --foreground-400: 0.55 0.065 265; --foreground-500: 0.63 0.050 265;
-  --foreground-600: 0.72 0.035 265; --foreground-700: 0.80 0.022 265;
-  --foreground-800: 0.87 0.013 265; --foreground-900: 0.93 0.006 265;
-  --foreground-950: 0.97 0.002 265;
+  --foreground-50: 0.16 0.018 265; --foreground-100: 0.22 0.022 265;
+  --foreground-200: 0.30 0.026 265; --foreground-300: 0.40 0.022 265;
+  --foreground-400: 0.52 0.018 265; --foreground-500: 0.63 0.014 265;
+  --foreground-600: 0.72 0.010 265; --foreground-700: 0.80 0.007 265;
+  --foreground-800: 0.87 0.004 265; --foreground-900: 0.93 0.002 265;
+  --foreground-950: 0.97 0.001 265;
 
   --primary-50: 0.22 0.055 268; --primary-100: 0.27 0.060 268;
   --primary-500: 0.83 0.095 268; --primary-600: 0.73 0.105 268;
