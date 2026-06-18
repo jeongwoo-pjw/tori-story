@@ -672,33 +672,24 @@ export default function CreatePage() {
 
       {/* 프리미엄 구독 모달 */}
       {showPremiumModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm px-4"
-          onClick={() => setShowPremiumModal(false)}>
-          <div className="w-full max-w-sm rounded-3xl bg-background-50 border border-background-200 p-7 shadow-xl"
-            onClick={(e) => e.stopPropagation()}>
-            <div className="flex items-center justify-between mb-5">
-              <div className="flex items-center gap-2">
-                <span className="px-2 py-1 rounded-lg bg-amber-400 text-amber-900 text-xs font-label font-semibold">PRO</span>
-                <h2 className="font-heading text-lg text-foreground-950">프리미엄 기능</h2>
-              </div>
-              <button type="button" onClick={() => setShowPremiumModal(false)}
-                className="w-8 h-8 rounded-full flex items-center justify-center hover:bg-background-100 transition-colors cursor-pointer">
-                <i className="ri-close-line text-foreground-600"></i>
-              </button>
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-foreground-950/40 backdrop-blur-sm px-4">
+          <div className="w-full max-w-sm rounded-2xl bg-background-50 dark:bg-background-100 border border-background-200/70 dark:border-background-300/50 p-7 shadow-xl">
+            <div className="mb-5 text-center">
+              <span className="inline-block text-2xl mb-3">🔔</span>
+              <h2 className="text-base font-label text-foreground-950 mb-2">서비스 정식 준비중</h2>
+              <p className="text-xs text-foreground-500 leading-relaxed">
+                현재 프리미엄 결제 모듈 연동 및 카드 지불 심사가 정식 등록 절차에 따라 최종 진행중입니다!<br />
+                다음 업데이트 시 바로 오픈될 예정입니다.
+              </p>
             </div>
-            <p className="text-sm text-foreground-600 mb-2 leading-relaxed">
-              <span className="font-label text-foreground-950">보통</span>과{" "}
-              <span className="font-label text-foreground-950">길게</span> 분량은 프리미엄 구독 회원만 이용할 수 있어요.
-            </p>
-            <p className="text-sm text-foreground-500 mb-6 leading-relaxed">구독하면 더 길고 풍성한 동화를 무제한으로 만들 수 있어요! ✨</p>
             <div className="flex gap-3">
               <button type="button" onClick={() => setShowPremiumModal(false)}
-                className="flex-1 py-3 rounded-full border border-background-200 bg-background-50 hover:bg-background-100 text-foreground-700 font-label text-sm transition-colors cursor-pointer">
-                닫기
+                className="flex-1 py-3 rounded-xl bg-primary-500 hover:bg-primary-600 text-foreground-950 dark:text-foreground-950 font-label text-sm transition-colors cursor-pointer whitespace-nowrap">
+                알림 받기
               </button>
-              <button type="button" onClick={() => { setShowPremiumModal(false); navigate("/subscription"); }}
-                className="flex-1 py-3 rounded-full bg-amber-400 hover:bg-amber-500 text-amber-900 font-label text-sm transition-colors cursor-pointer">
-                구독하기
+              <button type="button" onClick={() => setShowPremiumModal(false)}
+                className="flex-1 py-3 rounded-xl bg-secondary-100 hover:bg-secondary-200 text-foreground-700 font-label text-sm transition-colors cursor-pointer whitespace-nowrap">
+                확인하기
               </button>
             </div>
           </div>

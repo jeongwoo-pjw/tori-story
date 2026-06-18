@@ -208,60 +208,26 @@ export default function BookshelfPage() {
 
       {/* Popup: Bookshelf is full */}
       {showPopup && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-foreground-950/40">
-          <div className="relative w-full max-w-md mx-4 rounded-3xl bg-foreground-800 p-6 md:p-8">
-            {/* Close button */}
-            <button
-              type="button"
-              onClick={() => setShowPopup(false)}
-              className="absolute top-4 right-4 md:top-6 md:right-6 w-8 h-8 flex items-center justify-center text-background-50 hover:text-background-200 transition-colors cursor-pointer"
-            >
-              <i className="ri-close-line w-6 h-6 flex items-center justify-center text-2xl"></i>
-            </button>
-
-            <h2 className="font-heading text-2xl text-background-50 mb-3">
-              책장이 가득 찼어요
-            </h2>
-            <p className="text-sm text-background-200 mb-6">
-              프리미엄으로 아이의 이야기를 더 오래 간직해보세요.
-            </p>
-
-            <p className="text-sm text-background-200 mb-3">
-              책장 업그레이드로 아이의 이야기가 쌓이는 중...
-            </p>
-
-            {/* Feature list */}
-            <div className="grid grid-cols-2 gap-3 mb-6">
-              <div className="rounded-xl bg-foreground-700 p-3">
-                <p className="text-sm text-background-50 font-label">
-                  삽화 애니메이션
-                </p>
-              </div>
-              <div className="rounded-xl bg-foreground-700 p-3">
-                <p className="text-sm text-background-50 font-label">
-                  다국어 번역 및 원어민 TTS
-                </p>
-              </div>
-              <div className="rounded-xl bg-foreground-700 p-3">
-                <p className="text-sm text-background-50 font-label">
-                  고퀄 텍스트 (3줄 이상 풍부한 묘사)
-                </p>
-              </div>
-              <div className="rounded-xl bg-foreground-700 p-3">
-                <p className="text-sm text-background-50 font-label">
-                  무제한 생성 & 저장
-                </p>
-              </div>
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-foreground-950/40 backdrop-blur-sm px-4">
+          <div className="w-full max-w-sm rounded-2xl bg-background-50 dark:bg-background-100 border border-background-200/70 dark:border-background-300/50 p-7 shadow-xl">
+            <div className="mb-5 text-center">
+              <span className="inline-block text-2xl mb-3">🔔</span>
+              <h2 className="text-base font-label text-foreground-950 mb-2">서비스 정식 준비중</h2>
+              <p className="text-xs text-foreground-500 leading-relaxed">
+                현재 프리미엄 결제 모듈 연동 및 카드 지불 심사가 정식 등록 절차에 따라 최종 진행중입니다!<br />
+                다음 업데이트 시 바로 오픈될 예정입니다.
+              </p>
             </div>
-
-            <button
-              type="button"
-              onClick={() => setShowPopup(false)}
-              className="w-full inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-accent-500 hover:bg-accent-600 text-foreground-950 dark:text-foreground-950 font-label text-sm transition-colors cursor-pointer whitespace-nowrap"
-            >
-              <i className="ri-vip-crown-line w-5 h-5 flex items-center justify-center text-lg text-primary-500"></i>
-              지금 시작하기
-            </button>
+            <div className="flex gap-3">
+              <button type="button" onClick={() => setShowPopup(false)}
+                className="flex-1 py-3 rounded-xl bg-primary-500 hover:bg-primary-600 text-foreground-950 dark:text-foreground-950 font-label text-sm transition-colors cursor-pointer whitespace-nowrap">
+                알림 받기
+              </button>
+              <button type="button" onClick={() => setShowPopup(false)}
+                className="flex-1 py-3 rounded-xl bg-secondary-100 hover:bg-secondary-200 text-foreground-700 font-label text-sm transition-colors cursor-pointer whitespace-nowrap">
+                확인하기
+              </button>
+            </div>
           </div>
         </div>
       )}
