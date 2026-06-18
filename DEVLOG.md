@@ -1,5 +1,92 @@
 # 토리동화 개발일지
 
+## 2026-06-19 — v0.2.0 놀이마당 전면 개편 · UI 디테일 개선
+
+### 작업 내용
+
+#### 1. 히어로 섹션 메인 카피 폰트 사이즈 조정
+
+히어로 h2의 반응형 폰트 사이즈를 조정했습니다.
+
+- 변경 전: `text-xl sm:text-2xl md:text-3xl lg:text-4xl`
+- 변경 후: `text-xl sm:text-2xl md:text-3xl lg:text-4xl xl:text-5xl`
+- 대형 뷰포트(xl 이상)에서 한 단계 더 크게 표시되도록 추가
+
+---
+
+#### 2. 동화 놀이마당(`/report`) 전면 개편
+
+##### 2-1. "토리 동화 놀이마당" 오렌지 배지 태그 삭제
+
+활동 카드 헤더에 있던 주황색 배지 태그를 제거했습니다.
+
+```tsx
+// 삭제된 코드
+<span className="inline-flex ... bg-orange-400 ...">토리 동화 놀이마당</span>
+```
+
+##### 2-2. 활동 카드 헤더 레이아웃 재구성
+
+기존에 제목·태그·저장버튼이 세로로 쌓이던 구조를 단일 가로 행으로 재구성했습니다.
+
+- 변경 전: 제목 블록 + 오렌지 태그 + 저장 버튼 (세로 스택)
+- 변경 후: `flex items-center justify-between` 한 줄
+
+```
+← 동화 목록으로  |  [동화 제목 — 가운데 정렬]  |  🌟 저장하고 홈으로
+```
+
+세 요소가 동일 선상에 위치하며, 제목은 `flex-1 text-center`로 자연스럽게 가운데 배치됩니다.
+
+##### 2-3. 낱말카드 퀴즈 → 브레이크아웃 캔버스 게임으로 교체
+
+기존 낱말카드 퀴즈 전체를 제거하고 HTML Canvas 기반 브레이크아웃(Breakout) 게임을 구현했습니다.
+
+**제거된 코드:**
+- `GAME_QUESTIONS` 상수 배열
+- `gameStep`, `gameScore`, `gamePicked`, `gameDone` 상태값
+- `handleGameAnswer`, `handleGameNext`, `resetGame` 핸들러
+
+**추가된 `BreakoutGame` 컴포넌트 주요 사양:**
+
+| 항목 | 내용 |
+|------|------|
+| 캔버스 크기 | 500 × 600 |
+| 벽돌 배치 | 5행 × 8열 = 40개, 5색 OKLCH 계열 |
+| 점수 체계 | 행별 점수 차등 (1행 50점 ~ 5행 10점) |
+| 레벨업 | 벽돌 전부 파괴 시 다음 레벨, 속도 10% 증가 (최대 12) |
+| 조작 방식 | 마우스 이동 / ← → 방향키 / 터치 드래그 |
+| 일시정지 | 스페이스바 또는 재개 버튼 |
+| 최고점수 | `localStorage("breakout-best")` 영구 저장 |
+| HUD | SCORE · BEST · LEVEL · LIVES 4분할 상단 표시 |
+| 테마 | 딥 네이비(`#131830`) 배경 + 민트 네온(`#6EFFF1`) 패들 |
+
+게임 루프는 `loopRef.current` 패턴으로 구현하여 RAF 콜백 내 stale closure 문제를 방지했습니다.
+
+```tsx
+loopRef.current = () => {
+  if (!g.current.paused) { update(); draw(); }
+  g.current.raf = requestAnimationFrame(loopRef.current);
+};
+```
+
+##### 2-4. 전체 완료 배너 — 텍스트 변경 및 위치 이동
+
+- **텍스트**: "이제 낱말 게임에 도전해봐요" → "이제 신나는 게임을 통해 머리를 식혀봐요"
+- **위치**: 헤더 섹션 하단 → 활동 카드 그리드 바로 위로 이동
+  - 이전: `헤더(제목행 + 배너)` / 이후: `헤더(제목행만)` + `[배너] + [카드 그리드]`
+
+---
+
+### 커밋 이력 (2026-06-19)
+
+| 커밋 해시 | 내용 |
+|-----------|------|
+| `11556e0` | feat(playground): replace quiz with Breakout game, restructure header layout |
+| `dc18e07` | fix(playground): update banner text and move above activity cards grid |
+
+---
+
 ## 2026-06-18 — v0.1.2 로고 폰트 교체
 
 ### 작업 내용
