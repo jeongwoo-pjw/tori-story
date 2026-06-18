@@ -344,50 +344,38 @@ export default function DashboardPage() {
                     <h2 className="font-label text-base font-semibold text-foreground-950 mb-1">감정 반응</h2>
                     <p className="text-xs font-label text-foreground-400 dark:text-foreground-600 mb-4 leading-snug">놀이마당 후 아이가 발각한 자율 정서 교감 분포도 (실시간 누계)</p>
                     {/* 버블 컨테이너 — flex-1로 남은 높이 채움 */}
-                    <div className="flex-1 relative rounded-xl bg-background-100 dark:bg-background-200 border border-background-200/60 dark:border-background-300/50 min-h-[200px] overflow-hidden">
-                      {/* 기쁨 — 큰 원, 왼쪽 세로 중앙 */}
-                      <div
-                        className="absolute animate-pulse-bubble flex flex-col items-center justify-center rounded-full"
-                        style={{
-                          width: 100, height: 100,
-                          top: "50%", left: 16,
-                          transform: "translateY(-50%)",
-                          background: "radial-gradient(circle at 35% 30%, oklch(var(--primary-300)), oklch(var(--primary-600)))",
-                          animationDelay: "0s",
-                        }}
-                      >
-                        <span className="text-white font-label text-xs leading-none mb-1">{EMOTION_DATA[0].label}</span>
-                        <span className="text-white font-label font-bold text-2xl leading-none">{EMOTION_DATA[0].value}%</span>
-                      </div>
-
-                      {/* 놀람 — 중간 원, 기쁨 하단 50% 부근 */}
-                      <div
-                        className="absolute animate-pulse-bubble flex flex-col items-center justify-center rounded-full"
-                        style={{
-                          width: 72, height: 72,
-                          top: "calc(50% + 22px)", left: 96,
-                          transform: "translateY(-50%)",
-                          background: "radial-gradient(circle at 35% 30%, oklch(var(--accent-300)), oklch(var(--accent-600)))",
-                          animationDelay: "0.5s",
-                        }}
-                      >
-                        <span className="text-white font-label text-[10px] leading-none mb-0.5">{EMOTION_DATA[1].label}</span>
-                        <span className="text-white font-label font-bold text-base leading-none">{EMOTION_DATA[1].value}%</span>
-                      </div>
-
-                      {/* 슬픔 — 작은 원, 기쁨 상단 30% 부근 */}
-                      <div
-                        className="absolute animate-pulse-bubble flex flex-col items-center justify-center rounded-full"
-                        style={{
-                          width: 62, height: 62,
-                          top: "calc(50% - 32px)", left: 160,
-                          transform: "translateY(-50%)",
-                          background: "radial-gradient(circle at 35% 30%, oklch(var(--secondary-300)), oklch(var(--secondary-600)))",
-                          animationDelay: "1s",
-                        }}
-                      >
-                        <span className="text-white font-label text-[9px] leading-none mb-0.5">{EMOTION_DATA[2].label}</span>
-                        <span className="text-white font-label font-bold text-sm leading-none">{EMOTION_DATA[2].value}%</span>
+                    <div className="flex-1 rounded-xl bg-background-100 dark:bg-background-200 border border-background-200/60 dark:border-background-300/50 min-h-[200px] flex items-center justify-center overflow-hidden">
+                      <div className="flex items-center">
+                        {/* 기쁨 */}
+                        <div style={{ transform: "translateY(0px)", marginRight: "-24px", zIndex: 3, position: "relative" }}>
+                          <div
+                            className="animate-pulse-bubble flex flex-col items-center justify-center rounded-full"
+                            style={{ width: 140, height: 140, backgroundColor: "oklch(var(--primary-500))", animationDelay: "0s" }}
+                          >
+                            <span className="text-white font-label text-xs leading-none mb-1.5">{EMOTION_DATA[0].label}</span>
+                            <span className="text-white font-label font-bold text-3xl leading-none">{EMOTION_DATA[0].value}%</span>
+                          </div>
+                        </div>
+                        {/* 놀람 */}
+                        <div style={{ transform: "translateY(22px)", marginRight: "-18px", zIndex: 2, position: "relative" }}>
+                          <div
+                            className="animate-pulse-bubble flex flex-col items-center justify-center rounded-full"
+                            style={{ width: 110, height: 110, backgroundColor: "oklch(var(--accent-500))", animationDelay: "0.5s" }}
+                          >
+                            <span className="text-white font-label text-[11px] leading-none mb-1">{EMOTION_DATA[1].label}</span>
+                            <span className="text-white font-label font-bold text-xl leading-none">{EMOTION_DATA[1].value}%</span>
+                          </div>
+                        </div>
+                        {/* 슬픔 */}
+                        <div style={{ transform: "translateY(-18px)", zIndex: 1, position: "relative" }}>
+                          <div
+                            className="animate-pulse-bubble flex flex-col items-center justify-center rounded-full"
+                            style={{ width: 90, height: 90, backgroundColor: "oklch(var(--secondary-500))", animationDelay: "1s" }}
+                          >
+                            <span className="text-white font-label text-[10px] leading-none mb-1">{EMOTION_DATA[2].label}</span>
+                            <span className="text-white font-label font-bold text-lg leading-none">{EMOTION_DATA[2].value}%</span>
+                          </div>
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -512,36 +500,36 @@ export default function DashboardPage() {
                   <p className="text-sm font-label text-foreground-700 dark:text-foreground-900 mb-4">독서 리포트</p>
                   <div className="space-y-3">
 
-                    {/* 평균 독서 시간 */}
-                    <div className="rounded-xl bg-background-100 dark:bg-background-200 p-4 flex items-center gap-4">
-                      <p className="text-xs font-label text-foreground-500 dark:text-foreground-700 flex-1">평균 독서 시간</p>
-                      <div className="relative w-[68px] h-[68px] flex-shrink-0">
-                        <svg viewBox="0 0 36 36" className="w-full h-full" style={{ transform: "rotate(-90deg)" }}>
-                          <circle cx="18" cy="18" r="15.915" fill="none" stroke="oklch(var(--background-300))" strokeWidth="2.5" />
-                          <circle cx="18" cy="18" r="15.915" fill="none" stroke="oklch(var(--accent-500))" strokeWidth="2.5" strokeLinecap="round"
-                            strokeDasharray={`${progressAnimating ? 40 : 0} ${100 - (progressAnimating ? 40 : 0)}`}
-                            style={{ transition: progressAnimating ? "stroke-dasharray 1.2s ease-out 0s" : "none" }}
-                          />
-                        </svg>
-                        <div className="absolute inset-0 flex items-center justify-center">
-                          <span className="text-sm font-label font-bold text-accent-500">{READING_REPORT.avgTime}</span>
+                    {/* 평균 독서 시간 + 저장된 동화 — 2열 나란히, 텍스트 위 / 원형 아래 */}
+                    <div className="grid grid-cols-2 gap-3">
+                      <div className="rounded-xl bg-background-100 dark:bg-background-200 p-4 flex flex-col items-center gap-3">
+                        <p className="text-xs font-label text-foreground-500 dark:text-foreground-700">평균 독서 시간</p>
+                        <div className="relative w-[72px] h-[72px] flex-shrink-0">
+                          <svg viewBox="0 0 36 36" className="w-full h-full" style={{ transform: "rotate(-90deg)" }}>
+                            <circle cx="18" cy="18" r="15.915" fill="none" stroke="oklch(var(--background-300))" strokeWidth="2.5" />
+                            <circle cx="18" cy="18" r="15.915" fill="none" stroke="oklch(var(--accent-500))" strokeWidth="2.5" strokeLinecap="round"
+                              strokeDasharray={`${progressAnimating ? 40 : 0} ${100 - (progressAnimating ? 40 : 0)}`}
+                              style={{ transition: progressAnimating ? "stroke-dasharray 1.2s ease-out 0s" : "none" }}
+                            />
+                          </svg>
+                          <div className="absolute inset-0 flex items-center justify-center">
+                            <span className="text-sm font-label font-bold text-accent-500">{READING_REPORT.avgTime}</span>
+                          </div>
                         </div>
                       </div>
-                    </div>
-
-                    {/* 저장된 동화 */}
-                    <div className="rounded-xl bg-background-100 dark:bg-background-200 p-4 flex items-center gap-4">
-                      <p className="text-xs font-label text-foreground-500 dark:text-foreground-700 flex-1">저장된 동화</p>
-                      <div className="relative w-[68px] h-[68px] flex-shrink-0">
-                        <svg viewBox="0 0 36 36" className="w-full h-full" style={{ transform: "rotate(-90deg)" }}>
-                          <circle cx="18" cy="18" r="15.915" fill="none" stroke="oklch(var(--background-300))" strokeWidth="2.5" />
-                          <circle cx="18" cy="18" r="15.915" fill="none" stroke="oklch(var(--secondary-500))" strokeWidth="2.5" strokeLinecap="round"
-                            strokeDasharray={`${progressAnimating ? 60 : 0} ${100 - (progressAnimating ? 60 : 0)}`}
-                            style={{ transition: progressAnimating ? "stroke-dasharray 1.2s ease-out 0.15s" : "none" }}
-                          />
-                        </svg>
-                        <div className="absolute inset-0 flex items-center justify-center">
-                          <span className="text-sm font-label font-bold text-secondary-500">{READING_REPORT.savedCount}편</span>
+                      <div className="rounded-xl bg-background-100 dark:bg-background-200 p-4 flex flex-col items-center gap-3">
+                        <p className="text-xs font-label text-foreground-500 dark:text-foreground-700">저장된 동화</p>
+                        <div className="relative w-[72px] h-[72px] flex-shrink-0">
+                          <svg viewBox="0 0 36 36" className="w-full h-full" style={{ transform: "rotate(-90deg)" }}>
+                            <circle cx="18" cy="18" r="15.915" fill="none" stroke="oklch(var(--background-300))" strokeWidth="2.5" />
+                            <circle cx="18" cy="18" r="15.915" fill="none" stroke="oklch(var(--secondary-500))" strokeWidth="2.5" strokeLinecap="round"
+                              strokeDasharray={`${progressAnimating ? 60 : 0} ${100 - (progressAnimating ? 60 : 0)}`}
+                              style={{ transition: progressAnimating ? "stroke-dasharray 1.2s ease-out 0.15s" : "none" }}
+                            />
+                          </svg>
+                          <div className="absolute inset-0 flex items-center justify-center">
+                            <span className="text-sm font-label font-bold text-secondary-500">{READING_REPORT.savedCount}편</span>
+                          </div>
                         </div>
                       </div>
                     </div>
