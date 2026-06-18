@@ -417,8 +417,8 @@ export default function PlaygroundPage() {
             <div className="max-w-5xl mx-auto w-full flex-1 flex flex-col">
 
               {/* 헤더: 동화목록으로 · 제목 · 저장버튼 동일 선상 */}
-              <div className="pt-6 mb-8">
-                <div className="flex items-center justify-between gap-3 mb-5">
+              <div className="pt-6 mb-5">
+                <div className="flex items-center justify-between gap-3">
                   <button
                     type="button"
                     onClick={() => setSelectedStory(null)}
@@ -438,13 +438,16 @@ export default function PlaygroundPage() {
                     🌟 저장하고 홈으로
                   </button>
                 </div>
+              </div>
 
+              {/* 활동 카드 */}
+              <div className="flex-1 flex flex-col items-center justify-center">
                 {/* 전체 완료 배너 */}
                 {allDone && (
-                  <div className="px-4 py-3 rounded-2xl bg-gradient-to-r from-emerald-50 to-primary-50 border border-emerald-200 text-sm font-label text-emerald-700 flex items-center justify-between gap-3">
+                  <div className="w-full mb-5 px-4 py-3 rounded-2xl bg-gradient-to-r from-emerald-50 to-primary-50 border border-emerald-200 text-sm font-label text-emerald-700 flex items-center justify-between gap-3">
                     <span className="flex items-center gap-2">
                       <i className="ri-trophy-line text-amber-500 text-base"></i>
-                      모든 활동을 완료했어요! 이제 낱말 게임에 도전해봐요 🎮
+                      모든 활동을 완료했어요! 이제 신나는 게임을 통해 머리를 식혀봐요 🎮
                     </span>
                     <button
                       type="button"
@@ -455,10 +458,6 @@ export default function PlaygroundPage() {
                     </button>
                   </div>
                 )}
-              </div>
-
-              {/* 활동 카드 */}
-              <div className="flex-1 flex flex-col items-center justify-center">
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-5 md:gap-7 w-full">
                   {ACTIVITIES.map((act) => {
                     const isDone = doneList.includes(act.id);
