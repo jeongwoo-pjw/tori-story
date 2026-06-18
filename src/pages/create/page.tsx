@@ -336,7 +336,7 @@ export default function CreatePage() {
             </div>
 
             {/* ── 8. 전체 콘텐츠 박스: primary 스트로크 강조 ── */}
-            <div className="rounded-3xl border-2 border-primary-300 bg-background-50 dark:bg-background-300 shadow-[0_0_0_4px_oklch(var(--primary-100)/0.5)] p-5 md:p-7">
+            <div className="rounded-3xl border-2 border-primary-300 bg-background-50 shadow-[0_0_0_4px_oklch(var(--primary-100)/0.5)] p-5 md:p-7">
 
               {/* 3·4. 박스 제목 + 설명 */}
               <div className="mb-5 pb-4 border-b border-background-200/60">
