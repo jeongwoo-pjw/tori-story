@@ -23,11 +23,17 @@ const STATUS_STYLE: Record<string, string> = {
 export default function BookshelfPage() {
   const [showPopup, setShowPopup] = useState(false);
   const [activeFilter, setActiveFilter] = useState("all");
+  const [searchQuery, setSearchQuery] = useState("");
+
+  const matchesSearch = (title: string, tag: string) =>
+    !searchQuery || title.includes(searchQuery) || tag.includes(searchQuery);
+
+  const filteredRecent = RECENT_STORIES.filter((s) => matchesSearch(s.title, s.tag));
 
   const filteredStories = ALL_STORIES.filter((story) => {
-    if (activeFilter === "all") return true;
     if (activeFilter === "deleted") return false;
-    return story.status === activeFilter;
+    const filterOk = activeFilter === "all" || story.status === activeFilter;
+    return filterOk && matchesSearch(story.title, story.tag);
   });
 
   return (
@@ -58,11 +64,29 @@ export default function BookshelfPage() {
 
             {/* Recent stories cards */}
             <div className="relative mb-10">
-              <h2 className="text-sm font-label text-foreground-700 mb-4">
-                최근에 읽은 동화
-              </h2>
+              <div className="flex items-center justify-between mb-4">
+                <h2 className="text-base font-semibold text-foreground-800">
+                  최근에 읽은 동화
+                </h2>
+                <div className="relative">
+                  <i className="ri-search-line absolute left-3 top-1/2 -translate-y-1/2 text-foreground-400 text-sm pointer-events-none"></i>
+                  <input
+                    type="text"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    placeholder="동화 검색..."
+                    className="pl-8 pr-4 py-2 rounded-xl border border-background-200 dark:border-background-300 bg-background-50 dark:bg-background-100 text-sm font-label text-foreground-950 placeholder:text-foreground-400 focus:outline-none focus:ring-2 focus:ring-primary-400 w-44 md:w-56 transition-all"
+                  />
+                </div>
+              </div>
+              {filteredRecent.length === 0 ? (
+                <div className="flex flex-col items-center justify-center py-12 text-foreground-400">
+                  <i className="ri-search-line text-3xl mb-2"></i>
+                  <p className="text-sm font-label">검색 결과가 없어요</p>
+                </div>
+              ) : (
               <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                {RECENT_STORIES.map((story) => (
+                {filteredRecent.map((story) => (
                   <div
                     key={story.id}
                     className="rounded-2xl bg-background-50 dark:bg-background-100 border border-background-200/70 dark:border-background-300/50 overflow-hidden"
@@ -99,12 +123,13 @@ export default function BookshelfPage() {
                   </div>
                 ))}
               </div>
+              )}
             </div>
 
             {/* Saved stories table */}
             <div>
               <div className="flex items-center justify-between mb-4">
-                <h2 className="text-sm font-label text-foreground-700">
+                <h2 className="text-base font-semibold text-foreground-800">
                   저장된 동화 전체
                 </h2>
               </div>

@@ -10,6 +10,7 @@ const ACTIVITIES = [
     subtitle: "이야기를 다시 떠올려요",
     path: "/report/comprehension",
     tagColor: "bg-primary-100 text-primary-900",
+    image: `${__BASE_PATH__}activity-comprehension.png`,
   },
   {
     id: "emotion",
@@ -17,6 +18,7 @@ const ACTIVITIES = [
     subtitle: "상상을 이어가요",
     path: "/report/emotion",
     tagColor: "bg-accent-100 text-accent-900",
+    image: `${__BASE_PATH__}activity-emotion.png`,
   },
   {
     id: "creative",
@@ -24,6 +26,7 @@ const ACTIVITIES = [
     subtitle: "손으로 만들어봐요",
     path: "/report/creative",
     tagColor: "bg-secondary-100 text-secondary-900",
+    image: `${__BASE_PATH__}activity-creative.png`,
   },
   {
     id: "vocabulary",
@@ -31,6 +34,7 @@ const ACTIVITIES = [
     subtitle: "오늘의 말을 배워봐요",
     path: "/report/vocabulary",
     tagColor: "bg-foreground-100 text-foreground-900",
+    image: `${__BASE_PATH__}activity-vocabulary.png`,
   },
 ];
 
@@ -80,10 +84,12 @@ export default function PlaygroundPage() {
                         : "border-background-200 dark:border-background-300 hover:border-primary-300"
                     }`}
                   >
-                    <div className="w-full aspect-[3/4] bg-secondary-100 flex items-center justify-center relative overflow-hidden">
-                      <div className="w-12 h-12 rounded-xl bg-secondary-200 flex items-center justify-center">
-                        <i className="ri-image-line w-6 h-6 flex items-center justify-center text-secondary-500 text-xl"></i>
-                      </div>
+                    <div className="w-full aspect-[3/4] bg-secondary-100 relative overflow-hidden">
+                      <img
+                        src={act.image}
+                        alt={act.title}
+                        className="w-full h-full object-cover"
+                      />
                     </div>
                     <div className="p-4 text-center">
                       <span className={`inline-block px-2 py-1 rounded-md text-xs font-label mb-2 dark:text-foreground-950 ${act.tagColor}`}>
