@@ -6,7 +6,6 @@ import FoldSidebar from "@/components/feature/FoldSidebar";
 const TABS = [
   { id: "status", label: "구독 현황" },
   { id: "compare", label: "요금제 비교" },
-  { id: "payment", label: "결제 진행" },
   { id: "features", label: "프리미엄 기능" },
   { id: "pod", label: "실물 책 주문" },
 ];
@@ -47,6 +46,7 @@ export default function SubscriptionPage() {
   const [podCover, setPodCover] = useState("무선 제본 (기본)");
   const [podPaper, setPodPaper] = useState("일반 인쇄");
   const [podQty, setPodQty] = useState(1);
+  const [showPaymentModal, setShowPaymentModal] = useState(false);
 
   const toggleBenefit = (title: string) => {
     setSelectedBenefits((prev) => {
@@ -260,7 +260,7 @@ export default function SubscriptionPage() {
                     </ul>
                     <button
                       type="button"
-                      onClick={() => setActiveTab("payment")}
+                      onClick={() => setShowPaymentModal(true)}
                       className="w-full py-3 rounded-xl bg-foreground-800 dark:bg-background-300 hover:bg-foreground-900 dark:hover:bg-background-400 text-background-50 dark:text-foreground-950 font-label text-sm transition-colors cursor-pointer whitespace-nowrap"
                     >
                       프리미엄 시작하기
@@ -732,6 +732,39 @@ export default function SubscriptionPage() {
           </div>
         </div>
       </div>
+      {/* 결제 준비중 팝업 */}
+      {showPaymentModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-foreground-950/40 backdrop-blur-sm px-4">
+          <div className="w-full max-w-sm rounded-2xl bg-background-50 border border-background-200/70 p-7 shadow-xl">
+            <div className="mb-5 text-center">
+              <span className="inline-block text-2xl mb-3">🔔</span>
+              <h2 className="text-base font-label text-foreground-950 mb-2">
+                서비스 정식 준비중
+              </h2>
+              <p className="text-xs text-foreground-500 leading-relaxed">
+                현재 프리미엄 결제 모듈 연동 및 카드 지불 심사가 정식 등록 절차에 따라 최종 진행중입니다!<br />
+                다음 업데이트 시 바로 오픈될 예정입니다.
+              </p>
+            </div>
+            <div className="flex gap-3">
+              <button
+                type="button"
+                onClick={() => setShowPaymentModal(false)}
+                className="flex-1 py-3 rounded-xl bg-primary-500 hover:bg-primary-600 text-foreground-950 dark:text-foreground-950 font-label text-sm transition-colors cursor-pointer whitespace-nowrap"
+              >
+                알림 받기
+              </button>
+              <button
+                type="button"
+                onClick={() => setShowPaymentModal(false)}
+                className="flex-1 py-3 rounded-xl bg-secondary-100 hover:bg-secondary-200 text-foreground-700 font-label text-sm transition-colors cursor-pointer whitespace-nowrap"
+              >
+                확인하기
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </main>
   );
 }

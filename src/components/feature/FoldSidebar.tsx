@@ -1,7 +1,14 @@
 import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 
-const sidebarMenus = [
+type SidebarMenuItem = {
+  icon: string;
+  label: string;
+  path?: string;
+  subItems?: { label: string; path: string }[];
+};
+
+const sidebarMenus: SidebarMenuItem[] = [
   { icon: "ri-book-open-line", label: "동화 만들기", path: "/create" },
   { icon: "ri-puzzle-line", label: "놀이마당", path: "/report" },
   { icon: "ri-book-3-line", label: "내 책장", path: "/bookshelf" },

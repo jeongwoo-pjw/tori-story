@@ -21,9 +21,24 @@ export default function SettingsPage() {
       <div className="pl-[var(--sidebar-width)] pt-14 md:pt-16 pb-12">
         <div className="px-4 md:px-8 lg:px-12">
           <div className="max-w-3xl mx-auto">
-            <h1 className="font-heading text-2xl md:text-3xl text-foreground-950 mb-8">
+            <h1 className="font-heading text-2xl md:text-3xl text-foreground-950 mb-6">
               안전 관리 설정
             </h1>
+
+            {/* 한국 콘텐츠 협회 인증 배지 */}
+            <div className="rounded-2xl border border-primary-200 bg-primary-50/40 p-4 md:p-5 mb-8 flex items-start gap-4">
+              <div className="flex-shrink-0 w-10 h-10 rounded-full bg-primary-100 flex items-center justify-center">
+                <i className="ri-shield-check-fill text-primary-500 text-xl"></i>
+              </div>
+              <div>
+                <p className="text-sm font-label text-foreground-950 mb-1">
+                  한국 콘텐츠 협회 연령별 콘텐츠 기준 준수
+                </p>
+                <p className="text-xs text-foreground-500 leading-relaxed">
+                  토리동화는 한국 콘텐츠 협회의 연령별 콘텐츠 선별 기준을 준수하여, 각 연령대에 적합한 콘텐츠만을 제공하도록 인증받았습니다.<br />아이의 발달 단계에 맞는 안전한 이야기 환경을 보장합니다.
+                </p>
+              </div>
+            </div>
 
             {/* 유해 콘텐츠 필터 */}
             <div className="rounded-2xl bg-background-50 dark:bg-background-100 border border-background-200/70 dark:border-background-300/50 p-5 md:p-6 mb-6">
@@ -53,20 +68,22 @@ export default function SettingsPage() {
                 </button>
               </div>
 
-              <div>
-                <span className="text-sm font-label text-foreground-700 mb-2 block">
-                  필터 강도
-                </span>
-                <select
-                  value={filterLevel}
-                  onChange={(e) => setFilterLevel(e.target.value)}
-                  className="w-full px-4 py-3 rounded-xl border border-background-200 dark:border-background-300 bg-background-50 dark:bg-background-200 text-sm font-label text-foreground-950 focus:outline-none focus:ring-2 focus:ring-primary-400"
-                >
-                  <option value="low">낮음 — 기본 필터만 적용</option>
-                  <option value="medium">중간 — 일부 민감 주제 제한</option>
-                  <option value="high">높음 — 모든 유해 콘텐츠 차단</option>
-                </select>
-              </div>
+              {filterEnabled && (
+                <div>
+                  <span className="text-sm font-label text-foreground-700 mb-2 block">
+                    필터 강도
+                  </span>
+                  <select
+                    value={filterLevel}
+                    onChange={(e) => setFilterLevel(e.target.value)}
+                    className="w-full px-4 py-3 rounded-xl border border-background-200 dark:border-background-300 bg-background-50 dark:bg-background-200 text-sm font-label text-foreground-950 focus:outline-none focus:ring-2 focus:ring-primary-400"
+                  >
+                    <option value="low">낮음 — 기본 필터만 적용</option>
+                    <option value="medium">중간 — 일부 민감 주제 제한</option>
+                    <option value="high">높음 — 모든 유해 콘텐츠 차단</option>
+                  </select>
+                </div>
+              )}
             </div>
 
             {/* 연령 기준 설정 */}
@@ -88,10 +105,10 @@ export default function SettingsPage() {
                     onChange={(e) => setMinAge(e.target.value)}
                     className="w-full px-4 py-3 rounded-xl border border-background-200 dark:border-background-300 bg-background-50 dark:bg-background-200 text-sm font-label text-foreground-950 focus:outline-none focus:ring-2 focus:ring-primary-400"
                   >
-                    <option value="3">3세~</option>
-                    <option value="4">4세~</option>
-                    <option value="5">5세~</option>
-                    <option value="6">6세~</option>
+                    <option value="3">3세</option>
+                    <option value="4">4세</option>
+                    <option value="5">5세</option>
+                    <option value="6">6세</option>
                   </select>
                 </div>
                 <div>
@@ -103,10 +120,10 @@ export default function SettingsPage() {
                     onChange={(e) => setMaxAge(e.target.value)}
                     className="w-full px-4 py-3 rounded-xl border border-background-200 dark:border-background-300 bg-background-50 dark:bg-background-200 text-sm font-label text-foreground-950 focus:outline-none focus:ring-2 focus:ring-primary-400"
                   >
-                    <option value="5">5세~</option>
-                    <option value="6">6세~</option>
-                    <option value="7">7세~</option>
-                    <option value="8">8세~</option>
+                    <option value="5">5세</option>
+                    <option value="6">6세</option>
+                    <option value="7">7세</option>
+                    <option value="8">8세</option>
                   </select>
                 </div>
               </div>
