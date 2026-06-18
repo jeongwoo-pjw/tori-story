@@ -2,7 +2,7 @@ export const CHILD_PROFILE = {
   name: "한담이",
   age: 6,
   interests: ["한복", "바다", "동물"],
-  recentEmotion: "호기심",
+  recentEmotion: "기쁨",
   avatar: "https://readdy.ai/api/search-image?query=Cute%20korean%20child%20character%20avatar%20illustration%20soft%20pastel%20colors%20round%20friendly%20face%20simple%20clean%20background%20children%20book%20art%20style&width=120&height=120&seq=dashboard-avatar-01&orientation=squarish",
 };
 
@@ -12,18 +12,35 @@ export const READING_HISTORY = [
     title: "토끼와 달빛 숲",
     subtitle: "최근 읽은 동화",
     readAt: "25:03 읽음",
+    emoji: "🐰",
   },
   {
     id: 2,
     title: "거북이의 도전",
     subtitle: "3번 이상 다시 읽은 동화",
     readAt: "14:03 읽음",
+    emoji: "🐢",
   },
   {
     id: 3,
     title: "반짝반짝 작은 별",
     subtitle: "독후기록에 적힌 동화",
     readAt: "14:03 읽음",
+    emoji: "⭐",
+  },
+  {
+    id: 4,
+    title: "용감한 아기 사자",
+    subtitle: "최근 읽은 동화",
+    readAt: "20:00 읽음",
+    emoji: "🦁",
+  },
+  {
+    id: 5,
+    title: "무지개 물고기",
+    subtitle: "3번 이상 다시 읽은 동화",
+    readAt: "11:30 읽음",
+    emoji: "🐟",
   },
 ];
 
