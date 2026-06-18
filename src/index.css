@@ -393,6 +393,6 @@ body.theme-moonstar {
 
 @keyframes char-to-yellow {
   0%, 10%  { color: white; }
-  30%, 70% { color: oklch(var(--accent-400)); }
+  30%, 70% { color: oklch(0.87 0.115 84); }
   90%, 100% { color: white; }
 }

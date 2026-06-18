@@ -37,7 +37,7 @@ export default function HeroSection({ isLoggedIn = false }: HeroSectionProps) {
         </p>
 
         <h2
-          className="font-body text-[4.5vw] text-white leading-tight whitespace-nowrap animate-fade-up"
+          className="font-body text-xl sm:text-2xl md:text-3xl lg:text-4xl text-white leading-tight animate-fade-up"
           style={{ animationDelay: "0.1s" }}
         >
           옛이야기처럼 오래 남을, 우리 아이만의 이야기
@@ -68,7 +68,7 @@ export default function HeroSection({ isLoggedIn = false }: HeroSectionProps) {
       <div className="relative z-10 w-full mt-8 md:mt-10 pb-16 md:pb-20">
           <div className="max-w-2xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4">
             {/* Card 1: 선택형 */}
-            <div className="relative rounded-3xl bg-background-50/60 backdrop-blur-sm border border-background-200/60 overflow-hidden flex flex-col items-center text-center hover:border-primary-300 transition-all cursor-pointer">
+            <div className="relative rounded-3xl bg-background-50/60 backdrop-blur-sm border border-background-200/60 overflow-hidden flex flex-col items-center text-center hover:border-primary-300 transition-all cursor-pointer shadow-lg">
               <img
                 src={`${__BASE_PATH__}cta-select.png`}
                 alt="선택형 동화 만들기"
@@ -76,7 +76,7 @@ export default function HeroSection({ isLoggedIn = false }: HeroSectionProps) {
               />
               <div className="flex flex-col items-center gap-3 py-4 px-5 w-full">
                 <div>
-                  <h3 className="font-heading text-base md:text-lg text-foreground-950">선택형 동화 만들기</h3>
+                  <h3 className="font-heading text-lg md:text-xl text-foreground-950">선택형 동화 만들기</h3>
                   <p className="mt-1.5 text-[11px] md:text-xs text-foreground-700 leading-relaxed">
                     주제, 주인공, 배경을 직접 골라
                     <br />
@@ -93,7 +93,7 @@ export default function HeroSection({ isLoggedIn = false }: HeroSectionProps) {
             </div>
 
             {/* Card 2: 대화형 */}
-            <div className="relative rounded-3xl bg-background-50/60 backdrop-blur-sm border border-background-200/60 overflow-hidden flex flex-col items-center text-center hover:border-accent-400 transition-all cursor-pointer">
+            <div className="relative rounded-3xl bg-background-50/60 backdrop-blur-sm border border-background-200/60 overflow-hidden flex flex-col items-center text-center hover:border-accent-400 transition-all cursor-pointer shadow-lg">
               <img
                 src={`${__BASE_PATH__}cta-chat.png`}
                 alt="대화형 동화 만들기"
@@ -101,7 +101,7 @@ export default function HeroSection({ isLoggedIn = false }: HeroSectionProps) {
               />
               <div className="flex flex-col items-center gap-3 py-4 px-5 w-full">
                 <div>
-                  <h3 className="font-heading text-base md:text-lg text-foreground-950">대화형 동화 만들기</h3>
+                  <h3 className="font-heading text-lg md:text-xl text-foreground-950">대화형 동화 만들기</h3>
                   <p className="mt-1.5 text-[11px] md:text-xs text-foreground-700 leading-relaxed">
                     아이와의 대화 속에서
                     <br />
