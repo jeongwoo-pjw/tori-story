@@ -82,7 +82,7 @@ export default function SubscriptionPage() {
                   className={`px-4 py-2 rounded-full text-xs font-label transition-colors whitespace-nowrap cursor-pointer flex-shrink-0 ${
                     tab.id === activeTab
                       ? "bg-primary-500 text-foreground-950 dark:text-foreground-950"
-                      : "bg-secondary-100 text-foreground-700 border border-secondary-200 hover:bg-secondary-200"
+                      : "bg-secondary-100 dark:bg-background-200 text-foreground-700 border border-secondary-200 dark:border-background-300 hover:bg-secondary-200 dark:hover:bg-background-300"
                   }`}
                 >
                   {tab.label}
@@ -94,7 +94,7 @@ export default function SubscriptionPage() {
             {activeTab === "status" && (
               <div className="space-y-6">
                 {/* Current plan */}
-                <div className="rounded-2xl bg-background-50 border border-background-200/70 p-5 md:p-6">
+                <div className="rounded-2xl bg-background-50 dark:bg-background-100 border border-background-200/70 dark:border-background-300/50 p-5 md:p-6">
                   <div className="flex items-center justify-between mb-4">
                     <div>
                       <span className="text-xs text-foreground-500 mb-1 block">
@@ -110,7 +110,7 @@ export default function SubscriptionPage() {
                     <Link
                       to="/subscription"
                       onClick={() => setActiveTab("compare")}
-                      className="px-4 py-2 rounded-xl bg-foreground-800 hover:bg-foreground-900 text-background-50 text-xs font-label transition-colors cursor-pointer whitespace-nowrap"
+                      className="px-4 py-2 rounded-xl bg-foreground-800 dark:bg-background-300 hover:bg-foreground-900 dark:hover:bg-background-400 text-background-50 dark:text-foreground-950 text-xs font-label transition-colors cursor-pointer whitespace-nowrap"
                     >
                       플랜 변경하기
                     </Link>
@@ -119,21 +119,21 @@ export default function SubscriptionPage() {
 
                 {/* Info cards */}
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                  <div className="rounded-2xl bg-background-50 border border-background-200/70 p-5">
+                  <div className="rounded-2xl bg-background-50 dark:bg-background-100 border border-background-200/70 dark:border-background-300/50 p-5">
                     <p className="text-xs text-foreground-500 mb-2">다음 결제일</p>
                     <p className="text-sm font-label text-foreground-950">—</p>
                     <p className="text-xs text-foreground-500 mt-2">
                       무료 플랜은 자동 결제가 없습니다.
                     </p>
                   </div>
-                  <div className="rounded-2xl bg-background-50 border border-background-200/70 p-5">
+                  <div className="rounded-2xl bg-background-50 dark:bg-background-100 border border-background-200/70 dark:border-background-300/50 p-5">
                     <p className="text-xs text-foreground-500 mb-2">정구 예정 금액</p>
                     <p className="text-sm font-label text-foreground-950">—</p>
                     <p className="text-xs text-foreground-500 mt-2">
                       프리미엄으로 업그레이드 시 확인됩니다.
                     </p>
                   </div>
-                  <div className="rounded-2xl bg-background-50 border border-background-200/70 p-5">
+                  <div className="rounded-2xl bg-background-50 dark:bg-background-100 border border-background-200/70 dark:border-background-300/50 p-5">
                     <p className="text-xs text-foreground-500 mb-2">결제 수단</p>
                     <p className="text-sm font-label text-foreground-950">
                       등록된 결제 수단 없음
@@ -150,7 +150,7 @@ export default function SubscriptionPage() {
                     프리미엄 혜택
                   </h2>
                   <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                    <div className="rounded-2xl bg-background-50 border border-background-200/70 p-5">
+                    <div className="rounded-2xl bg-background-50 dark:bg-background-100 border border-background-200/70 dark:border-background-300/50 p-5">
                       <p className="text-sm font-label text-foreground-950 mb-1">
                         무제한 동화 생성
                       </p>
@@ -158,7 +158,7 @@ export default function SubscriptionPage() {
                         월수 제한 없이 원하는 만큼 동화를 만들어보세요.
                       </p>
                     </div>
-                    <div className="rounded-2xl bg-background-50 border border-background-200/70 p-5">
+                    <div className="rounded-2xl bg-background-50 dark:bg-background-100 border border-background-200/70 dark:border-background-300/50 p-5">
                       <p className="text-sm font-label text-foreground-950 mb-1">
                         전체 테마·캐릭터 이용
                       </p>
@@ -166,7 +166,7 @@ export default function SubscriptionPage() {
                         다양한 배경과 캐릭터로 특별한 이야기를 완성하세요.
                       </p>
                     </div>
-                    <div className="rounded-2xl bg-background-50 border border-background-200/70 p-5">
+                    <div className="rounded-2xl bg-background-50 dark:bg-background-100 border border-background-200/70 dark:border-background-300/50 p-5">
                       <p className="text-sm font-label text-foreground-950 mb-1">
                         고화질 PDF 저장
                       </p>
@@ -214,7 +214,7 @@ export default function SubscriptionPage() {
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   {/* Free */}
-                  <div className="rounded-2xl bg-background-50 border border-background-200/70 p-6">
+                  <div className="rounded-2xl bg-background-50 dark:bg-background-100 border border-background-200/70 dark:border-background-300/50 p-6">
                     <span className="text-xs text-foreground-500 mb-1 block">
                       현재 플랜
                     </span>
@@ -239,7 +239,7 @@ export default function SubscriptionPage() {
                   </div>
 
                   {/* Premium */}
-                  <div className="rounded-2xl bg-background-50 border border-background-200/70 p-6">
+                  <div className="rounded-2xl bg-background-50 dark:bg-background-100 border border-background-200/70 dark:border-background-300/50 p-6">
                     <span className="text-xs text-primary-600 mb-1 block">
                       추천
                     </span>
@@ -261,7 +261,7 @@ export default function SubscriptionPage() {
                     <button
                       type="button"
                       onClick={() => setActiveTab("payment")}
-                      className="w-full py-3 rounded-xl bg-foreground-800 hover:bg-foreground-900 text-background-50 font-label text-sm transition-colors cursor-pointer whitespace-nowrap"
+                      className="w-full py-3 rounded-xl bg-foreground-800 dark:bg-background-300 hover:bg-foreground-900 dark:hover:bg-background-400 text-background-50 dark:text-foreground-950 font-label text-sm transition-colors cursor-pointer whitespace-nowrap"
                     >
                       프리미엄 시작하기
                     </button>
@@ -273,10 +273,10 @@ export default function SubscriptionPage() {
                   <h2 className="text-sm font-label text-foreground-700 mb-4">
                     플랜별 상세 혜택
                   </h2>
-                  <div className="rounded-2xl border border-background-200/70 overflow-hidden">
+                  <div className="rounded-2xl border border-background-200/70 dark:border-background-300/50 overflow-hidden">
                     <table className="w-full text-sm">
                       <thead>
-                        <tr className="bg-background-100 border-b border-background-200/70">
+                        <tr className="bg-background-100 dark:bg-background-200 border-b border-background-200/70 dark:border-background-300/50">
                           <th className="text-left py-3 px-4 text-xs font-label text-foreground-500">
                             기능
                           </th>
@@ -292,8 +292,8 @@ export default function SubscriptionPage() {
                         {PLAN_FEATURES.map((row, idx) => (
                           <tr
                             key={row.feature}
-                            className={`border-b border-background-200/70 ${
-                              idx % 2 === 0 ? "bg-background-50" : "bg-background-100"
+                            className={`border-b border-background-200/70 dark:border-background-300/50 ${
+                              idx % 2 === 0 ? "bg-background-50 dark:bg-background-100" : "bg-background-100 dark:bg-background-200"
                             }`}
                           >
                             <td className="py-3 px-4 text-foreground-950 font-label">
@@ -322,7 +322,7 @@ export default function SubscriptionPage() {
                 </h2>
 
                 {/* Payment summary */}
-                <div className="rounded-2xl bg-background-50 border border-background-200/70 p-5 md:p-6">
+                <div className="rounded-2xl bg-background-50 dark:bg-background-100 border border-background-200/70 dark:border-background-300/50 p-5 md:p-6">
                   <h3 className="text-base font-label text-foreground-950 mb-4">
                     결제 요약
                   </h3>
@@ -351,7 +351,7 @@ export default function SubscriptionPage() {
                         0원
                       </span>
                     </div>
-                    <div className="border-t border-background-200/70 pt-2 mt-2">
+                    <div className="border-t border-background-200/70 dark:border-background-300/50 pt-2 mt-2">
                       <div className="flex items-center justify-between">
                         <span className="text-sm font-label text-foreground-950">
                           최종 결제 금액
@@ -365,7 +365,7 @@ export default function SubscriptionPage() {
                 </div>
 
                 {/* Card form */}
-                <div className="rounded-2xl bg-background-50 border border-background-200/70 p-5 md:p-6">
+                <div className="rounded-2xl bg-background-50 dark:bg-background-100 border border-background-200/70 dark:border-background-300/50 p-5 md:p-6">
                   <h3 className="text-base font-label text-foreground-950 mb-4">
                     결제 수단
                   </h3>
@@ -380,7 +380,7 @@ export default function SubscriptionPage() {
                         value={cardNumber}
                         onChange={(e) => setCardNumber(e.target.value)}
                         placeholder="0000 0000 0000 0000"
-                        className="w-full px-4 py-3 rounded-xl border border-background-200 bg-background-50 text-sm font-label text-foreground-950 focus:outline-none focus:ring-2 focus:ring-primary-400"
+                        className="w-full px-4 py-3 rounded-xl border border-background-200 dark:border-background-300 bg-background-50 dark:bg-background-200 text-sm font-label text-foreground-950 focus:outline-none focus:ring-2 focus:ring-primary-400"
                       />
                     </div>
                     <div className="grid grid-cols-2 gap-4">
@@ -393,7 +393,7 @@ export default function SubscriptionPage() {
                           value={expiry}
                           onChange={(e) => setExpiry(e.target.value)}
                           placeholder="MM/YY"
-                          className="w-full px-4 py-3 rounded-xl border border-background-200 bg-background-50 text-sm font-label text-foreground-950 focus:outline-none focus:ring-2 focus:ring-primary-400"
+                          className="w-full px-4 py-3 rounded-xl border border-background-200 dark:border-background-300 bg-background-50 dark:bg-background-200 text-sm font-label text-foreground-950 focus:outline-none focus:ring-2 focus:ring-primary-400"
                         />
                       </div>
                       <div>
@@ -405,7 +405,7 @@ export default function SubscriptionPage() {
                           value={cvc}
                           onChange={(e) => setCvc(e.target.value)}
                           placeholder="CVC"
-                          className="w-full px-4 py-3 rounded-xl border border-background-200 bg-background-50 text-sm font-label text-foreground-950 focus:outline-none focus:ring-2 focus:ring-primary-400"
+                          className="w-full px-4 py-3 rounded-xl border border-background-200 dark:border-background-300 bg-background-50 dark:bg-background-200 text-sm font-label text-foreground-950 focus:outline-none focus:ring-2 focus:ring-primary-400"
                         />
                       </div>
                     </div>
@@ -417,7 +417,7 @@ export default function SubscriptionPage() {
                         type="text"
                         value={cardName}
                         onChange={(e) => setCardName(e.target.value)}
-                        className="w-full px-4 py-3 rounded-xl border border-background-200 bg-background-50 text-sm font-label text-foreground-950 focus:outline-none focus:ring-2 focus:ring-primary-400"
+                        className="w-full px-4 py-3 rounded-xl border border-background-200 dark:border-background-300 bg-background-50 dark:bg-background-200 text-sm font-label text-foreground-950 focus:outline-none focus:ring-2 focus:ring-primary-400"
                       />
                     </div>
                     <div>
@@ -428,14 +428,14 @@ export default function SubscriptionPage() {
                         type="email"
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
-                        className="w-full px-4 py-3 rounded-xl border border-background-200 bg-background-50 text-sm font-label text-foreground-950 focus:outline-none focus:ring-2 focus:ring-primary-400"
+                        className="w-full px-4 py-3 rounded-xl border border-background-200 dark:border-background-300 bg-background-50 dark:bg-background-200 text-sm font-label text-foreground-950 focus:outline-none focus:ring-2 focus:ring-primary-400"
                       />
                     </div>
                   </div>
                 </div>
 
                 {/* Terms */}
-                <div className="rounded-2xl bg-background-50 border border-background-200/70 p-5 md:p-6">
+                <div className="rounded-2xl bg-background-50 dark:bg-background-100 border border-background-200/70 dark:border-background-300/50 p-5 md:p-6">
                   <h3 className="text-base font-label text-foreground-950 mb-3">
                     결제 조건 안내
                   </h3>
@@ -456,7 +456,7 @@ export default function SubscriptionPage() {
                   <button
                     type="button"
                     onClick={() => setActiveTab("compare")}
-                    className="px-5 py-3 rounded-xl bg-secondary-100 hover:bg-secondary-200 text-foreground-700 font-label text-sm transition-colors cursor-pointer whitespace-nowrap"
+                    className="px-5 py-3 rounded-xl bg-secondary-100 dark:bg-background-200 hover:bg-secondary-200 dark:hover:bg-background-300 text-foreground-700 font-label text-sm transition-colors cursor-pointer whitespace-nowrap"
                   >
                     이전
                   </button>
@@ -477,7 +477,7 @@ export default function SubscriptionPage() {
                   프리미엄 기능 사용
                 </h2>
 
-                <div className="rounded-2xl bg-background-50 border border-background-200/70 p-5 md:p-6">
+                <div className="rounded-2xl bg-background-50 dark:bg-background-100 border border-background-200/70 dark:border-background-300/50 p-5 md:p-6">
                   <p className="text-sm font-label text-foreground-950 mb-1">
                     현재 무료 플랜을 사용 중입니다
                   </p>
@@ -488,14 +488,14 @@ export default function SubscriptionPage() {
                     <button
                       type="button"
                       onClick={() => setActiveTab("compare")}
-                      className="px-4 py-2.5 rounded-xl bg-secondary-100 hover:bg-secondary-200 text-foreground-700 font-label text-xs transition-colors cursor-pointer whitespace-nowrap"
+                      className="px-4 py-2.5 rounded-xl bg-secondary-100 dark:bg-background-200 hover:bg-secondary-200 dark:hover:bg-background-300 text-foreground-700 font-label text-xs transition-colors cursor-pointer whitespace-nowrap"
                     >
                       구독 혜택 보기
                     </button>
                     <button
                       type="button"
                       onClick={() => setActiveTab("payment")}
-                      className="px-4 py-2.5 rounded-xl bg-foreground-800 hover:bg-foreground-900 text-background-50 font-label text-xs transition-colors cursor-pointer whitespace-nowrap"
+                      className="px-4 py-2.5 rounded-xl bg-foreground-800 dark:bg-background-300 hover:bg-foreground-900 dark:hover:bg-background-400 text-background-50 dark:text-foreground-950 font-label text-xs transition-colors cursor-pointer whitespace-nowrap"
                     >
                       지금 구독하기
                     </button>
@@ -518,7 +518,7 @@ export default function SubscriptionPage() {
                           className={`w-full text-left rounded-2xl border p-5 transition-colors cursor-pointer ${
                             isSelected
                               ? "border-primary-400 bg-primary-50/30"
-                              : "border-background-200/70 bg-background-50 hover:bg-background-100"
+                              : "border-background-200/70 dark:border-background-300/50 bg-background-50 dark:bg-background-100 hover:bg-background-100 dark:hover:bg-background-200"
                           }`}
                         >
                           <p className="text-sm font-label text-foreground-950 mb-1">
@@ -537,14 +537,14 @@ export default function SubscriptionPage() {
                   <button
                     type="button"
                     onClick={() => setActiveTab("compare")}
-                    className="px-5 py-3 rounded-xl bg-secondary-100 hover:bg-secondary-200 text-foreground-700 font-label text-sm transition-colors cursor-pointer whitespace-nowrap"
+                    className="px-5 py-3 rounded-xl bg-secondary-100 dark:bg-background-200 hover:bg-secondary-200 dark:hover:bg-background-300 text-foreground-700 font-label text-sm transition-colors cursor-pointer whitespace-nowrap"
                   >
                     취소
                   </button>
                   <button
                     type="button"
                     onClick={() => setActiveTab("payment")}
-                    className="px-5 py-3 rounded-xl bg-foreground-800 hover:bg-foreground-900 text-background-50 font-label text-sm transition-colors cursor-pointer whitespace-nowrap"
+                    className="px-5 py-3 rounded-xl bg-foreground-800 dark:bg-background-300 hover:bg-foreground-900 dark:hover:bg-background-400 text-background-50 dark:text-foreground-950 font-label text-sm transition-colors cursor-pointer whitespace-nowrap"
                   >
                     구독하기
                   </button>
@@ -560,7 +560,7 @@ export default function SubscriptionPage() {
                 </h2>
 
                 {/* Info card */}
-                <div className="rounded-2xl bg-background-50 border border-background-200/70 p-5 md:p-6">
+                <div className="rounded-2xl bg-background-50 dark:bg-background-100 border border-background-200/70 dark:border-background-300/50 p-5 md:p-6">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
                       <h3 className="text-base font-label text-foreground-950 mb-2">
@@ -591,7 +591,7 @@ export default function SubscriptionPage() {
                 </div>
 
                 {/* Order options */}
-                <div className="rounded-2xl bg-background-50 border border-background-200/70 p-5 md:p-6">
+                <div className="rounded-2xl bg-background-50 dark:bg-background-100 border border-background-200/70 dark:border-background-300/50 p-5 md:p-6">
                   <h3 className="text-base font-label text-foreground-950 mb-4">
                     주문 옵션 선택
                   </h3>
@@ -604,7 +604,7 @@ export default function SubscriptionPage() {
                       <select
                         value={podStory}
                         onChange={(e) => setPodStory(e.target.value)}
-                        className="w-full px-4 py-3 rounded-xl border border-background-200 bg-background-50 text-sm font-label text-foreground-950 focus:outline-none focus:ring-2 focus:ring-primary-400"
+                        className="w-full px-4 py-3 rounded-xl border border-background-200 dark:border-background-300 bg-background-50 dark:bg-background-200 text-sm font-label text-foreground-950 focus:outline-none focus:ring-2 focus:ring-primary-400"
                       >
                         {POD_OPTIONS.stories.map((s) => (
                           <option key={s} value={s}>
@@ -621,7 +621,7 @@ export default function SubscriptionPage() {
                       <select
                         value={podCover}
                         onChange={(e) => setPodCover(e.target.value)}
-                        className="w-full px-4 py-3 rounded-xl border border-background-200 bg-background-50 text-sm font-label text-foreground-950 focus:outline-none focus:ring-2 focus:ring-primary-400"
+                        className="w-full px-4 py-3 rounded-xl border border-background-200 dark:border-background-300 bg-background-50 dark:bg-background-200 text-sm font-label text-foreground-950 focus:outline-none focus:ring-2 focus:ring-primary-400"
                       >
                         {POD_OPTIONS.covers.map((c) => (
                           <option key={c} value={c}>
@@ -638,7 +638,7 @@ export default function SubscriptionPage() {
                       <select
                         value={podPaper}
                         onChange={(e) => setPodPaper(e.target.value)}
-                        className="w-full px-4 py-3 rounded-xl border border-background-200 bg-background-50 text-sm font-label text-foreground-950 focus:outline-none focus:ring-2 focus:ring-primary-400"
+                        className="w-full px-4 py-3 rounded-xl border border-background-200 dark:border-background-300 bg-background-50 dark:bg-background-200 text-sm font-label text-foreground-950 focus:outline-none focus:ring-2 focus:ring-primary-400"
                       >
                         {POD_OPTIONS.papers.map((p) => (
                           <option key={p} value={p}>
@@ -656,7 +656,7 @@ export default function SubscriptionPage() {
                         <select
                           value={podQty}
                           onChange={(e) => setPodQty(Number(e.target.value))}
-                          className="px-4 py-3 rounded-xl border border-background-200 bg-background-50 text-sm font-label text-foreground-950 focus:outline-none focus:ring-2 focus:ring-primary-400 w-20"
+                          className="px-4 py-3 rounded-xl border border-background-200 dark:border-background-300 bg-background-50 dark:bg-background-200 text-sm font-label text-foreground-950 focus:outline-none focus:ring-2 focus:ring-primary-400 w-20"
                         >
                           {[1, 2, 3, 4, 5].map((n) => (
                             <option key={n} value={n}>
@@ -673,7 +673,7 @@ export default function SubscriptionPage() {
                 </div>
 
                 {/* Order summary */}
-                <div className="rounded-2xl bg-background-50 border border-background-200/70 p-5 md:p-6">
+                <div className="rounded-2xl bg-background-50 dark:bg-background-100 border border-background-200/70 dark:border-background-300/50 p-5 md:p-6">
                   <h3 className="text-base font-label text-foreground-950 mb-4">
                     주문 요금 요약
                   </h3>
@@ -700,7 +700,7 @@ export default function SubscriptionPage() {
                         {shipping.toLocaleString()}원
                       </span>
                     </div>
-                    <div className="border-t border-background-200/70 pt-2 mt-2">
+                    <div className="border-t border-background-200/70 dark:border-background-300/50 pt-2 mt-2">
                       <div className="flex items-center justify-between">
                         <span className="text-sm font-label text-foreground-950">
                           합계
@@ -716,7 +716,7 @@ export default function SubscriptionPage() {
                 <div className="flex items-center justify-end gap-3">
                   <button
                     type="button"
-                    className="px-5 py-3 rounded-xl bg-secondary-100 hover:bg-secondary-200 text-foreground-700 font-label text-sm transition-colors cursor-pointer whitespace-nowrap"
+                    className="px-5 py-3 rounded-xl bg-secondary-100 dark:bg-background-200 hover:bg-secondary-200 dark:hover:bg-background-300 text-foreground-700 font-label text-sm transition-colors cursor-pointer whitespace-nowrap"
                   >
                     취소
                   </button>

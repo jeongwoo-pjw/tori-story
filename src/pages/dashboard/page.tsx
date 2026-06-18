@@ -123,7 +123,7 @@ export default function DashboardPage() {
               {/* Left column */}
               <div className="flex-1 min-w-0 space-y-6">
                 {/* Learning progress graph */}
-                <div className="rounded-2xl bg-background-100 border border-background-200/70 p-5 md:p-6">
+                <div className="rounded-2xl bg-background-100 dark:bg-background-100 border border-background-200/70 dark:border-background-300/50 p-5 md:p-6">
                   <div className="flex items-start justify-between mb-1">
                     <div>
                       <span className="inline-block px-3 py-1 rounded-md bg-primary-100 text-primary-900 text-xs font-label">
@@ -137,13 +137,13 @@ export default function DashboardPage() {
                       <button
                         type="button"
                         onClick={() => setShowPeriodDropdown(!showPeriodDropdown)}
-                        className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-background-200 bg-background-50 text-xs font-label text-foreground-700 cursor-pointer hover:bg-background-100 transition-colors"
+                        className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-background-200 dark:border-background-300 bg-background-50 dark:bg-background-100 text-xs font-label text-foreground-700 cursor-pointer hover:bg-background-100 dark:hover:bg-background-200 transition-colors"
                       >
                         {selectedPeriod}
                         <i className="ri-arrow-down-s-line w-3 h-3 flex items-center justify-center text-foreground-400"></i>
                       </button>
                       {showPeriodDropdown && (
-                        <div className="absolute right-0 mt-1 w-32 rounded-xl bg-background-50 border border-background-200/70 shadow-lg z-30 p-1.5">
+                        <div className="absolute right-0 mt-1 w-32 rounded-xl bg-background-50 dark:bg-background-100 border border-background-200/70 dark:border-background-300/50 shadow-lg z-30 p-1.5">
                           {["이번 주", "지난 주", "이번 달"].map((period) => (
                             <button
                               key={period}
@@ -241,7 +241,7 @@ export default function DashboardPage() {
                 </div>
 
                 {/* Focus time settings with children cards */}
-                <div className="rounded-2xl bg-background-50 border border-background-200/70 p-5 md:p-6">
+                <div className="rounded-2xl bg-background-50 dark:bg-background-100 border border-background-200/70 dark:border-background-300/50 p-5 md:p-6">
                   <div className="mb-4">
                     <p className="text-sm font-label text-foreground-700">
                       집중 시간 설정
@@ -251,7 +251,7 @@ export default function DashboardPage() {
                   {/* Time settings row: 독서시간 + 잔여종료시간 + CTA */}
                   <div className="flex flex-col lg:flex-row gap-3 mb-4">
                     {/* 독서 시간 설정 */}
-                    <div className="flex-1 rounded-xl bg-background-100 border border-background-200/70 p-4">
+                    <div className="flex-1 rounded-xl bg-background-100 dark:bg-background-200 border border-background-200/70 dark:border-background-300/50 p-4">
                       <p className="text-xs text-foreground-500 mb-3">
                         독서 시간 설정
                       </p>
@@ -262,14 +262,14 @@ export default function DashboardPage() {
                             <button
                               type="button"
                               onClick={() => setFocusHours((h) => Math.min(h + 1, 23))}
-                              className="w-5 h-5 rounded flex items-center justify-center bg-secondary-100 hover:bg-secondary-200 cursor-pointer transition-colors"
+                              className="w-5 h-5 rounded flex items-center justify-center bg-secondary-100 dark:bg-background-300 hover:bg-secondary-200 dark:hover:bg-background-400 cursor-pointer transition-colors"
                             >
                               <i className="ri-arrow-up-s-line w-3 h-3 flex items-center justify-center text-foreground-400"></i>
                             </button>
                             <button
                               type="button"
                               onClick={() => setFocusHours((h) => Math.max(h - 1, 0))}
-                              className="w-5 h-5 rounded flex items-center justify-center bg-secondary-100 hover:bg-secondary-200 cursor-pointer transition-colors"
+                              className="w-5 h-5 rounded flex items-center justify-center bg-secondary-100 dark:bg-background-300 hover:bg-secondary-200 dark:hover:bg-background-400 cursor-pointer transition-colors"
                             >
                               <i className="ri-arrow-down-s-line w-3 h-3 flex items-center justify-center text-foreground-400"></i>
                             </button>
@@ -286,14 +286,14 @@ export default function DashboardPage() {
                             <button
                               type="button"
                               onClick={() => setFocusMinutes((m) => Math.min(m + 5, 55))}
-                              className="w-5 h-5 rounded flex items-center justify-center bg-secondary-100 hover:bg-secondary-200 cursor-pointer transition-colors"
+                              className="w-5 h-5 rounded flex items-center justify-center bg-secondary-100 dark:bg-background-300 hover:bg-secondary-200 dark:hover:bg-background-400 cursor-pointer transition-colors"
                             >
                               <i className="ri-arrow-up-s-line w-3 h-3 flex items-center justify-center text-foreground-400"></i>
                             </button>
                             <button
                               type="button"
                               onClick={() => setFocusMinutes((m) => Math.max(m - 5, 0))}
-                              className="w-5 h-5 rounded flex items-center justify-center bg-secondary-100 hover:bg-secondary-200 cursor-pointer transition-colors"
+                              className="w-5 h-5 rounded flex items-center justify-center bg-secondary-100 dark:bg-background-300 hover:bg-secondary-200 dark:hover:bg-background-400 cursor-pointer transition-colors"
                             >
                               <i className="ri-arrow-down-s-line w-3 h-3 flex items-center justify-center text-foreground-400"></i>
                             </button>
@@ -307,7 +307,7 @@ export default function DashboardPage() {
                     </div>
 
                     {/* 잔여 종료 시간 */}
-                    <div className="flex-1 rounded-xl bg-background-100 border border-background-200/70 p-4">
+                    <div className="flex-1 rounded-xl bg-background-100 dark:bg-background-200 border border-background-200/70 dark:border-background-300/50 p-4">
                       <p className="text-xs text-foreground-500 mb-2">
                         잔여 종료 시간
                       </p>
@@ -374,7 +374,7 @@ export default function DashboardPage() {
                         className={`rounded-xl border p-4 cursor-pointer transition-colors ${
                           selectedChild === child.name
                             ? "border-primary-400 bg-primary-50/30"
-                            : "border-background-200/70 bg-background-50 hover:bg-background-100"
+                            : "border-background-200/70 dark:border-background-300/50 bg-background-50 dark:bg-background-100 hover:bg-background-100 dark:hover:bg-background-200"
                         }`}
                         onClick={() => setSelectedChild(child.name)}
                         onKeyDown={() => {}}
@@ -396,10 +396,10 @@ export default function DashboardPage() {
                             </p>
                           </div>
                           <div className="flex gap-2">
-                            <div className="px-3 py-1.5 rounded-lg bg-secondary-100 text-xs font-label text-foreground-700">
+                            <div className="px-3 py-1.5 rounded-lg bg-secondary-100 dark:bg-background-300 text-xs font-label text-foreground-700 dark:text-foreground-950">
                               {child.favGenre}
                             </div>
-                            <div className="px-3 py-1.5 rounded-lg bg-secondary-100 text-xs font-label text-foreground-700">
+                            <div className="px-3 py-1.5 rounded-lg bg-secondary-100 dark:bg-background-300 text-xs font-label text-foreground-700 dark:text-foreground-950">
                               {child.lastRead}편
                             </div>
                           </div>
@@ -412,12 +412,12 @@ export default function DashboardPage() {
                 {/* Bottom row: Recommendations + Emotion chart */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   {/* Recommendations */}
-                  <div className="rounded-2xl bg-background-50 border border-background-200/70 p-5 md:p-6">
+                  <div className="rounded-2xl bg-background-50 dark:bg-background-100 border border-background-200/70 dark:border-background-300/50 p-5 md:p-6">
                     <div className="space-y-3">
                       {RECOMMENDATIONS.map((rec) => (
                         <div
                           key={rec.id}
-                          className="flex items-center gap-3 rounded-xl bg-background-100 p-3"
+                          className="flex items-center gap-3 rounded-xl bg-background-100 dark:bg-background-200 p-3"
                         >
                           <div className="w-8 h-8 rounded-lg bg-secondary-100 flex items-center justify-center flex-shrink-0">
                             <i className={`${rec.icon} w-4 h-4 flex items-center justify-center ${rec.color}`}></i>
@@ -431,7 +431,7 @@ export default function DashboardPage() {
                   </div>
 
                   {/* Emotion pie chart */}
-                  <div className="rounded-2xl bg-background-50 border border-background-200/70 p-5 md:p-6">
+                  <div className="rounded-2xl bg-background-50 dark:bg-background-100 border border-background-200/70 dark:border-background-300/50 p-5 md:p-6">
                     <div className="flex items-center justify-center">
                       <div className="relative w-32 h-32">
                         <svg viewBox="0 0 36 36" className="w-full h-full">
@@ -506,7 +506,7 @@ export default function DashboardPage() {
                         setShowChildDropdown(false);
                         setShowUserDropdown(false);
                       }}
-                      className="relative w-10 h-10 rounded-full flex items-center justify-center border border-background-200 bg-background-50 hover:bg-primary-50 transition-colors cursor-pointer"
+                      className="relative w-10 h-10 rounded-full flex items-center justify-center border border-background-200 dark:border-background-300 bg-background-50 dark:bg-background-100 hover:bg-primary-50 dark:hover:bg-background-200 transition-colors cursor-pointer"
                     >
                       <i className="ri-notification-3-line w-5 h-5 flex items-center justify-center text-foreground-500"></i>
                       {NOTIFICATIONS.some((n) => n.unread) && (
@@ -514,7 +514,7 @@ export default function DashboardPage() {
                       )}
                     </button>
                     {showNotif && (
-                      <div className="absolute left-0 mt-2 w-72 rounded-2xl bg-background-50 border border-background-200/70 shadow-lg z-30 p-4">
+                      <div className="absolute left-0 mt-2 w-72 rounded-2xl bg-background-50 dark:bg-background-100 border border-background-200/70 dark:border-background-300/50 shadow-lg z-30 p-4">
                         <p className="text-sm font-label text-foreground-700 mb-3">
                           알림
                         </p>
@@ -545,7 +545,7 @@ export default function DashboardPage() {
                         setShowNotif(false);
                         setShowUserDropdown(false);
                       }}
-                      className="flex items-center gap-1.5 rounded-full border border-background-200 bg-background-50 px-3 py-1.5 hover:bg-primary-50 transition-colors cursor-pointer"
+                      className="flex items-center gap-1.5 rounded-full border border-background-200 dark:border-background-300 bg-background-50 dark:bg-background-100 px-3 py-1.5 hover:bg-primary-50 dark:hover:bg-background-200 transition-colors cursor-pointer"
                     >
                       <i className="ri-user-smile-line w-4 h-4 flex items-center justify-center text-foreground-400"></i>
                       <span className="text-xs font-label text-foreground-700 whitespace-nowrap">
@@ -554,7 +554,7 @@ export default function DashboardPage() {
                       <i className="ri-arrow-down-s-line w-3 h-3 flex items-center justify-center text-foreground-400"></i>
                     </button>
                     {showChildDropdown && (
-                      <div className="absolute right-0 mt-2 w-48 rounded-2xl bg-background-50 border border-background-200/70 shadow-lg z-30 p-2">
+                      <div className="absolute right-0 mt-2 w-48 rounded-2xl bg-background-50 dark:bg-background-100 border border-background-200/70 dark:border-background-300/50 shadow-lg z-30 p-2">
                         <button
                           type="button"
                           className="w-full flex items-center gap-2 px-3 py-2.5 rounded-xl text-sm font-label text-foreground-800 hover:bg-primary-50 transition-colors cursor-pointer whitespace-nowrap"
@@ -586,7 +586,7 @@ export default function DashboardPage() {
                         setShowNotif(false);
                         setShowChildDropdown(false);
                       }}
-                      className="flex items-center gap-1.5 rounded-full border border-background-200 bg-background-50 px-3 py-1.5 hover:bg-primary-50 transition-colors cursor-pointer"
+                      className="flex items-center gap-1.5 rounded-full border border-background-200 dark:border-background-300 bg-background-50 dark:bg-background-100 px-3 py-1.5 hover:bg-primary-50 dark:hover:bg-background-200 transition-colors cursor-pointer"
                     >
                       <i className="ri-mail-line w-4 h-4 flex items-center justify-center text-foreground-400"></i>
                       <span className="text-xs font-label text-foreground-700 hidden sm:inline">
@@ -595,7 +595,7 @@ export default function DashboardPage() {
                       <i className="ri-arrow-down-s-line w-3 h-3 flex items-center justify-center text-foreground-400"></i>
                     </button>
                     {showUserDropdown && (
-                      <div className="absolute right-0 mt-2 w-48 rounded-2xl bg-background-50 border border-background-200/70 shadow-lg z-30 p-2">
+                      <div className="absolute right-0 mt-2 w-48 rounded-2xl bg-background-50 dark:bg-background-100 border border-background-200/70 dark:border-background-300/50 shadow-lg z-30 p-2">
                         <Link
                           to="/profile/edit"
                           className="block px-3 py-2.5 rounded-xl text-sm font-label text-foreground-800 hover:bg-primary-50 transition-colors whitespace-nowrap cursor-pointer"
@@ -620,7 +620,7 @@ export default function DashboardPage() {
                 </div>
 
                 {/* Child profile */}
-                <div className="rounded-2xl bg-background-50 border border-background-200/70 p-5 md:p-6">
+                <div className="rounded-2xl bg-background-50 dark:bg-background-100 border border-background-200/70 dark:border-background-300/50 p-5 md:p-6">
                   <div className="flex flex-col items-center mb-4">
                     <div className="w-20 h-20 rounded-full overflow-hidden bg-secondary-100 mb-3 relative">
                       <img
@@ -670,7 +670,7 @@ export default function DashboardPage() {
                 </div>
 
                 {/* Reading history */}
-                <div className="rounded-2xl bg-background-50 border border-background-200/70 p-5 md:p-6">
+                <div className="rounded-2xl bg-background-50 dark:bg-background-100 border border-background-200/70 dark:border-background-300/50 p-5 md:p-6">
                   <p className="text-sm font-label text-foreground-700 mb-4">
                     읽은 동화 히스토리
                   </p>
@@ -678,7 +678,7 @@ export default function DashboardPage() {
                     {READING_HISTORY.map((story) => (
                       <div
                         key={story.id}
-                        className="flex items-center gap-3 rounded-xl bg-background-100 p-3"
+                        className="flex items-center gap-3 rounded-xl bg-background-100 dark:bg-background-200 p-3"
                       >
                         <div className="w-10 h-10 rounded-xl bg-secondary-200 flex items-center justify-center flex-shrink-0">
                           <i className="ri-book-line w-5 h-5 flex items-center justify-center text-secondary-500"></i>
@@ -700,13 +700,13 @@ export default function DashboardPage() {
                 </div>
 
                 {/* Reading report */}
-                <div className="rounded-2xl bg-background-50 border border-background-200/70 p-5 md:p-6">
+                <div className="rounded-2xl bg-background-50 dark:bg-background-100 border border-background-200/70 dark:border-background-300/50 p-5 md:p-6">
                   <p className="text-sm font-label text-foreground-700 mb-4">
                     독서 리포트
                   </p>
                   <div className="grid grid-cols-3 gap-3">
                     {/* Monthly read */}
-                    <div className="flex flex-col items-center rounded-xl bg-background-100 p-4">
+                    <div className="flex flex-col items-center rounded-xl bg-background-100 dark:bg-background-200 p-4">
                       <p className="text-xs text-foreground-500 mb-2 text-center">
                         이번달 독서량
                       </p>
@@ -719,7 +719,7 @@ export default function DashboardPage() {
                     </div>
 
                     {/* Avg time */}
-                    <div className="flex flex-col items-center rounded-xl bg-background-100 p-4">
+                    <div className="flex flex-col items-center rounded-xl bg-background-100 dark:bg-background-200 p-4">
                       <p className="text-xs text-foreground-500 mb-2 text-center">
                         평균 독서 시간
                       </p>
@@ -731,7 +731,7 @@ export default function DashboardPage() {
                     </div>
 
                     {/* Saved count */}
-                    <div className="flex flex-col items-center rounded-xl bg-background-100 p-4">
+                    <div className="flex flex-col items-center rounded-xl bg-background-100 dark:bg-background-200 p-4">
                       <p className="text-xs text-foreground-500 mb-2 text-center">
                         저장된 동화
                       </p>

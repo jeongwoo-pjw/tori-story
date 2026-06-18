@@ -38,7 +38,7 @@ export default function PlaygroundPage() {
   const [selected, setSelected] = useState(0);
 
   return (
-    <main className="min-h-screen bg-background-100 text-foreground-950 flex flex-col">
+    <main className="min-h-screen bg-background-100 dark:bg-background-50 text-foreground-950 flex flex-col">
       <TopNav isLoggedIn={true} />
       <FoldSidebar />
 
@@ -49,7 +49,7 @@ export default function PlaygroundPage() {
             <div className="flex items-center justify-between mb-8 pt-4">
               <Link
                 to="/viewer"
-                className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full border border-background-200 bg-background-50 hover:bg-primary-50 text-sm font-label text-foreground-700 transition-colors whitespace-nowrap cursor-pointer"
+                className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full border border-background-200 dark:border-background-300 bg-background-50 dark:bg-background-100 hover:bg-primary-50 dark:hover:bg-background-200 text-sm font-label text-foreground-700 transition-colors whitespace-nowrap cursor-pointer"
               >
                 <i className="ri-arrow-left-line w-4 h-4 flex items-center justify-center"></i>
                 다시 읽기
@@ -77,7 +77,7 @@ export default function PlaygroundPage() {
                     className={`group flex flex-col rounded-2xl border overflow-hidden transition-all cursor-pointer ${
                       idx === selected
                         ? "border-primary-500 ring-2 ring-primary-300"
-                        : "border-background-200 hover:border-primary-300"
+                        : "border-background-200 dark:border-background-300 hover:border-primary-300"
                     }`}
                   >
                     <div className="w-full aspect-[3/4] bg-secondary-100 flex items-center justify-center relative overflow-hidden">
@@ -86,7 +86,7 @@ export default function PlaygroundPage() {
                       </div>
                     </div>
                     <div className="p-4 text-center">
-                      <span className={`inline-block px-2 py-1 rounded-md text-xs font-label mb-2 ${act.tagColor}`}>
+                      <span className={`inline-block px-2 py-1 rounded-md text-xs font-label mb-2 dark:text-foreground-950 ${act.tagColor}`}>
                         {act.title}
                       </span>
                       <p className="text-xs text-foreground-500">
@@ -102,14 +102,14 @@ export default function PlaygroundPage() {
                 <button
                   type="button"
                   onClick={() => setSelected((prev) => Math.max(prev - 1, 0))}
-                  className="w-10 h-10 rounded-full flex items-center justify-center bg-background-50 border border-background-200 hover:bg-primary-50 transition-colors cursor-pointer"
+                  className="w-10 h-10 rounded-full flex items-center justify-center bg-background-50 dark:bg-background-200 border border-background-200 dark:border-background-300 hover:bg-primary-50 dark:hover:bg-background-300 transition-colors cursor-pointer"
                 >
                   <i className="ri-arrow-left-s-line w-5 h-5 flex items-center justify-center text-foreground-500"></i>
                 </button>
                 <button
                   type="button"
                   onClick={() => setSelected((prev) => Math.min(prev + 1, ACTIVITIES.length - 1))}
-                  className="w-10 h-10 rounded-full flex items-center justify-center bg-background-50 border border-background-200 hover:bg-primary-50 transition-colors cursor-pointer"
+                  className="w-10 h-10 rounded-full flex items-center justify-center bg-background-50 dark:bg-background-200 border border-background-200 dark:border-background-300 hover:bg-primary-50 dark:hover:bg-background-300 transition-colors cursor-pointer"
                 >
                   <i className="ri-arrow-right-s-line w-5 h-5 flex items-center justify-center text-foreground-500"></i>
                 </button>

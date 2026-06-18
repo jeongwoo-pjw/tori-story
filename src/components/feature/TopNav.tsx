@@ -40,7 +40,7 @@ function ParentLockPopup({
 
   return (
     <div className="fixed inset-0 z-[100] bg-black/50 backdrop-blur-sm flex items-center justify-center p-4">
-      <div className="w-full max-w-sm rounded-3xl bg-background-50 border border-background-200 p-7 text-center relative">
+      <div className="w-full max-w-sm rounded-3xl bg-background-50 dark:bg-background-100 border border-background-200 dark:border-background-300 p-7 text-center relative">
         {/* Close button */}
         <button
           type="button"
@@ -52,14 +52,14 @@ function ParentLockPopup({
         </button>
         <div className="flex items-center justify-center gap-2 mb-4">
           <span className="w-8 h-8 rounded-full bg-accent-200 flex items-center justify-center">
-            <i className="ri-lock-unlock-line text-accent-900 w-4 h-4 flex items-center justify-center"></i>
+            <i className="ri-lock-unlock-line text-accent-900 dark:text-foreground-950 w-4 h-4 flex items-center justify-center"></i>
           </span>
           <h3 className="font-heading text-lg text-foreground-950">부모 모드 작동중</h3>
         </div>
         <p className="text-sm text-foreground-700 mb-4">
           안전한 내 아이 모아보기로 진입하려면 아래 수식을 풀어주세요.
         </p>
-        <div className="text-center py-4 bg-accent-100 rounded-2xl mb-4">
+        <div className="text-center py-4 bg-accent-100 dark:bg-accent-500/20 rounded-2xl mb-4">
           <p className="font-heading text-2xl text-foreground-950">
             {a} + {b} = ?
           </p>
@@ -74,7 +74,7 @@ function ParentLockPopup({
           onKeyDown={(e) => {
             if (e.key === "Enter") check();
           }}
-          className="w-full px-4 py-3 rounded-xl border border-background-200 bg-background-50 text-center font-heading text-xl text-foreground-950 focus:outline-none focus:ring-2 focus:ring-accent-400 mb-3"
+          className="w-full px-4 py-3 rounded-xl border border-background-200 dark:border-background-300 bg-background-50 dark:bg-background-200 text-center font-heading text-xl text-foreground-950 focus:outline-none focus:ring-2 focus:ring-accent-400 mb-3"
           placeholder="정답 입력"
         />
         {error && (
@@ -158,15 +158,28 @@ export default function TopNav({ isLoggedIn = false, onToggleLogin }: TopNavProp
       <header
         className={`fixed top-0 inset-x-0 z-50 transition-all duration-300 ${
           scrolled
-            ? "bg-background-50/90 backdrop-blur-md border-b border-background-200/70"
-            : "bg-primary-50/80 backdrop-blur-sm border-b border-primary-100/40"
+            ? "bg-background-50/95 backdrop-blur-md border-b border-background-200/60"
+            : "bg-background-50/80 backdrop-blur-sm border-b border-background-200/30"
         }`}
       >
         <div className="w-full px-4 md:px-6 lg:px-10">
           <div className="flex items-center justify-between h-14 md:h-16">
             {/* Logo with icon — indented by sidebar width */}
             <Link to="/" className="flex items-center gap-2 md:gap-2.5 cursor-pointer pl-[var(--sidebar-width)]">
-              <img src={`${__BASE_PATH__}favicon.svg`} alt="토리동화 로고" className="w-7 h-7 flex-shrink-0" />
+              <div
+                className="w-7 h-7 flex-shrink-0 bg-primary-500"
+                style={{
+                  maskImage: `url(${__BASE_PATH__}favicon.svg)`,
+                  WebkitMaskImage: `url(${__BASE_PATH__}favicon.svg)`,
+                  maskRepeat: "no-repeat",
+                  WebkitMaskRepeat: "no-repeat",
+                  maskSize: "contain",
+                  WebkitMaskSize: "contain",
+                  maskPosition: "center",
+                  WebkitMaskPosition: "center",
+                }}
+                aria-hidden="true"
+              />
               <span className="font-logo text-xl md:text-2xl text-primary-500 whitespace-nowrap">
                 토리동화
               </span>

@@ -15,8 +15,8 @@ const STATUS_LABEL: Record<string, string> = {
 };
 
 const STATUS_STYLE: Record<string, string> = {
-  reading: "bg-secondary-100 text-secondary-900",
-  completed: "bg-primary-100 text-primary-900",
+  reading: "bg-secondary-100 text-secondary-900 dark:text-foreground-950",
+  completed: "bg-primary-100 text-primary-900 dark:text-foreground-950",
   deleted: "bg-foreground-100 text-foreground-900",
 };
 
@@ -56,7 +56,7 @@ export default function BookshelfPage() {
               <button
                 type="button"
                 onClick={() => setShowPopup(true)}
-                className="px-4 py-2 rounded-full text-xs font-label border border-accent-300 bg-accent-100 text-accent-900 hover:bg-accent-200 transition-colors cursor-pointer whitespace-nowrap"
+                className="px-4 py-2 rounded-full text-xs font-label border border-accent-300 bg-accent-100 text-accent-900 dark:text-foreground-950 hover:bg-accent-200 transition-colors cursor-pointer whitespace-nowrap"
               >
                 프리미엄 보기
               </button>
@@ -72,7 +72,7 @@ export default function BookshelfPage() {
                   {RECENT_STORIES.map((story) => (
                     <div
                       key={story.id}
-                      className="rounded-2xl bg-background-50 border border-background-200/70 overflow-hidden"
+                      className="rounded-2xl bg-background-50 dark:bg-background-100 border border-background-200/70 dark:border-background-300/50 overflow-hidden"
                     >
                       <div className="w-full aspect-[16/10] relative overflow-hidden bg-secondary-100">
                         <img
@@ -131,8 +131,8 @@ export default function BookshelfPage() {
                     onClick={() => setActiveFilter(filter.id)}
                     className={`px-3 py-1.5 rounded-full text-xs font-label transition-colors cursor-pointer whitespace-nowrap ${
                       filter.id === activeFilter
-                        ? "bg-foreground-800 text-background-50"
-                        : "bg-secondary-100 text-foreground-700 border border-secondary-200 hover:bg-secondary-200"
+                        ? "bg-foreground-800 dark:bg-background-300 text-background-50 dark:text-foreground-950"
+                        : "bg-secondary-100 dark:bg-background-200 text-foreground-700 border border-secondary-200 dark:border-background-300 hover:bg-secondary-200 dark:hover:bg-background-300"
                     }`}
                   >
                     {filter.label}
@@ -141,11 +141,11 @@ export default function BookshelfPage() {
               </div>
 
               {/* Table */}
-              <div className="rounded-2xl border border-background-200/70 overflow-hidden">
+              <div className="rounded-2xl border border-background-200/70 dark:border-background-300/50 overflow-hidden">
                 <div className="overflow-x-auto">
                   <table className="w-full text-sm">
                     <thead>
-                      <tr className="bg-background-100 border-b border-background-200/70">
+                      <tr className="bg-background-100 dark:bg-background-200 border-b border-background-200/70 dark:border-background-300/50">
                         <th className="text-left py-3 px-4 text-xs font-label text-foreground-500">
                           동화 제목
                         </th>
@@ -167,8 +167,8 @@ export default function BookshelfPage() {
                       {displayStories.map((story, idx) => (
                         <tr
                           key={story.id}
-                          className={`border-b border-background-200/70 ${
-                            idx % 2 === 0 ? "bg-background-50" : "bg-background-100"
+                          className={`border-b border-background-200/70 dark:border-background-300/50 ${
+                            idx % 2 === 0 ? "bg-background-50 dark:bg-background-100" : "bg-background-100 dark:bg-background-200"
                           }`}
                         >
                           <td className="py-3 px-4 text-foreground-950 font-label">

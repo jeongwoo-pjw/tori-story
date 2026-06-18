@@ -62,7 +62,6 @@ export default function HeroSection({ isLoggedIn = false }: HeroSectionProps) {
         <div className="max-w-2xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4">
           {/* Card 1: 선택형 */}
           <div className="relative rounded-3xl bg-background-50/60 backdrop-blur-sm border border-background-200/60 overflow-hidden py-4 md:py-5 px-0 flex flex-col items-center text-center gap-3 hover:border-primary-300 transition-all cursor-pointer">
-            <div className="absolute top-0 inset-x-0 h-1.5 rounded-t-3xl bg-primary-400"></div>
             <div className="w-12 h-12 rounded-xl bg-primary-100 flex items-center justify-center relative overflow-hidden">
               <span className="absolute top-1.5 left-2 w-2 h-2 rounded-full bg-accent-400"></span>
               <span className="absolute top-3 right-2.5 w-1.5 h-1.5 rounded-full bg-secondary-500"></span>
@@ -88,7 +87,6 @@ export default function HeroSection({ isLoggedIn = false }: HeroSectionProps) {
 
           {/* Card 2: 대화형 */}
           <div className="relative rounded-3xl bg-background-50/60 backdrop-blur-sm border border-background-200/60 overflow-hidden py-4 md:py-5 px-0 flex flex-col items-center text-center gap-3 hover:border-accent-400 transition-all cursor-pointer">
-            <div className="absolute top-0 inset-x-0 h-1.5 rounded-t-3xl bg-accent-400"></div>
             <div className="w-12 h-12 rounded-2xl bg-accent-100 flex items-center justify-center relative">
               <span className="absolute bottom-1 left-1.5 px-1.5 py-0.5 rounded-md rounded-bl-sm bg-background-50 border border-accent-200">
                 <span className="block w-5 h-0.5 rounded-full bg-accent-300 mb-0.5"></span>

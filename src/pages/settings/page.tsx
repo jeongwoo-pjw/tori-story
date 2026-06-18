@@ -26,7 +26,7 @@ export default function SettingsPage() {
             </h1>
 
             {/* 유해 콘텐츠 필터 */}
-            <div className="rounded-2xl bg-background-50 border border-background-200/70 p-5 md:p-6 mb-6">
+            <div className="rounded-2xl bg-background-50 dark:bg-background-100 border border-background-200/70 dark:border-background-300/50 p-5 md:p-6 mb-6">
               <h2 className="text-base font-label text-foreground-950 mb-2">
                 유해 콘텐츠 필터
               </h2>
@@ -42,11 +42,11 @@ export default function SettingsPage() {
                   type="button"
                   onClick={() => setFilterEnabled(!filterEnabled)}
                   className={`relative w-11 h-6 rounded-full transition-colors cursor-pointer ${
-                    filterEnabled ? "bg-primary-500" : "bg-secondary-300"
+                    filterEnabled ? "bg-primary-500" : "bg-secondary-300 dark:bg-background-400"
                   }`}
                 >
                   <span
-                    className={`absolute top-0.5 left-0.5 w-5 h-5 rounded-full bg-background-50 shadow-md transition-transform ${
+                    className={`absolute top-0.5 left-0.5 w-5 h-5 rounded-full bg-background-50 dark:bg-background-300 shadow-md transition-transform ${
                       filterEnabled ? "translate-x-5" : "translate-x-0"
                     }`}
                   ></span>
@@ -60,7 +60,7 @@ export default function SettingsPage() {
                 <select
                   value={filterLevel}
                   onChange={(e) => setFilterLevel(e.target.value)}
-                  className="w-full px-4 py-3 rounded-xl border border-background-200 bg-background-50 text-sm font-label text-foreground-950 focus:outline-none focus:ring-2 focus:ring-primary-400"
+                  className="w-full px-4 py-3 rounded-xl border border-background-200 dark:border-background-300 bg-background-50 dark:bg-background-200 text-sm font-label text-foreground-950 focus:outline-none focus:ring-2 focus:ring-primary-400"
                 >
                   <option value="low">낮음 — 기본 필터만 적용</option>
                   <option value="medium">중간 — 일부 민감 주제 제한</option>
@@ -70,7 +70,7 @@ export default function SettingsPage() {
             </div>
 
             {/* 연령 기준 설정 */}
-            <div className="rounded-2xl bg-background-50 border border-background-200/70 p-5 md:p-6 mb-6">
+            <div className="rounded-2xl bg-background-50 dark:bg-background-100 border border-background-200/70 dark:border-background-300/50 p-5 md:p-6 mb-6">
               <h2 className="text-base font-label text-foreground-950 mb-2">
                 연령 기준 설정
               </h2>
@@ -86,7 +86,7 @@ export default function SettingsPage() {
                   <select
                     value={minAge}
                     onChange={(e) => setMinAge(e.target.value)}
-                    className="w-full px-4 py-3 rounded-xl border border-background-200 bg-background-50 text-sm font-label text-foreground-950 focus:outline-none focus:ring-2 focus:ring-primary-400"
+                    className="w-full px-4 py-3 rounded-xl border border-background-200 dark:border-background-300 bg-background-50 dark:bg-background-200 text-sm font-label text-foreground-950 focus:outline-none focus:ring-2 focus:ring-primary-400"
                   >
                     <option value="3">3세~</option>
                     <option value="4">4세~</option>
@@ -101,7 +101,7 @@ export default function SettingsPage() {
                   <select
                     value={maxAge}
                     onChange={(e) => setMaxAge(e.target.value)}
-                    className="w-full px-4 py-3 rounded-xl border border-background-200 bg-background-50 text-sm font-label text-foreground-950 focus:outline-none focus:ring-2 focus:ring-primary-400"
+                    className="w-full px-4 py-3 rounded-xl border border-background-200 dark:border-background-300 bg-background-50 dark:bg-background-200 text-sm font-label text-foreground-950 focus:outline-none focus:ring-2 focus:ring-primary-400"
                   >
                     <option value="5">5세~</option>
                     <option value="6">6세~</option>
@@ -113,7 +113,7 @@ export default function SettingsPage() {
             </div>
 
             {/* 부모 승인 게이트 */}
-            <div className="rounded-2xl bg-background-50 border border-background-200/70 p-5 md:p-6 mb-6">
+            <div className="rounded-2xl bg-background-50 dark:bg-background-100 border border-background-200/70 dark:border-background-300/50 p-5 md:p-6 mb-6">
               <h2 className="text-base font-label text-foreground-950 mb-2">
                 부모 승인 게이트
               </h2>
@@ -130,11 +130,11 @@ export default function SettingsPage() {
                     type="button"
                     onClick={() => setStoryApproval(!storyApproval)}
                     className={`relative w-11 h-6 rounded-full transition-colors cursor-pointer ${
-                      storyApproval ? "bg-primary-500" : "bg-secondary-300"
+                      storyApproval ? "bg-primary-500" : "bg-secondary-300 dark:bg-background-400"
                     }`}
                   >
                     <span
-                      className={`absolute top-0.5 left-0.5 w-5 h-5 rounded-full bg-background-50 shadow-md transition-transform ${
+                      className={`absolute top-0.5 left-0.5 w-5 h-5 rounded-full bg-background-50 dark:bg-background-300 shadow-md transition-transform ${
                         storyApproval ? "translate-x-5" : "translate-x-0"
                       }`}
                     ></span>
@@ -148,11 +148,11 @@ export default function SettingsPage() {
                     type="button"
                     onClick={() => setContentApproval(!contentApproval)}
                     className={`relative w-11 h-6 rounded-full transition-colors cursor-pointer ${
-                      contentApproval ? "bg-primary-500" : "bg-secondary-300"
+                      contentApproval ? "bg-primary-500" : "bg-secondary-300 dark:bg-background-400"
                     }`}
                   >
                     <span
-                      className={`absolute top-0.5 left-0.5 w-5 h-5 rounded-full bg-background-50 shadow-md transition-transform ${
+                      className={`absolute top-0.5 left-0.5 w-5 h-5 rounded-full bg-background-50 dark:bg-background-300 shadow-md transition-transform ${
                         contentApproval ? "translate-x-5" : "translate-x-0"
                       }`}
                     ></span>
@@ -167,7 +167,7 @@ export default function SettingsPage() {
                 <select
                   value={approvalMethod}
                   onChange={(e) => setApprovalMethod(e.target.value)}
-                  className="w-full px-4 py-3 rounded-xl border border-background-200 bg-background-50 text-sm font-label text-foreground-950 focus:outline-none focus:ring-2 focus:ring-primary-400"
+                  className="w-full px-4 py-3 rounded-xl border border-background-200 dark:border-background-300 bg-background-50 dark:bg-background-200 text-sm font-label text-foreground-950 focus:outline-none focus:ring-2 focus:ring-primary-400"
                 >
                   <option value="in-app">앱 내 알림</option>
                   <option value="email">이메일</option>
@@ -177,7 +177,7 @@ export default function SettingsPage() {
             </div>
 
             {/* 이용 시간 제한 */}
-            <div className="rounded-2xl bg-background-50 border border-background-200/70 p-5 md:p-6">
+            <div className="rounded-2xl bg-background-50 dark:bg-background-100 border border-background-200/70 dark:border-background-300/50 p-5 md:p-6">
               <h2 className="text-base font-label text-foreground-950 mb-2">
                 이용 시간 제한
               </h2>
@@ -193,11 +193,11 @@ export default function SettingsPage() {
                   type="button"
                   onClick={() => setTimeLimit(!timeLimit)}
                   className={`relative w-11 h-6 rounded-full transition-colors cursor-pointer ${
-                    timeLimit ? "bg-primary-500" : "bg-secondary-300"
+                    timeLimit ? "bg-primary-500" : "bg-secondary-300 dark:bg-background-400"
                   }`}
                 >
                   <span
-                    className={`absolute top-0.5 left-0.5 w-5 h-5 rounded-full bg-background-50 shadow-md transition-transform ${
+                    className={`absolute top-0.5 left-0.5 w-5 h-5 rounded-full bg-background-50 dark:bg-background-300 shadow-md transition-transform ${
                       timeLimit ? "translate-x-5" : "translate-x-0"
                     }`}
                   ></span>
@@ -212,7 +212,7 @@ export default function SettingsPage() {
                   <button
                     type="button"
                     onClick={() => setDailyTime(Math.max(10, dailyTime - 10))}
-                    className="w-10 h-10 rounded-xl bg-secondary-100 hover:bg-secondary-200 flex items-center justify-center cursor-pointer"
+                    className="w-10 h-10 rounded-xl bg-secondary-100 dark:bg-background-200 hover:bg-secondary-200 dark:hover:bg-background-300 flex items-center justify-center cursor-pointer"
                   >
                     <i className="ri-subtract-line w-4 h-4 flex items-center justify-center text-foreground-500"></i>
                   </button>
@@ -222,7 +222,7 @@ export default function SettingsPage() {
                   <button
                     type="button"
                     onClick={() => setDailyTime(Math.min(180, dailyTime + 10))}
-                    className="w-10 h-10 rounded-xl bg-secondary-100 hover:bg-secondary-200 flex items-center justify-center cursor-pointer"
+                    className="w-10 h-10 rounded-xl bg-secondary-100 dark:bg-background-200 hover:bg-secondary-200 dark:hover:bg-background-300 flex items-center justify-center cursor-pointer"
                   >
                     <i className="ri-add-line w-4 h-4 flex items-center justify-center text-foreground-500"></i>
                   </button>
@@ -238,7 +238,7 @@ export default function SettingsPage() {
                   {["월", "화", "수", "목", "금", "토", "일"].map((day) => (
                     <div
                       key={day}
-                      className="rounded-xl bg-background-100 border border-background-200/70 p-3 text-center"
+                      className="rounded-xl bg-background-100 dark:bg-background-200 border border-background-200/70 dark:border-background-300/50 p-3 text-center"
                     >
                       <span className="text-xs font-label text-foreground-700 block mb-1">
                         {day}
