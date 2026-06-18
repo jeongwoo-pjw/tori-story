@@ -103,9 +103,16 @@ export default function TopNav({ isLoggedIn = false, onToggleLogin }: TopNavProp
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [lang, setLang] = useState<"KO" | "EN">("KO");
-  const [themeIdx, setThemeIdx] = useState(0);
+  const [themeIdx, setThemeIdx] = useState(() => {
+    try {
+      const s = parseInt(localStorage.getItem("tori-theme") || "0", 10);
+      return isNaN(s) ? 0 : Math.min(s, themes.length - 1);
+    } catch { return 0; }
+  });
   const [themePickOpen, setThemePickOpen] = useState(false);
-  const [darkMode, setDarkMode] = useState(false);
+  const [darkMode, setDarkMode] = useState(() => {
+    try { return localStorage.getItem("tori-dark") === "true"; } catch { return false; }
+  });
   const [childOpen, setChildOpen] = useState(false);
   const [selectedChild, setSelectedChild] = useState(children[0]);
   const [parentLockOpen, setParentLockOpen] = useState(false);
@@ -117,11 +124,24 @@ export default function TopNav({ isLoggedIn = false, onToggleLogin }: TopNavProp
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  // Dark mode
+  // Apply stored theme on mount
+  useEffect(() => {
+    const body = document.body;
+    themes.forEach((t) => body.classList.remove(t.className));
+    body.classList.add(themes[themeIdx].className);
+  }, []);
+
+  // Dark mode — sync to DOM and persist
   useEffect(() => {
     if (darkMode) document.documentElement.classList.add("dark");
     else document.documentElement.classList.remove("dark");
   }, [darkMode]);
+
+  const toggleDark = () => {
+    const next = !darkMode;
+    setDarkMode(next);
+    try { localStorage.setItem("tori-dark", String(next)); } catch {}
+  };
 
   // Theme apply
   const applyTheme = (idx: number) => {
@@ -129,6 +149,7 @@ export default function TopNav({ isLoggedIn = false, onToggleLogin }: TopNavProp
     const body = document.body;
     themes.forEach((t) => body.classList.remove(t.className));
     body.classList.add(themes[idx].className);
+    try { localStorage.setItem("tori-theme", String(idx)); } catch {}
     setThemePickOpen(false);
   };
 
@@ -204,7 +225,7 @@ export default function TopNav({ isLoggedIn = false, onToggleLogin }: TopNavProp
               {/* Dark mode — icon only */}
               <button
                 type="button"
-                onClick={() => setDarkMode((v) => !v)}
+                onClick={toggleDark}
                 className={`flex items-center justify-center w-9 h-9 rounded-lg transition-colors cursor-pointer ${
                   darkMode
                     ? "bg-foreground-800 text-background-50"
@@ -377,7 +398,7 @@ export default function TopNav({ isLoggedIn = false, onToggleLogin }: TopNavProp
                   {/* Dark mode — icon only */}
                   <button
                     type="button"
-                    onClick={() => setDarkMode((v) => !v)}
+                    onClick={toggleDark}
                     className={`flex items-center justify-center w-9 h-9 rounded-lg border transition-colors cursor-pointer ${
                       darkMode
                         ? "bg-foreground-800 border-foreground-700 text-background-50"
