@@ -268,6 +268,7 @@ export default function CreateSelectPage() {
   const [customTopic, setCustomTopic] = useState("");
   const [customTopicOpen, setCustomTopicOpen] = useState(false);
   const [koreanMotifs, setKoreanMotifs] = useState<string[]>([]);
+  const [motifOpen, setMotifOpen] = useState(true);
   const [artStyle, setArtStyle] = useState("watercolor");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -343,44 +344,58 @@ export default function CreateSelectPage() {
               />
 
               {/* Korean motif section */}
-              <div className="rounded-2xl bg-primary-50/30 border-2 border-primary-500 ring-2 ring-primary-200/60 p-5 md:p-6">
-                <div className="flex items-center gap-2 mb-1">
-                  <span className="w-7 h-7 rounded-full bg-secondary-100 flex items-center justify-center">
-                    <i className="ri-landscape-line text-secondary-700 w-4 h-4 flex items-center justify-center text-sm"></i>
-                  </span>
-                  <h3 className="font-heading text-base md:text-lg text-foreground-950">토리동화 시그니처 한국형 모티브</h3>
-                  <span className="ml-1 px-2 py-0.5 rounded-full bg-background-100 border border-background-200 text-xs text-foreground-500 font-label">
-                    선택사항
-                  </span>
+              <div className="rounded-2xl bg-primary-50/20 border-2 border-primary-500 ring-2 ring-primary-400/40 p-5 md:p-6">
+                <div className="flex items-center justify-between mb-3">
+                  <div className="flex items-center gap-2">
+                    <span className="w-7 h-7 rounded-full bg-primary-100 flex items-center justify-center">
+                      <i className="ri-landscape-line text-primary-700 w-4 h-4 flex items-center justify-center text-sm"></i>
+                    </span>
+                    <h3 className="font-heading text-base md:text-lg text-foreground-950">토리동화 시그니처 한국형 모티브</h3>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => setMotifOpen(!motifOpen)}
+                    className="flex items-center gap-1.5 px-4 py-2 rounded-full border border-primary-400/50 text-primary-600 font-label text-sm hover:bg-primary-50 transition-colors cursor-pointer whitespace-nowrap"
+                  >
+                    {motifOpen ? "접기" : "펼치기"}
+                    {motifOpen
+                      ? <i className="ri-arrow-up-s-line w-4 h-4 flex items-center justify-center"></i>
+                      : <i className="ri-arrow-down-s-line w-4 h-4 flex items-center justify-center"></i>
+                    }
+                  </button>
                 </div>
-                <p className="text-xs text-foreground-500 mb-4 ml-9">
-                  한옥, 전통 한복, 도깨비 주머니, 탈춤, 풍성한 정원 등 원하는 모티프를 자유롭게 다중 선택해보세요!
-                </p>
-                <div className="flex flex-wrap gap-2">
-                  {KOREAN_MOTIF_CHIPS.map((chip) => {
-                    const active = koreanMotifs.includes(chip);
-                    return (
-                      <button
-                        key={chip}
-                        type="button"
-                        onClick={() => {
-                          if (active) {
-                            setKoreanMotifs(koreanMotifs.filter((m) => m !== chip));
-                          } else {
-                            setKoreanMotifs([...koreanMotifs, chip]);
-                          }
-                        }}
-                        className={`px-4 py-2 rounded-full text-sm font-label transition-colors cursor-pointer whitespace-nowrap ${
-                          active
-                            ? "bg-secondary-500 text-foreground-950 dark:text-foreground-950"
-                            : "bg-secondary-100 text-foreground-700 border border-secondary-200 hover:border-secondary-400 hover:bg-secondary-50"
-                        }`}
-                      >
-                        {chip}
-                      </button>
-                    );
-                  })}
-                </div>
+                {motifOpen && (
+                  <>
+                    <p className="text-xs text-foreground-500 mb-4 ml-9">
+                      한옥, 전통 한복, 도깨비 주머니, 탈춤, 풍성한 정원 등 원하는 모티프를 자유롭게 다중 선택해보세요!
+                    </p>
+                    <div className="flex flex-wrap gap-2">
+                      {KOREAN_MOTIF_CHIPS.map((chip) => {
+                        const active = koreanMotifs.includes(chip);
+                        return (
+                          <button
+                            key={chip}
+                            type="button"
+                            onClick={() => {
+                              if (active) {
+                                setKoreanMotifs(koreanMotifs.filter((m) => m !== chip));
+                              } else {
+                                setKoreanMotifs([...koreanMotifs, chip]);
+                              }
+                            }}
+                            className={`px-4 py-2 rounded-full text-sm font-label transition-colors cursor-pointer whitespace-nowrap ${
+                              active
+                                ? "bg-primary-500 text-foreground-950 dark:text-foreground-950"
+                                : "bg-primary-100/60 text-foreground-700 border border-primary-200 hover:border-primary-400 hover:bg-primary-100"
+                            }`}
+                          >
+                            {chip}
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </>
+                )}
               </div>
 
               <ArtStyleSection selected={artStyle} setSelected={setArtStyle} />

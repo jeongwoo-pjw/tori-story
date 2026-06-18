@@ -26,9 +26,9 @@ const GENDER_OPTIONS = [
 ];
 
 const LENGTH_CARDS = [
-  { id: "short", label: "짧음", pages: "5~6페이지", isPro: false },
-  { id: "normal", label: "보통", pages: "8~14페이지", isPro: true },
-  { id: "long", label: "길게", pages: "15~20페이지", isPro: true },
+  { id: "short", label: "짧음", pages: "5~6페이지", isPro: false, desc: "잠자리 직전, 가볍고 알찬 집중 독서 분량" },
+  { id: "normal", label: "보통", pages: "8~14페이지", isPro: true, desc: "다채로운 낱말공부와 풍성한 대화형 퀴즈까지 여유롭게 소화하는 표준 분량" },
+  { id: "long", label: "길게", pages: "15~20페이지", isPro: true, desc: "아이와 풍성한 스토리를 만들고 교감할 수 있는 긴 분량" },
 ];
 
 const KOREAN_MOTIF_CHIPS = [
@@ -79,6 +79,7 @@ export default function CreateChatPage() {
   const [artStyleDesc, setArtStyleDesc] = useState("");
   const [length, setLength] = useState("short");
   const [koreanMotifs, setKoreanMotifs] = useState<string[]>([]);
+  const [motifOpen, setMotifOpen] = useState(true);
   const [showPremiumModal, setShowPremiumModal] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -430,9 +431,7 @@ export default function CreateChatPage() {
               <div className="space-y-5">
                 {/* Length cards */}
                 <div className="rounded-2xl bg-background-50 border border-background-200/70 p-5 md:p-6">
-                  <label className="block text-sm font-label text-foreground-700 mb-4">
-                    동화의 분량을 선택해 주세요.
-                  </label>
+                  <p className="text-sm font-heading text-foreground-950 mb-4">동화 분량</p>
                   <div className="grid grid-cols-3 gap-3">
                     {LENGTH_CARDS.map((card) => {
                       const active = length === card.id;
@@ -447,28 +446,36 @@ export default function CreateChatPage() {
                               setLength(card.id);
                             }
                           }}
-                          className={`relative flex flex-col items-center justify-center gap-1 py-5 px-3 rounded-2xl border transition-all cursor-pointer ${
+                          className={`relative flex flex-col items-start gap-2 py-4 px-4 rounded-2xl border transition-all cursor-pointer text-left ${
                             active
                               ? "border-primary-500 bg-primary-50 ring-2 ring-primary-300"
                               : "border-background-200 bg-background-50 hover:border-primary-300 hover:bg-primary-50/40"
                           }`}
                         >
+                          {/* Top-right: check (active free) or PRO badge */}
+                          {!card.isPro && active && (
+                            <span className="absolute top-2.5 right-3 w-5 h-5 rounded-full bg-primary-500 flex items-center justify-center">
+                              <i className="ri-check-line text-background-50 text-xs"></i>
+                            </span>
+                          )}
                           {card.isPro && (
-                            <span className="absolute top-2 right-2 px-1.5 py-0.5 rounded-md bg-amber-400 text-amber-900 text-[10px] font-label font-semibold leading-none">
+                            <span className="absolute top-2.5 right-3 px-1.5 py-0.5 rounded-md bg-amber-400 text-amber-900 text-[10px] font-label font-semibold leading-none">
                               PRO
                             </span>
                           )}
-                          <span className="font-heading text-base md:text-lg text-foreground-950">
-                            {card.label}
-                          </span>
-                          <span className="text-xs text-foreground-500 whitespace-nowrap">
-                            {card.pages}
-                          </span>
-                          {active && (
-                            <span className="absolute bottom-2 right-2 w-5 h-5 rounded-full bg-primary-500 flex items-center justify-center">
-                              <i className="ri-check-line text-background-50 text-xs flex items-center justify-center"></i>
+                          {/* Row 1: label + pages */}
+                          <div className="flex items-center gap-2 pr-8 flex-wrap">
+                            <span className="font-heading text-base md:text-lg text-foreground-950">
+                              {card.label}
                             </span>
-                          )}
+                            <span className="text-xs text-foreground-500 whitespace-nowrap">
+                              {card.pages}
+                            </span>
+                          </div>
+                          {/* Description */}
+                          <p className="text-xs text-foreground-500 leading-relaxed">
+                            {card.desc}
+                          </p>
                         </button>
                       );
                     })}
@@ -476,44 +483,58 @@ export default function CreateChatPage() {
                 </div>
 
                 {/* Korean motif section */}
-                <div className="rounded-2xl bg-primary-50/30 border-2 border-primary-500 ring-2 ring-primary-200/60 p-5 md:p-6">
-                  <div className="flex items-center gap-2 mb-1">
-                    <span className="w-7 h-7 rounded-full bg-secondary-100 flex items-center justify-center">
-                      <i className="ri-landscape-line text-secondary-700 w-4 h-4 flex items-center justify-center text-sm"></i>
-                    </span>
-                    <h3 className="font-heading text-base md:text-lg text-foreground-950">토리동화 시그니처 한국형 모티브</h3>
-                    <span className="ml-1 px-2 py-0.5 rounded-full bg-background-100 border border-background-200 text-xs text-foreground-500 font-label">
-                      선택사항
-                    </span>
+                <div className="rounded-2xl bg-primary-50/20 border-2 border-primary-500 ring-2 ring-primary-400/40 p-5 md:p-6">
+                  <div className="flex items-center justify-between mb-3">
+                    <div className="flex items-center gap-2">
+                      <span className="w-7 h-7 rounded-full bg-primary-100 flex items-center justify-center">
+                        <i className="ri-landscape-line text-primary-700 w-4 h-4 flex items-center justify-center text-sm"></i>
+                      </span>
+                      <h3 className="font-heading text-base md:text-lg text-foreground-950">토리동화 시그니처 한국형 모티브</h3>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => setMotifOpen(!motifOpen)}
+                      className="flex items-center gap-1.5 px-4 py-2 rounded-full border border-primary-400/50 text-primary-600 font-label text-sm hover:bg-primary-50 transition-colors cursor-pointer whitespace-nowrap"
+                    >
+                      {motifOpen ? "접기" : "펼치기"}
+                      {motifOpen
+                        ? <i className="ri-arrow-up-s-line w-4 h-4 flex items-center justify-center"></i>
+                        : <i className="ri-arrow-down-s-line w-4 h-4 flex items-center justify-center"></i>
+                      }
+                    </button>
                   </div>
-                  <p className="text-xs text-foreground-500 mb-4 ml-9">
-                    한옥, 전통 한복, 도깨비 주머니, 탈춤, 풍성한 정원 등 원하는 모티프를 자유롭게 다중 선택해보세요!
-                  </p>
-                  <div className="flex flex-wrap gap-2">
-                    {KOREAN_MOTIF_CHIPS.map((chip) => {
-                      const active = koreanMotifs.includes(chip);
-                      return (
-                        <button
-                          key={chip}
-                          type="button"
-                          onClick={() => {
-                            if (active) {
-                              setKoreanMotifs(koreanMotifs.filter((m) => m !== chip));
-                            } else {
-                              setKoreanMotifs([...koreanMotifs, chip]);
-                            }
-                          }}
-                          className={`px-4 py-2 rounded-full text-sm font-label transition-colors cursor-pointer whitespace-nowrap ${
-                            active
-                              ? "bg-secondary-500 text-foreground-950 dark:text-foreground-950"
-                              : "bg-secondary-100 text-foreground-700 border border-secondary-200 hover:border-secondary-400 hover:bg-secondary-50"
-                          }`}
-                        >
-                          {chip}
-                        </button>
-                      );
-                    })}
-                  </div>
+                  {motifOpen && (
+                    <>
+                      <p className="text-xs text-foreground-500 mb-4 ml-9">
+                        한옥, 전통 한복, 도깨비 주머니, 탈춤, 풍성한 정원 등 원하는 모티프를 자유롭게 다중 선택해보세요!
+                      </p>
+                      <div className="flex flex-wrap gap-2">
+                        {KOREAN_MOTIF_CHIPS.map((chip) => {
+                          const active = koreanMotifs.includes(chip);
+                          return (
+                            <button
+                              key={chip}
+                              type="button"
+                              onClick={() => {
+                                if (active) {
+                                  setKoreanMotifs(koreanMotifs.filter((m) => m !== chip));
+                                } else {
+                                  setKoreanMotifs([...koreanMotifs, chip]);
+                                }
+                              }}
+                              className={`px-4 py-2 rounded-full text-sm font-label transition-colors cursor-pointer whitespace-nowrap ${
+                                active
+                                  ? "bg-primary-500 text-foreground-950 dark:text-foreground-950"
+                                  : "bg-primary-100/60 text-foreground-700 border border-primary-200 hover:border-primary-400 hover:bg-primary-100"
+                              }`}
+                            >
+                              {chip}
+                            </button>
+                          );
+                        })}
+                      </div>
+                    </>
+                  )}
                 </div>
 
                 {/* Bottom nav */}
