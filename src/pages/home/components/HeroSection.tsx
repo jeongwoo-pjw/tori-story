@@ -37,7 +37,7 @@ export default function HeroSection({ isLoggedIn = false }: HeroSectionProps) {
         </p>
 
         <h2
-          className="font-heading text-2xl md:text-4xl lg:text-5xl text-white leading-tight max-w-3xl mx-auto animate-fade-up"
+          className="font-heading text-[4.5vw] text-white leading-tight whitespace-nowrap animate-fade-up"
           style={{ animationDelay: "0.1s" }}
         >
           옛이야기처럼 오래 남을, 우리 아이만의 이야기
