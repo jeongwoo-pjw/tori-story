@@ -33,7 +33,7 @@ export default function HeroSection({ isLoggedIn = false }: HeroSectionProps) {
           className="font-heading text-xl md:text-3xl lg:text-4xl text-white leading-tight max-w-3xl mx-auto animate-fade-up"
           style={{ animationDelay: "0.1s" }}
         >
-          호롱빛이 머무는 곳, 우리 아이만의 이야기
+          옛이야기처럼 오래 남을, 우리 아이만의 이야기
         </h2>
 
         <p
