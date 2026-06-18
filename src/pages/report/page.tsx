@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import TopNav from "@/components/feature/TopNav";
 import FoldSidebar from "@/components/feature/FoldSidebar";
 import { RECENT_STORIES } from "@/mocks/bookshelf";
@@ -6,34 +6,10 @@ import { RECENT_STORIES } from "@/mocks/bookshelf";
 /* ── 상수 ─────────────────────────────────────────────── */
 
 const ACTIVITIES = [
-  {
-    id: "comprehension",
-    title: "이해력 활동",
-    subtitle: "이야기를 다시 떠올려요",
-    tagColor: "bg-primary-100 text-primary-900",
-    image: `${__BASE_PATH__}activity-comprehension.png`,
-  },
-  {
-    id: "emotion",
-    title: "감정탐색",
-    subtitle: "감정을 느끼고 표현해요",
-    tagColor: "bg-accent-100 text-accent-900",
-    image: `${__BASE_PATH__}activity-emotion.png`,
-  },
-  {
-    id: "creative",
-    title: "창의력 활동",
-    subtitle: "손으로 만들어봐요",
-    tagColor: "bg-secondary-100 text-secondary-900",
-    image: `${__BASE_PATH__}activity-creative.png`,
-  },
-  {
-    id: "vocabulary",
-    title: "어휘활동",
-    subtitle: "오늘의 말을 배워봐요",
-    tagColor: "bg-foreground-100 text-foreground-900",
-    image: `${__BASE_PATH__}activity-vocabulary.png`,
-  },
+  { id: "comprehension", title: "이해력 활동", subtitle: "이야기를 다시 떠올려요", tagColor: "bg-primary-100 text-primary-900", image: `${__BASE_PATH__}activity-comprehension.png` },
+  { id: "emotion", title: "감정탐색", subtitle: "감정을 느끼고 표현해요", tagColor: "bg-accent-100 text-accent-900", image: `${__BASE_PATH__}activity-emotion.png` },
+  { id: "creative", title: "창의력 활동", subtitle: "손으로 만들어봐요", tagColor: "bg-secondary-100 text-secondary-900", image: `${__BASE_PATH__}activity-creative.png` },
+  { id: "vocabulary", title: "어휘활동", subtitle: "오늘의 말을 배워봐요", tagColor: "bg-foreground-100 text-foreground-900", image: `${__BASE_PATH__}activity-vocabulary.png` },
 ];
 
 const STORY_DESCRIPTIONS: Record<string, string> = {
@@ -51,54 +27,222 @@ type ActivityContent =
   | { type: "choice"; intro: string; question: string; options: string[] };
 
 const ACTIVITY_CONTENT: Record<string, ActivityContent> = {
-  comprehension: {
-    type: "text",
-    intro: "동화 속 이야기를 얼마나 잘 이해했는지 확인해봐요!",
-    question: "주인공이 이야기 속에서 가장 어려웠던 순간은 언제였나요? 자유롭게 적어보세요.",
-    placeholder: "주인공의 마음을 상상하며 적어보세요...",
-  },
-  emotion: {
-    type: "emotion",
-    intro: "이야기를 읽으며 느낀 감정을 탐색해봐요!",
-    question: "이 이야기를 읽고 어떤 감정이 가장 크게 느껴졌나요?",
-    options: ["😊 기쁨", "😢 슬픔", "😮 놀람", "😰 걱정", "😌 평온", "🥰 따뜻함"],
-  },
-  creative: {
-    type: "text",
-    intro: "상상력을 마음껏 발휘해봐요!",
-    question: "이야기의 결말을 나만의 방식으로 바꿔본다면 어떻게 될까요?",
-    placeholder: "어떤 결말이면 좋을지 상상해서 적어보세요...",
-  },
-  vocabulary: {
-    type: "choice",
-    intro: "오늘 동화에서 배운 낱말을 기억해봐요!",
-    question: "다음 중 주인공이 가장 많이 보여준 모습과 어울리는 낱말을 골라보세요.",
-    options: ["🦁 용기", "🤝 우정", "⭐ 지혜", "🌱 노력"],
-  },
+  comprehension: { type: "text", intro: "동화 속 이야기를 얼마나 잘 이해했는지 확인해봐요!", question: "주인공이 이야기 속에서 가장 어려웠던 순간은 언제였나요? 자유롭게 적어보세요.", placeholder: "주인공의 마음을 상상하며 적어보세요..." },
+  emotion: { type: "emotion", intro: "이야기를 읽으며 느낀 감정을 탐색해봐요!", question: "이 이야기를 읽고 어떤 감정이 가장 크게 느껴졌나요?", options: ["😊 기쁨", "😢 슬픔", "😮 놀람", "😰 걱정", "😌 평온", "🥰 따뜻함"] },
+  creative: { type: "text", intro: "상상력을 마음껏 발휘해봐요!", question: "이야기의 결말을 나만의 방식으로 바꿔본다면 어떻게 될까요?", placeholder: "어떤 결말이면 좋을지 상상해서 적어보세요..." },
+  vocabulary: { type: "choice", intro: "오늘 동화에서 배운 낱말을 기억해봐요!", question: "다음 중 주인공이 가장 많이 보여준 모습과 어울리는 낱말을 골라보세요.", options: ["🦁 용기", "🤝 우정", "⭐ 지혜", "🌱 노력"] },
 };
 
-const GAME_QUESTIONS = [
-  {
-    definition: "어려운 일도 두려워하지 않고 씩씩하게 해내는 마음",
-    options: ["용기", "나태", "걱정", "슬픔"],
-    correct: "용기",
-  },
-  {
-    definition: "친구 사이의 따뜻하고 진실된 마음",
-    options: ["경쟁", "우정", "외로움", "미움"],
-    correct: "우정",
-  },
-  {
-    definition: "사물의 이치를 빨리 깨닫고 올바르게 처리하는 능력",
-    options: ["욕심", "게으름", "지혜", "거짓"],
-    correct: "지혜",
-  },
-  {
-    definition: "위험을 무릅쓰고 어떤 일을 하거나 어떤 곳을 탐험하는 것",
-    options: ["모험", "안전", "휴식", "포기"],
-    correct: "모험",
-  },
-];
+/* ── 브레이크아웃 게임 ──────────────────────────────────── */
+
+type Brick = { x: number; y: number; color: string; alive: boolean; points: number };
+
+function BreakoutGame({ onExit }: { onExit: () => void }) {
+  const cvs = useRef<HTMLCanvasElement>(null);
+  const g = useRef({
+    paddleX: 205, ballX: 250, ballY: 550, bvx: 3, bvy: -4,
+    bricks: [] as Brick[],
+    score: 0, lives: 3, level: 1, best: 0,
+    running: false, paused: false,
+    mouseX: null as number | null,
+    keys: { left: false, right: false },
+    raf: 0,
+  });
+  const [overlay, setOverlay] = useState({ show: true, title: "BREAKOUT", sub: "마우스나 방향키로 패들을 조작하세요", btn: "게임 시작" });
+  const [hud, setHud] = useState({ score: 0, best: 0, level: 1, lives: "♥♥♥" });
+
+  const W = 500, H = 600, PW = 90, PH = 12, BR = 7;
+  const COLS = ["#ff6b6b", "#ffd93d", "#6efff1", "#a78bfa", "#5eead4"];
+
+  const buildBricks = () => {
+    g.current.bricks = [];
+    for (let r = 0; r < 5; r++)
+      for (let c = 0; c < 8; c++)
+        g.current.bricks.push({ x: 18 + c * 60, y: 60 + r * 24, color: COLS[r % 5], alive: true, points: (5 - r) * 10 });
+  };
+
+  const draw = () => {
+    const canvas = cvs.current; if (!canvas) return;
+    const ctx = canvas.getContext("2d"); if (!ctx) return;
+    const s = g.current;
+    ctx.fillStyle = "#131830"; ctx.fillRect(0, 0, W, H);
+    s.bricks.forEach(b => {
+      if (!b.alive) return;
+      ctx.fillStyle = b.color; ctx.beginPath();
+      (ctx as any).roundRect(b.x, b.y, 56, 20, 4); ctx.fill();
+    });
+    ctx.fillStyle = "#6efff1"; ctx.beginPath();
+    (ctx as any).roundRect(s.paddleX, H - 30, PW, PH, 6); ctx.fill();
+    ctx.fillStyle = "#eef0fa"; ctx.beginPath();
+    ctx.arc(s.ballX, s.ballY, BR, 0, Math.PI * 2); ctx.fill();
+  };
+
+  const loopRef = useRef<FrameRequestCallback>(() => {});
+
+  const gameOver = () => {
+    const s = g.current; s.running = false; cancelAnimationFrame(s.raf);
+    setOverlay({ show: true, title: "게임 오버", sub: `점수: ${s.score} · 레벨 ${s.level}${s.score === s.best && s.score > 0 ? " 🏆 최고기록!" : ""}`, btn: "↻ 다시 시작" });
+  };
+
+  const levelUp = () => {
+    const s = g.current; s.level++;
+    s.paddleX = 205; s.ballX = 250; s.ballY = 550;
+    const sp = Math.min(Math.abs(s.bvx) * 1.1, 12);
+    s.bvx = s.bvx > 0 ? sp : -sp;
+    s.bvy = -Math.min(Math.abs(s.bvy) * 1.1, 12);
+    buildBricks();
+    setHud(h => ({ ...h, level: s.level }));
+  };
+
+  const update = () => {
+    const s = g.current;
+    if (s.keys.left) s.paddleX -= 7;
+    if (s.keys.right) s.paddleX += 7;
+    if (s.mouseX !== null) s.paddleX = s.mouseX - PW / 2;
+    s.paddleX = Math.max(0, Math.min(W - PW, s.paddleX));
+    s.ballX += s.bvx; s.ballY += s.bvy;
+    if (s.ballX < BR || s.ballX > W - BR) s.bvx = -s.bvx;
+    if (s.ballY < BR) s.bvy = -s.bvy;
+    if (s.ballY > H - 30 - BR && s.ballY < H - 30 + PH && s.ballX > s.paddleX && s.ballX < s.paddleX + PW) {
+      s.bvy = -Math.abs(s.bvy);
+      s.bvx = ((s.ballX - s.paddleX) / PW - 0.5) * 8;
+    }
+    if (s.ballY > H + 20) {
+      s.lives--;
+      setHud(h => ({ ...h, lives: "♥".repeat(Math.max(s.lives, 0)) || "–" }));
+      if (s.lives <= 0) { gameOver(); return; }
+      s.ballX = 250; s.ballY = H - 50; s.bvx = 3; s.bvy = -4;
+    }
+    for (const b of s.bricks) {
+      if (!b.alive) continue;
+      if (s.ballX + BR > b.x && s.ballX - BR < b.x + 56 && s.ballY + BR > b.y && s.ballY - BR < b.y + 20) {
+        b.alive = false; s.score += b.points; s.bvy = -s.bvy;
+        if (s.score > s.best) { s.best = s.score; localStorage.setItem("breakout-best", String(s.best)); }
+        setHud(h => ({ ...h, score: s.score, best: s.best }));
+        break;
+      }
+    }
+    if (s.bricks.every(b => !b.alive)) levelUp();
+  };
+
+  loopRef.current = () => {
+    if (!g.current.paused) { update(); draw(); }
+    g.current.raf = requestAnimationFrame(loopRef.current);
+  };
+
+  const startGame = () => {
+    const s = g.current;
+    s.score = 0; s.lives = 3; s.level = 1;
+    s.best = parseInt(localStorage.getItem("breakout-best") || "0", 10);
+    s.paddleX = 205; s.ballX = 250; s.ballY = 550;
+    s.bvx = Math.random() > 0.5 ? 3 : -3; s.bvy = -4;
+    buildBricks();
+    setHud({ score: 0, best: s.best, level: 1, lives: "♥♥♥" });
+    setOverlay(o => ({ ...o, show: false }));
+    s.running = true; s.paused = false;
+    cancelAnimationFrame(s.raf);
+    g.current.raf = requestAnimationFrame(loopRef.current);
+  };
+
+  const togglePause = () => {
+    const s = g.current; if (!s.running) return;
+    s.paused = !s.paused;
+    if (s.paused) setOverlay({ show: true, title: "일시정지", sub: "스페이스 또는 버튼으로 재개", btn: "재개하기" });
+    else setOverlay(o => ({ ...o, show: false }));
+  };
+
+  useEffect(() => {
+    const s = g.current;
+    s.best = parseInt(localStorage.getItem("breakout-best") || "0", 10);
+    setHud(h => ({ ...h, best: s.best }));
+    buildBricks(); draw();
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "ArrowLeft") { s.keys.left = true; e.preventDefault(); }
+      if (e.key === "ArrowRight") { s.keys.right = true; e.preventDefault(); }
+      if (e.key === " ") { e.preventDefault(); if (!s.running) startGame(); else togglePause(); }
+    };
+    const onKeyUp = (e: KeyboardEvent) => {
+      if (e.key === "ArrowLeft") s.keys.left = false;
+      if (e.key === "ArrowRight") s.keys.right = false;
+    };
+    document.addEventListener("keydown", onKeyDown);
+    document.addEventListener("keyup", onKeyUp);
+    return () => {
+      cancelAnimationFrame(s.raf);
+      document.removeEventListener("keydown", onKeyDown);
+      document.removeEventListener("keyup", onKeyUp);
+    };
+  }, []);
+
+  return (
+    <main className="min-h-screen bg-background-100 dark:bg-background-50 text-foreground-950 flex flex-col">
+      <TopNav isLoggedIn={true} />
+      <FoldSidebar />
+      <div className="pl-[var(--sidebar-width)] pt-14 md:pt-16 pb-12 flex-1 flex flex-col">
+        <div className="px-4 md:px-8 lg:px-12 flex-1 flex flex-col">
+          <div className="max-w-2xl mx-auto w-full flex-1 flex flex-col">
+            <div className="pt-6 mb-4">
+              <button
+                type="button"
+                onClick={onExit}
+                className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full border border-background-200 bg-background-50 hover:bg-primary-50 text-sm font-label text-foreground-700 transition-colors cursor-pointer"
+              >
+                <i className="ri-arrow-left-line w-4 h-4 flex items-center justify-center"></i>
+                활동으로 돌아가기
+              </button>
+            </div>
+            <div style={{ maxWidth: 560, margin: "0 auto", width: "100%" }}>
+              {/* HUD */}
+              <div className="grid grid-cols-4 gap-2 mb-4">
+                {([["SCORE", hud.score], ["BEST", hud.best], ["LEVEL", hud.level], ["LIVES", hud.lives]] as [string, string | number][]).map(([label, val]) => (
+                  <div key={label} className="rounded-xl p-2.5 text-center" style={{ background: "#131830", border: "1px solid #1f2545" }}>
+                    <span className="block text-[10px] tracking-widest mb-0.5" style={{ color: "#8b91b5" }}>{label}</span>
+                    <b className="text-lg font-label" style={{ color: "#6efff1", fontFeatureSettings: '"tnum"' }}>{val}</b>
+                  </div>
+                ))}
+              </div>
+              {/* Canvas + overlay */}
+              <div className="relative rounded-xl overflow-hidden" style={{ aspectRatio: "500/600", border: "1px solid #1f2545" }}>
+                <canvas
+                  ref={cvs}
+                  width={W}
+                  height={H}
+                  className="w-full h-full block"
+                  style={{ cursor: "none", background: "#131830" }}
+                  onMouseMove={e => {
+                    const r = cvs.current!.getBoundingClientRect();
+                    g.current.mouseX = ((e.clientX - r.left) / r.width) * W;
+                  }}
+                  onMouseLeave={() => { g.current.mouseX = null; }}
+                  onTouchMove={e => {
+                    e.preventDefault();
+                    const r = cvs.current!.getBoundingClientRect();
+                    g.current.mouseX = ((e.touches[0].clientX - r.left) / r.width) * W;
+                  }}
+                />
+                {overlay.show && (
+                  <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 p-5 text-center" style={{ background: "rgba(10,14,31,.92)" }}>
+                    <h2 className="text-2xl font-label font-bold tracking-wider" style={{ color: "#eef0fa" }}>{overlay.title}</h2>
+                    <p className="text-sm font-label" style={{ color: "#8b91b5" }}>{overlay.sub}</p>
+                    <button
+                      type="button"
+                      onClick={startGame}
+                      className="mt-2 px-7 py-3 rounded-full font-label font-bold text-sm cursor-pointer transition-all hover:brightness-110"
+                      style={{ background: "#6efff1", color: "#0a0e1f" }}
+                    >
+                      {overlay.btn}
+                    </button>
+                  </div>
+                )}
+              </div>
+              <p className="text-center text-xs mt-3 font-label" style={{ color: "#8b91b5" }}>← → 방향키 또는 마우스 이동 · 스페이스 일시정지</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+  );
+}
 
 /* ── 컴포넌트 ──────────────────────────────────────────── */
 
@@ -106,10 +250,7 @@ export default function PlaygroundPage() {
   const [selectedStory, setSelectedStory] = useState<string | null>(null);
   const [currentActivity, setCurrentActivity] = useState<string | null>(null);
   const [completedActivities, setCompletedActivities] = useState<Record<string, string[]>>(() => {
-    try {
-      const saved = localStorage.getItem("tori-playground");
-      return saved ? JSON.parse(saved) : {};
-    } catch { return {}; }
+    try { const saved = localStorage.getItem("tori-playground"); return saved ? JSON.parse(saved) : {}; } catch { return {}; }
   });
   const [showCongrats, setShowCongrats] = useState(false);
   const [lastCompletedTitle, setLastCompletedTitle] = useState("");
@@ -117,10 +258,6 @@ export default function PlaygroundPage() {
   const [textAnswer, setTextAnswer] = useState("");
   const [selectedChoice, setSelectedChoice] = useState<string | null>(null);
   const [gameView, setGameView] = useState(false);
-  const [gameStep, setGameStep] = useState(0);
-  const [gameScore, setGameScore] = useState(0);
-  const [gamePicked, setGamePicked] = useState<string | null>(null);
-  const [gameDone, setGameDone] = useState(false);
 
   useEffect(() => {
     localStorage.setItem("tori-playground", JSON.stringify(completedActivities));
@@ -131,9 +268,7 @@ export default function PlaygroundPage() {
   const allDone = doneList.length === ACTIVITIES.length;
 
   const enterActivity = (actId: string) => {
-    setCurrentActivity(actId);
-    setTextAnswer("");
-    setSelectedChoice(null);
+    setCurrentActivity(actId); setTextAnswer(""); setSelectedChoice(null);
   };
 
   const handleCompleteActivity = () => {
@@ -148,143 +283,11 @@ export default function PlaygroundPage() {
     setShowCongrats(true);
   };
 
-  const handleCongratsClose = () => {
-    setShowCongrats(false);
-    setCurrentActivity(null);
-  };
-
-  const handleGameAnswer = (option: string) => {
-    if (gamePicked) return;
-    setGamePicked(option);
-    if (option === GAME_QUESTIONS[gameStep].correct) {
-      setGameScore((s) => s + 1);
-    }
-  };
-
-  const handleGameNext = () => {
-    if (gameStep < GAME_QUESTIONS.length - 1) {
-      setGameStep((s) => s + 1);
-      setGamePicked(null);
-    } else {
-      setGameDone(true);
-    }
-  };
-
-  const resetGame = () => {
-    setGameStep(0);
-    setGameScore(0);
-    setGamePicked(null);
-    setGameDone(false);
-  };
+  const handleCongratsClose = () => { setShowCongrats(false); setCurrentActivity(null); };
 
   /* ── 게임 뷰 ─────────────────────────────────────────── */
   if (gameView && selectedStory && currentStory) {
-    const q = GAME_QUESTIONS[gameStep];
-    return (
-      <main className="min-h-screen bg-background-100 dark:bg-background-50 text-foreground-950 flex flex-col">
-        <TopNav isLoggedIn={true} />
-        <FoldSidebar />
-        <div className="pl-[var(--sidebar-width)] pt-14 md:pt-16 pb-12 flex-1 flex flex-col">
-          <div className="px-4 md:px-8 lg:px-12 flex-1 flex flex-col">
-            <div className="max-w-2xl mx-auto w-full flex-1 flex flex-col">
-              <div className="pt-6 mb-6 flex items-center justify-between">
-                <button
-                  type="button"
-                  onClick={() => { setGameView(false); resetGame(); }}
-                  className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full border border-background-200 bg-background-50 hover:bg-primary-50 text-sm font-label text-foreground-700 transition-colors cursor-pointer whitespace-nowrap"
-                >
-                  <i className="ri-arrow-left-line w-4 h-4 flex items-center justify-center"></i>
-                  활동으로 돌아가기
-                </button>
-                <span className="text-xs font-label text-foreground-400">
-                  {gameStep + 1} / {GAME_QUESTIONS.length}
-                </span>
-              </div>
-
-              {gameDone ? (
-                /* 게임 완료 화면 */
-                <div className="flex-1 flex flex-col items-center justify-center text-center gap-6">
-                  <div className="text-6xl animate-bounce">🏆</div>
-                  <div>
-                    <h2 className="font-heading text-2xl md:text-3xl text-foreground-950 mb-2">
-                      게임 완료!
-                    </h2>
-                    <p className="text-foreground-500 text-sm">
-                      {GAME_QUESTIONS.length}문제 중 <span className="font-semibold text-primary-600">{gameScore}개</span> 정답이에요
-                    </p>
-                  </div>
-                  <div className={`px-6 py-4 rounded-2xl text-sm font-label ${gameScore === GAME_QUESTIONS.length ? "bg-emerald-50 text-emerald-700 border border-emerald-200" : gameScore >= 2 ? "bg-primary-50 text-primary-700 border border-primary-200" : "bg-background-100 text-foreground-600 border border-background-200"}`}>
-                    {gameScore === GAME_QUESTIONS.length
-                      ? "🌟 완벽해요! 모든 낱말을 다 알고 있군요!"
-                      : gameScore >= 2
-                        ? "잘했어요! 조금 더 연습하면 완벽해질 거예요."
-                        : "괜찮아요! 동화를 다시 읽으면서 낱말을 익혀봐요."}
-                  </div>
-                  <div className="flex gap-3">
-                    <button
-                      type="button"
-                      onClick={resetGame}
-                      className="px-6 py-2.5 rounded-xl border border-background-200 bg-background-50 hover:bg-background-100 text-sm font-label text-foreground-700 transition-colors cursor-pointer"
-                    >
-                      다시 도전하기
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => { setGameView(false); resetGame(); }}
-                      className="px-6 py-2.5 rounded-xl bg-primary-500 hover:bg-primary-600 text-foreground-950 text-sm font-label font-semibold transition-colors cursor-pointer"
-                    >
-                      활동으로 돌아가기
-                    </button>
-                  </div>
-                </div>
-              ) : (
-                /* 퀴즈 화면 */
-                <div className="flex-1 flex flex-col items-center justify-center gap-6">
-                  <div className="w-full rounded-3xl bg-gradient-to-br from-primary-50 to-amber-50 border border-primary-100 p-6 md:p-8 text-center">
-                    <p className="text-xs font-label text-foreground-400 mb-3">낱말의 뜻을 보고 알맞은 낱말을 골라보세요</p>
-                    <p className="text-lg md:text-xl font-label font-semibold text-foreground-950 leading-relaxed">
-                      "{q.definition}"
-                    </p>
-                  </div>
-                  <div className="grid grid-cols-2 gap-3 w-full">
-                    {q.options.map((opt) => {
-                      const isCorrect = opt === q.correct;
-                      const isPicked = opt === gamePicked;
-                      let cls = "rounded-2xl border-2 py-4 text-base font-label font-semibold transition-all cursor-pointer ";
-                      if (!gamePicked) {
-                        cls += "border-background-200 bg-background-50 hover:border-primary-400 hover:bg-primary-50 text-foreground-800";
-                      } else if (isPicked && isCorrect) {
-                        cls += "border-emerald-400 bg-emerald-50 text-emerald-700";
-                      } else if (isPicked && !isCorrect) {
-                        cls += "border-rose-400 bg-rose-50 text-rose-700";
-                      } else if (isCorrect) {
-                        cls += "border-emerald-400 bg-emerald-50 text-emerald-700";
-                      } else {
-                        cls += "border-background-200 bg-background-100 text-foreground-400";
-                      }
-                      return (
-                        <button key={opt} type="button" onClick={() => handleGameAnswer(opt)} className={cls}>
-                          {gamePicked && isCorrect && "✓ "}{opt}
-                        </button>
-                      );
-                    })}
-                  </div>
-                  {gamePicked && (
-                    <button
-                      type="button"
-                      onClick={handleGameNext}
-                      className="w-full py-3 rounded-xl bg-gradient-to-r from-primary-500 to-amber-400 text-foreground-950 font-label font-semibold text-sm transition-all hover:scale-[1.02] active:scale-95 shadow-md cursor-pointer"
-                    >
-                      {gameStep < GAME_QUESTIONS.length - 1 ? "다음 문제" : "결과 보기"}
-                    </button>
-                  )}
-                </div>
-              )}
-            </div>
-          </div>
-        </div>
-      </main>
-    );
+    return <BreakoutGame onExit={() => setGameView(false)} />;
   }
 
   /* ── 활동 상세 뷰 ─────────────────────────────────────── */
@@ -292,20 +295,15 @@ export default function PlaygroundPage() {
     const act = ACTIVITIES.find((a) => a.id === currentActivity)!;
     const content = ACTIVITY_CONTENT[currentActivity];
     const isDone = doneList.includes(currentActivity);
-    const canSubmit =
-      content.type === "text"
-        ? textAnswer.trim().length > 0
-        : selectedChoice !== null;
+    const canSubmit = content.type === "text" ? textAnswer.trim().length > 0 : selectedChoice !== null;
 
     return (
       <main className="min-h-screen bg-background-100 dark:bg-background-50 text-foreground-950 flex flex-col">
         <TopNav isLoggedIn={true} />
         <FoldSidebar />
-
         <div className="pl-[var(--sidebar-width)] pt-14 md:pt-16 pb-12 flex-1 flex flex-col">
           <div className="px-4 md:px-8 lg:px-12 flex-1 flex flex-col">
             <div className="max-w-2xl mx-auto w-full flex-1 flex flex-col">
-
               {/* 헤더 */}
               <div className="pt-6 mb-6 flex items-center gap-3">
                 <button
@@ -322,28 +320,19 @@ export default function PlaygroundPage() {
                   </span>
                 )}
               </div>
-
               {/* 활동 카드 */}
               <div className="flex-1 flex flex-col gap-5">
-                {/* 이미지 + 타이틀 */}
                 <div className="rounded-3xl overflow-hidden border border-background-200 bg-background-50 flex flex-col sm:flex-row">
                   <div className="w-full sm:w-40 aspect-[4/3] sm:aspect-auto sm:h-auto flex-shrink-0 relative overflow-hidden bg-secondary-100">
                     <img src={act.image} alt={act.title} className="w-full h-full object-cover" />
                   </div>
                   <div className="p-5 flex flex-col justify-center">
-                    <span className={`inline-block px-2.5 py-1 rounded-lg text-xs font-label mb-2 ${act.tagColor}`}>
-                      {act.title}
-                    </span>
+                    <span className={`inline-block px-2.5 py-1 rounded-lg text-xs font-label mb-2 ${act.tagColor}`}>{act.title}</span>
                     <p className="text-sm text-foreground-600 leading-relaxed">{content.intro}</p>
                   </div>
                 </div>
-
-                {/* 질문 */}
                 <div className="rounded-2xl bg-background-50 border border-background-200 p-5 md:p-6">
-                  <p className="font-label font-semibold text-foreground-950 mb-4 leading-relaxed">
-                    {content.question}
-                  </p>
-
+                  <p className="font-label font-semibold text-foreground-950 mb-4 leading-relaxed">{content.question}</p>
                   {content.type === "text" && (
                     <textarea
                       value={textAnswer}
@@ -353,7 +342,6 @@ export default function PlaygroundPage() {
                       className="w-full rounded-xl border border-background-200 bg-background-100 px-4 py-3 text-sm font-label text-foreground-900 placeholder:text-foreground-400 focus:outline-none focus:ring-2 focus:ring-primary-400 resize-none transition"
                     />
                   )}
-
                   {content.type === "emotion" && (
                     <div className="grid grid-cols-3 gap-2">
                       {content.options.map((opt) => (
@@ -368,7 +356,6 @@ export default function PlaygroundPage() {
                       ))}
                     </div>
                   )}
-
                   {content.type === "choice" && (
                     <div className="grid grid-cols-2 gap-3">
                       {content.options.map((opt) => (
@@ -384,8 +371,6 @@ export default function PlaygroundPage() {
                     </div>
                   )}
                 </div>
-
-                {/* 완료 버튼 */}
                 <button
                   type="button"
                   onClick={handleCompleteActivity}
@@ -398,8 +383,6 @@ export default function PlaygroundPage() {
             </div>
           </div>
         </div>
-
-        {/* 축하 모달 */}
         {showCongrats && (
           <div className="fixed inset-0 z-50 flex items-center justify-center bg-foreground-950/50 backdrop-blur-sm px-4">
             <div className="w-full max-w-sm rounded-3xl bg-background-50 p-7 shadow-2xl text-center border border-background-200">
@@ -429,42 +412,32 @@ export default function PlaygroundPage() {
       <main className="min-h-screen bg-background-100 dark:bg-background-50 text-foreground-950 flex flex-col">
         <TopNav isLoggedIn={true} />
         <FoldSidebar />
-
         <div className="pl-[var(--sidebar-width)] pt-14 md:pt-16 pb-12 flex-1 flex flex-col">
           <div className="px-4 md:px-8 lg:px-12 flex-1 flex flex-col">
             <div className="max-w-5xl mx-auto w-full flex-1 flex flex-col">
 
-              {/* 헤더 */}
+              {/* 헤더: 동화목록으로 · 제목 · 저장버튼 동일 선상 */}
               <div className="pt-6 mb-8">
-                {/* 뒤로가기 */}
-                <button
-                  type="button"
-                  onClick={() => setSelectedStory(null)}
-                  className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full border border-background-200 bg-background-50 hover:bg-primary-50 text-sm font-label text-foreground-700 transition-colors cursor-pointer whitespace-nowrap mb-6"
-                >
-                  <i className="ri-arrow-left-line w-4 h-4 flex items-center justify-center"></i>
-                  동화 목록으로
-                </button>
-
-                {/* 태그 + 저장 버튼 row */}
-                <div className="flex items-center justify-between mb-3">
-                  <span className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full bg-orange-400 text-white text-xs font-label font-semibold shadow-sm">
-                    <i className="ri-gamepad-line text-xs"></i>
-                    토리 동화 놀이마당
-                  </span>
+                <div className="flex items-center justify-between gap-3 mb-5">
+                  <button
+                    type="button"
+                    onClick={() => setSelectedStory(null)}
+                    className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full border border-background-200 bg-background-50 hover:bg-primary-50 text-sm font-label text-foreground-700 transition-colors cursor-pointer whitespace-nowrap flex-shrink-0"
+                  >
+                    <i className="ri-arrow-left-line w-4 h-4 flex items-center justify-center"></i>
+                    동화 목록으로
+                  </button>
+                  <h1 className="font-heading text-lg md:text-2xl font-bold text-foreground-950 text-center flex-1 min-w-0 line-clamp-1">
+                    {currentStory.title}
+                  </h1>
                   <button
                     type="button"
                     onClick={() => setShowSaveResult(true)}
-                    className="inline-flex items-center gap-2 px-6 py-3 rounded-2xl bg-gradient-to-r from-rose-400 to-pink-400 hover:from-rose-500 hover:to-pink-500 text-white text-sm font-label font-semibold transition-all duration-200 cursor-pointer whitespace-nowrap hover:scale-105 active:scale-95 shadow-md shadow-rose-200/60"
+                    className="inline-flex items-center gap-2 px-4 py-2.5 rounded-2xl bg-gradient-to-r from-rose-400 to-pink-400 hover:from-rose-500 hover:to-pink-500 text-white text-sm font-label font-semibold transition-all duration-200 cursor-pointer whitespace-nowrap hover:scale-105 active:scale-95 shadow-md shadow-rose-200/60 flex-shrink-0"
                   >
-                    🌟 놀이결과 저장하고 홈으로
+                    🌟 저장하고 홈으로
                   </button>
                 </div>
-
-                {/* 중앙 정렬 제목 */}
-                <h1 className="font-heading text-2xl md:text-4xl font-bold text-foreground-950 leading-snug text-center mb-5">
-                  {currentStory.title}
-                </h1>
 
                 {/* 전체 완료 배너 */}
                 {allDone && (
@@ -475,7 +448,7 @@ export default function PlaygroundPage() {
                     </span>
                     <button
                       type="button"
-                      onClick={() => { resetGame(); setGameView(true); }}
+                      onClick={() => setGameView(true)}
                       className="flex-shrink-0 px-4 py-1.5 rounded-full bg-gradient-to-r from-amber-400 to-primary-500 text-foreground-950 text-xs font-label font-semibold hover:scale-105 active:scale-95 transition-all cursor-pointer shadow-sm"
                     >
                       🎮 게임 시작하기
@@ -565,11 +538,9 @@ export default function PlaygroundPage() {
     <main className="min-h-screen bg-background-100 dark:bg-background-50 text-foreground-950">
       <TopNav isLoggedIn={true} />
       <FoldSidebar />
-
       <div className="pl-[var(--sidebar-width)] pt-14 md:pt-16 pb-12">
         <div className="px-4 md:px-8 lg:px-12">
           <div className="max-w-5xl mx-auto">
-
             <div className="pt-8 mb-10 text-center">
               <h1 className="font-heading text-3xl md:text-4xl text-foreground-950 mb-3">
                 토리 동화 놀이마당
@@ -579,13 +550,11 @@ export default function PlaygroundPage() {
                 어휘력을 재미있게 완성해 보세요!
               </p>
             </div>
-
             <div className="grid grid-cols-2 md:grid-cols-3 gap-4 md:gap-6">
               {RECENT_STORIES.map((story) => {
                 const doneCount = (completedActivities[story.id] ?? []).length;
                 const allStoreDone = doneCount === ACTIVITIES.length;
                 const inProgress = doneCount > 0 && !allStoreDone;
-
                 return (
                   <div
                     key={story.id}
@@ -611,7 +580,6 @@ export default function PlaygroundPage() {
                         </span>
                       )}
                     </div>
-
                     <div className="p-4 flex flex-col flex-1 gap-2">
                       <h3 className="text-sm font-label font-semibold text-foreground-950 line-clamp-2 leading-snug">
                         {story.title}
@@ -648,7 +616,6 @@ export default function PlaygroundPage() {
                 );
               })}
             </div>
-
           </div>
         </div>
       </div>
