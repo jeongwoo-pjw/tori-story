@@ -38,9 +38,9 @@ export default function DashboardPage() {
 
   const yAxisTicks = useMemo(() => {
     const max = Math.max(...readingData.map((d) => d.value));
-    const step = Math.ceil(max / 4 / 10) * 10;
+    const step = Math.ceil(max / 3 / 5) * 5;
     const ticks: number[] = [];
-    for (let i = 0; i <= 4; i++) {
+    for (let i = 0; i <= 3; i++) {
       ticks.push(i * step);
     }
     return ticks;
@@ -126,10 +126,10 @@ export default function DashboardPage() {
                 <div className="rounded-2xl bg-background-100 dark:bg-background-100 border border-background-200/70 dark:border-background-300/50 p-5 md:p-6">
                   <div className="flex items-start justify-between mb-1">
                     <div>
-                      <span className="inline-block px-3 py-1 rounded-md bg-primary-100 text-primary-900 text-xs font-label">
+                      <h2 className="font-heading text-lg text-foreground-950">
                         어휘 성장 추이
-                      </span>
-                      <p className="text-[10px] text-foreground-400 mt-1.5 ml-0.5">
+                      </h2>
+                      <p className="text-xs font-label text-foreground-500 mt-1">
                         누적 어휘량 (단어 수)
                       </p>
                     </div>
@@ -167,7 +167,7 @@ export default function DashboardPage() {
                   </div>
 
                   {/* Bar chart with Y-axis */}
-                  <div className="flex gap-0 h-48 md:h-56 mt-5">
+                  <div className="flex gap-0 h-48 md:h-56 mt-5 bg-background-50 dark:bg-background-200/40 rounded-xl p-2 pb-0">
                     {/* Y-axis labels */}
                     <div className="flex flex-col justify-between items-end pr-2 pb-5 flex-shrink-0 w-9">
                       {[...yAxisTicks].reverse().map((tick) => (
@@ -204,8 +204,13 @@ export default function DashboardPage() {
                             className="h-full flex flex-col justify-end items-center gap-1.5 flex-shrink-0"
                             style={{ width: `${barW}px` }}
                           >
+                            {item.value > 0 && (
+                              <span className={`font-label text-foreground-600 dark:text-foreground-500 leading-none ${isMonthly ? "text-[7px]" : "text-[10px]"}`}>
+                                {item.value}
+                              </span>
+                            )}
                             <div
-                              className="w-full rounded-t-md cursor-pointer relative"
+                              className="w-full rounded-t-md cursor-pointer"
                               style={{
                                 height: currentHeight > 0 ? `${currentHeight}%` : '0%',
                                 minHeight: item.value > 0 ? '4px' : '0px',
@@ -218,13 +223,7 @@ export default function DashboardPage() {
                               }}
                               onMouseEnter={() => setHoveredBarIdx(idx)}
                               onMouseLeave={() => setHoveredBarIdx(null)}
-                            >
-                              {isHovered && (
-                                <div className="absolute -top-7 left-1/2 -translate-x-1/2 z-20 px-2 py-0.5 rounded-md bg-foreground-950 text-background-50 text-[10px] font-label whitespace-nowrap pointer-events-none">
-                                  {item.value}단어
-                                </div>
-                              )}
-                            </div>
+                            />
                             <span className={`font-label text-foreground-400 dark:text-foreground-600 ${isMonthly ? "text-[8px]" : "text-[10px]"} leading-none`}>
                               {item.day}
                             </span>
@@ -235,9 +234,14 @@ export default function DashboardPage() {
                   </div>
 
                   {/* Footnote */}
-                  <p className="text-[9px] text-foreground-300 dark:text-foreground-500 mt-3 text-right">
-                    ※ 독서 완료 및 놀이마당 낱말 퀴즈 시 실시간 가산
-                  </p>
+                  <div className="flex items-end justify-between mt-3 flex-wrap gap-2">
+                    <p className="text-xs text-foreground-500 dark:text-foreground-500">
+                      ※ 독서 완료 및 놀이마당 낱말 퀴즈 시 실시간 가산
+                    </p>
+                    <p className="text-xs font-label text-foreground-700 dark:text-foreground-400 whitespace-nowrap">
+                      이번 주 동화에서 학습한 누적 단어: {readingData[readingData.length - 1]?.value ?? 0}개
+                    </p>
+                  </div>
                 </div>
 
                 {/* Focus time settings with children cards */}
