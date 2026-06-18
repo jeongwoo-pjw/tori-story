@@ -166,20 +166,9 @@ export default function TopNav({ isLoggedIn = false, onToggleLogin }: TopNavProp
           <div className="flex items-center justify-between h-14 md:h-16">
             {/* Logo with icon — indented by sidebar width */}
             <Link to="/" className="flex items-center gap-2 md:gap-2.5 cursor-pointer pl-[var(--sidebar-width)]">
-              <div
-                className="w-7 h-7 flex-shrink-0 bg-primary-500"
-                style={{
-                  maskImage: `url(${__BASE_PATH__}favicon.svg)`,
-                  WebkitMaskImage: `url(${__BASE_PATH__}favicon.svg)`,
-                  maskRepeat: "no-repeat",
-                  WebkitMaskRepeat: "no-repeat",
-                  maskSize: "contain",
-                  WebkitMaskSize: "contain",
-                  maskPosition: "center",
-                  WebkitMaskPosition: "center",
-                }}
-                aria-hidden="true"
-              />
+              <div className="w-7 h-7 flex-shrink-0 bg-primary-500 rounded-full flex items-center justify-center" aria-hidden="true">
+                <i className="ri-book-open-line text-white text-base leading-none"></i>
+              </div>
               <span className="font-logo text-xl md:text-2xl text-primary-500 whitespace-nowrap">
                 토리동화
               </span>

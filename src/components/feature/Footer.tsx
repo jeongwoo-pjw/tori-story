@@ -7,7 +7,9 @@ export default function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-10">
           <div className="md:col-span-2">
             <div className="flex items-center gap-2 mb-4">
-              <img src={`${__BASE_PATH__}favicon.svg`} alt="토리동화 로고" className="w-10 h-10" />
+              <div className="w-10 h-10 flex-shrink-0 bg-primary-500 rounded-full flex items-center justify-center" aria-hidden="true">
+                <i className="ri-book-open-line text-white text-xl leading-none"></i>
+              </div>
               <span className="font-logo text-2xl text-primary-500">토리동화</span>
               <span className="text-xs font-label text-foreground-600 ml-1">AI FAIRY TALE</span>
             </div>
