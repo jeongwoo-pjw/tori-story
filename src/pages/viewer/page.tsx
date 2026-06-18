@@ -1,4 +1,4 @@
-import { useState, useRef, useCallback } from "react";
+import { useState, useRef, useCallback, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import TopNav from "@/components/feature/TopNav";
 import FoldSidebar from "@/components/feature/FoldSidebar";
@@ -94,11 +94,20 @@ const formatText = (text: string) => {
 export default function StoryViewerPage() {
   const [currentPage, setCurrentPage] = useState(0);
   const [liked, setLiked] = useState(false);
-  const [moreOpen, setMoreOpen] = useState(false);
   const [sleepMode, setSleepMode] = useState(false);
   const [listening, setListening] = useState(false);
   const [showCompletePopup, setShowCompletePopup] = useState(false);
   const [selectedLang, setSelectedLang] = useState<LangCode>("ko");
+  const [fullscreen, setFullscreen] = useState(false);
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setFullscreen(false);
+    };
+    if (fullscreen) window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [fullscreen]);
+
   const touchStartX = useRef<number | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -147,7 +156,7 @@ export default function StoryViewerPage() {
             {/* Left: back to bookshelf */}
             <Link
               to="/bookshelf"
-              className={`inline-flex items-center gap-1.5 px-4 py-2 rounded-full text-sm font-label transition-colors cursor-pointer whitespace-nowrap ${sleepMode ? "bg-foreground-800 text-foreground-300 hover:bg-foreground-700" : "bg-primary-100 text-primary-700 border border-primary-200 hover:bg-primary-200"}`}
+              className={`inline-flex items-center gap-1.5 px-4 py-2 rounded-full text-sm font-label font-semibold transition-all duration-200 cursor-pointer whitespace-nowrap border shadow-sm hover:scale-105 active:scale-95 ${sleepMode ? "bg-foreground-800 text-foreground-300 border-foreground-700 hover:bg-foreground-700" : "bg-amber-50 text-amber-700 border-amber-200 hover:bg-amber-100"}`}
             >
               <i className="ri-arrow-left-line w-3.5 h-3.5 flex items-center justify-center"></i>
               책 닫고 책장으로
@@ -155,64 +164,68 @@ export default function StoryViewerPage() {
 
             {/* Right: actions */}
             <div className="flex items-center gap-2">
+              {/* 좋아요 */}
               <button
                 type="button"
                 onClick={() => setLiked(!liked)}
-                className={`w-8 h-8 rounded-full flex items-center justify-center transition-colors cursor-pointer ${sleepMode ? "hover:bg-foreground-800" : "hover:bg-primary-50"}`}
+                className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-label font-semibold transition-all duration-200 cursor-pointer whitespace-nowrap border shadow-sm hover:scale-105 active:scale-95 ${
+                  liked
+                    ? "bg-rose-500 text-white border-rose-400"
+                    : sleepMode
+                      ? "bg-foreground-800 text-foreground-300 border-foreground-700 hover:bg-foreground-700"
+                      : "bg-rose-50 text-rose-500 border-rose-200 hover:bg-rose-100"
+                }`}
               >
-                <i className={`${liked ? "ri-heart-fill text-primary-500" : "ri-heart-line text-foreground-400"} w-5 h-5 flex items-center justify-center text-lg`}></i>
+                <i className={`${liked ? "ri-heart-fill" : "ri-heart-line"} w-3.5 h-3.5 flex items-center justify-center`}></i>
+                좋아요
               </button>
+
+              {/* 취침 모드 */}
               <button
                 type="button"
                 onClick={() => setSleepMode(!sleepMode)}
-                className={`hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-label transition-colors cursor-pointer whitespace-nowrap ${sleepMode ? "bg-foreground-800 text-foreground-300 hover:bg-foreground-700" : "bg-background-100 text-foreground-700 border border-background-200 hover:bg-primary-50"}`}
+                className={`hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-label font-semibold transition-all duration-200 cursor-pointer whitespace-nowrap border shadow-sm hover:scale-105 active:scale-95 ${
+                  sleepMode
+                    ? "bg-indigo-600 text-white border-indigo-500"
+                    : "bg-indigo-50 text-indigo-600 border-indigo-200 hover:bg-indigo-100"
+                }`}
               >
-                <i className="ri-moon-line w-3.5 h-3.5 flex items-center justify-center"></i>
+                <i className={`${sleepMode ? "ri-moon-fill" : "ri-moon-line"} w-3.5 h-3.5 flex items-center justify-center`}></i>
                 취침 모드
               </button>
+
+              {/* 듣기 */}
               <button
                 type="button"
                 onClick={() => setListening(!listening)}
-                className={`hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-label transition-colors cursor-pointer whitespace-nowrap ${listening ? "bg-primary-500 text-foreground-950 dark:text-foreground-950" : sleepMode ? "bg-foreground-800 text-foreground-300 hover:bg-foreground-700" : "bg-background-100 text-foreground-700 border border-background-200 hover:bg-primary-50"}`}
+                className={`hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-label font-semibold transition-all duration-200 cursor-pointer whitespace-nowrap border shadow-sm hover:scale-105 active:scale-95 ${
+                  listening
+                    ? "bg-emerald-500 text-white border-emerald-400"
+                    : sleepMode
+                      ? "bg-foreground-800 text-foreground-300 border-foreground-700 hover:bg-foreground-700"
+                      : "bg-emerald-50 text-emerald-600 border-emerald-200 hover:bg-emerald-100"
+                }`}
               >
                 <i className={`${listening ? "ri-volume-up-fill" : "ri-volume-up-line"} w-3.5 h-3.5 flex items-center justify-center`}></i>
                 듣기
               </button>
-              <div className="relative">
-                <button
-                  type="button"
-                  onClick={() => setMoreOpen(!moreOpen)}
-                  className={`w-8 h-8 rounded-full flex items-center justify-center transition-colors cursor-pointer ${sleepMode ? "hover:bg-foreground-800 text-foreground-300" : "hover:bg-primary-50 text-foreground-700"}`}
-                >
-                  <i className="ri-more-fill w-5 h-5 flex items-center justify-center text-lg"></i>
-                </button>
-                {moreOpen && (
-                  <div className={`absolute top-full right-0 mt-2 w-36 rounded-2xl border p-2 z-50 shadow-lg ${sleepMode ? "bg-foreground-900 border-foreground-800" : "bg-background-50 border-background-200"}`}>
-                    <button
-                      type="button"
-                      className={`w-full flex items-center gap-2 px-3 py-2.5 rounded-xl text-sm font-label transition-colors cursor-pointer whitespace-nowrap ${sleepMode ? "text-foreground-300 hover:bg-foreground-800" : "text-foreground-800 hover:bg-primary-50"}`}
-                    >
-                      <i className="ri-fullscreen-line w-4 h-4 flex items-center justify-center"></i>
-                      다보기
-                    </button>
-                    <button
-                      type="button"
-                      className={`w-full flex items-center gap-2 px-3 py-2.5 rounded-xl text-sm font-label transition-colors cursor-pointer whitespace-nowrap ${sleepMode ? "text-foreground-300 hover:bg-foreground-800" : "text-foreground-800 hover:bg-primary-50"}`}
-                    >
-                      <i className="ri-flashlight-line w-4 h-4 flex items-center justify-center"></i>
-                      액션
-                    </button>
-                  </div>
-                )}
-              </div>
+
+              {/* 풀화면으로 보기 */}
+              <button
+                type="button"
+                onClick={() => setFullscreen(true)}
+                className={`hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-label font-semibold transition-all duration-200 cursor-pointer whitespace-nowrap border shadow-sm hover:scale-105 active:scale-95 ${
+                  sleepMode
+                    ? "bg-foreground-800 text-foreground-300 border-foreground-700 hover:bg-foreground-700"
+                    : "bg-violet-50 text-violet-600 border-violet-200 hover:bg-violet-100"
+                }`}
+              >
+                <i className="ri-fullscreen-line w-3.5 h-3.5 flex items-center justify-center"></i>
+                풀화면으로 보기
+              </button>
             </div>
           </div>
         </div>
-
-        {/* Click outside to close more menu */}
-        {moreOpen && (
-          <div className="fixed inset-0 z-20" onClick={() => setMoreOpen(false)}></div>
-        )}
 
         {/* Story swiper area */}
         <div className="px-4 md:px-8 lg:px-12 pt-6">
@@ -312,7 +325,7 @@ export default function StoryViewerPage() {
                 type="button"
                 onClick={handlePrev}
                 disabled={currentPage === 0}
-                className={`inline-flex items-center gap-1 px-5 py-2.5 rounded-xl text-sm font-label transition-colors cursor-pointer whitespace-nowrap ${currentPage === 0 ? "opacity-40 pointer-events-none bg-primary-100 text-primary-400 border border-primary-200" : sleepMode ? "bg-foreground-800 text-foreground-300 hover:bg-foreground-700" : "bg-primary-100 text-primary-700 hover:bg-primary-200 border border-primary-200"}`}
+                className={`inline-flex items-center gap-1.5 px-5 py-2.5 rounded-xl text-sm font-label font-semibold transition-all duration-200 cursor-pointer whitespace-nowrap border shadow-sm ${currentPage === 0 ? "opacity-30 pointer-events-none bg-slate-100 text-slate-400 border-slate-200" : sleepMode ? "bg-foreground-800 text-foreground-300 border-foreground-700 hover:bg-foreground-700 hover:scale-105 active:scale-95" : "bg-slate-100 text-slate-600 border-slate-200 hover:bg-slate-200 hover:scale-105 active:scale-95"}`}
               >
                 <i className="ri-arrow-left-s-line w-4 h-4 flex items-center justify-center"></i>
                 이전 페이지
@@ -338,15 +351,98 @@ export default function StoryViewerPage() {
               <button
                 type="button"
                 onClick={handleNext}
-                className={`inline-flex items-center gap-1 px-5 py-2.5 rounded-xl text-sm font-label transition-colors cursor-pointer whitespace-nowrap ${isLastPage ? (sleepMode ? "bg-primary-600 text-foreground-950 hover:bg-primary-500" : "bg-primary-500 text-foreground-950 dark:text-foreground-950 hover:bg-primary-600") : sleepMode ? "bg-foreground-800 text-foreground-300 hover:bg-foreground-700" : "bg-primary-600 text-background-50 hover:bg-primary-700"}`}
+                className={`inline-flex items-center gap-1.5 px-5 py-2.5 rounded-xl text-sm font-label font-semibold transition-all duration-200 cursor-pointer whitespace-nowrap shadow-md hover:scale-105 active:scale-95 ${
+                  isLastPage
+                    ? sleepMode
+                      ? "bg-primary-500 text-foreground-950 hover:bg-primary-400 shadow-primary-900/30"
+                      : "bg-gradient-to-r from-primary-500 to-amber-400 text-foreground-950 hover:from-primary-600 hover:to-amber-500 shadow-primary-300/50"
+                    : sleepMode
+                      ? "bg-foreground-700 text-foreground-100 border border-foreground-600 hover:bg-foreground-600"
+                      : "bg-gradient-to-r from-primary-500 to-primary-600 text-foreground-950 hover:from-primary-600 hover:to-primary-700 shadow-primary-300/40"
+                }`}
               >
-                {isLastPage ? "동화 완료" : "다음 페이지"}
+                {isLastPage ? "동화 완료 🎉" : "다음 페이지"}
                 <i className="ri-arrow-right-s-line w-4 h-4 flex items-center justify-center"></i>
               </button>
             </div>
           </div>
         </div>
       </div>
+
+      {/* Fullscreen overlay */}
+      {fullscreen && (
+        <div className="fixed inset-0 z-[100] bg-foreground-950 flex">
+          {/* Close button */}
+          <button
+            type="button"
+            onClick={() => setFullscreen(false)}
+            className="absolute top-4 right-4 w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white transition-colors cursor-pointer z-10"
+          >
+            <i className="ri-close-line text-2xl"></i>
+          </button>
+
+          {/* Left: image */}
+          <div className="w-3/5 relative overflow-hidden">
+            <img
+              src={STORY.pages[currentPage].image}
+              alt={`${STORY.title} ${currentPage + 1}페이지`}
+              className="w-full h-full object-cover object-top"
+            />
+            <button
+              type="button"
+              onClick={handlePrev}
+              disabled={currentPage === 0}
+              className={`absolute left-4 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-black/30 hover:bg-black/50 flex items-center justify-center text-white transition-colors cursor-pointer z-10 ${currentPage === 0 ? "opacity-0 pointer-events-none" : ""}`}
+            >
+              <i className="ri-arrow-left-s-line text-3xl"></i>
+            </button>
+            <button
+              type="button"
+              onClick={handleNext}
+              className={`absolute right-4 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-black/30 hover:bg-black/50 flex items-center justify-center text-white transition-colors cursor-pointer z-10 ${isLastPage ? "opacity-0 pointer-events-none" : ""}`}
+            >
+              <i className="ri-arrow-right-s-line text-3xl"></i>
+            </button>
+          </div>
+
+          {/* Right: text */}
+          <div className="w-2/5 flex flex-col p-10 md:p-14 bg-foreground-900 overflow-auto">
+            {/* Language selector */}
+            <div className="flex items-center gap-2 mb-8 flex-shrink-0">
+              {LANGS.map((lang) => (
+                <button
+                  key={lang.code}
+                  type="button"
+                  onClick={() => setSelectedLang(lang.code)}
+                  title={lang.label}
+                  className={`w-8 h-6 rounded overflow-hidden transition-all cursor-pointer flex-shrink-0 ${selectedLang === lang.code ? "ring-2 ring-primary-400 ring-offset-1 ring-offset-foreground-900 scale-110" : "opacity-60 hover:opacity-100"}`}
+                >
+                  <img src={lang.flag} alt={lang.label} className="w-full h-full object-cover" />
+                </button>
+              ))}
+            </div>
+
+            {/* Story text */}
+            <div className="flex-1 flex items-center">
+              <p className="text-xl md:text-2xl leading-loose font-body text-foreground-100">
+                {formatText(STORY.pages[currentPage].texts[selectedLang])}
+              </p>
+            </div>
+
+            {/* Page dots */}
+            <div className="flex items-center gap-2 flex-shrink-0 mt-8">
+              {STORY.pages.map((_, idx) => (
+                <button
+                  key={idx}
+                  type="button"
+                  onClick={() => goToPage(idx)}
+                  className={`rounded-full transition-all duration-300 cursor-pointer ${idx === currentPage ? "w-4 h-4 bg-primary-400" : "w-2.5 h-2.5 bg-foreground-700 hover:bg-foreground-500"}`}
+                />
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Complete Popup */}
       {showCompletePopup && (
