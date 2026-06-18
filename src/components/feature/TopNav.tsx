@@ -50,15 +50,15 @@ function ParentLockPopup({
           <i className="ri-close-line text-foreground-500 w-5 h-5 flex items-center justify-center"></i>
         </button>
         <div className="flex items-center justify-center gap-2 mb-4">
-          <span className="w-8 h-8 rounded-full bg-secondary-200 flex items-center justify-center">
-            <i className="ri-lock-unlock-line text-foreground-900 w-4 h-4 flex items-center justify-center"></i>
+          <span className="w-8 h-8 rounded-full bg-accent-200 flex items-center justify-center">
+            <i className="ri-lock-unlock-line text-accent-900 w-4 h-4 flex items-center justify-center"></i>
           </span>
           <h3 className="font-heading text-lg text-foreground-950">부모 모드 작동중</h3>
         </div>
         <p className="text-sm text-foreground-700 mb-4">
           안전한 내 아이 모아보기로 진입하려면 아래 수식을 풀어주세요.
         </p>
-        <div className="text-center py-4 bg-secondary-100 rounded-2xl mb-4">
+        <div className="text-center py-4 bg-accent-100 rounded-2xl mb-4">
           <p className="font-heading text-2xl text-foreground-950">
             {a} + {b} = ?
           </p>
@@ -73,18 +73,18 @@ function ParentLockPopup({
           onKeyDown={(e) => {
             if (e.key === "Enter") check();
           }}
-          className="w-full px-4 py-3 rounded-xl border border-background-200 bg-background-50 text-center font-heading text-xl text-foreground-950 focus:outline-none focus:ring-2 focus:ring-primary-400 mb-3"
+          className="w-full px-4 py-3 rounded-xl border border-background-200 bg-background-50 text-center font-heading text-xl text-foreground-950 focus:outline-none focus:ring-2 focus:ring-accent-400 mb-3"
           placeholder="정답 입력"
         />
         {error && (
-          <p className="text-xs text-primary-700 text-center mb-3">
+          <p className="text-xs text-accent-700 text-center mb-3">
             다시 풀어보세요!
           </p>
         )}
         <button
           type="button"
           onClick={check}
-          className="w-full py-3 rounded-full bg-primary-500 text-foreground-950 dark:text-foreground-950 font-label text-sm hover:bg-primary-600 transition-colors cursor-pointer whitespace-nowrap"
+          className="w-full py-3 rounded-full bg-accent-500 text-foreground-950 dark:text-foreground-950 font-label text-sm hover:bg-accent-600 transition-colors cursor-pointer whitespace-nowrap"
         >
           부모 잠금 해제
         </button>
