@@ -8,13 +8,13 @@ export default function Footer() {
           <div className="md:col-span-2">
             <div className="flex items-center gap-2 mb-4">
               <div className="w-10 h-10 flex-shrink-0 bg-primary-500 rounded-full flex items-center justify-center" aria-hidden="true">
-                <i className="ri-book-open-line text-white text-xl leading-none"></i>
+                <i className="ri-book-open-fill text-white text-xl leading-none"></i>
               </div>
               <span className="font-logo text-2xl text-primary-500">토리동화</span>
               <span className="text-xs font-label text-foreground-600 ml-1">AI FAIRY TALE</span>
             </div>
             <p className="text-sm text-foreground-700 leading-relaxed max-w-md">
-              상상이 이야기가 되는 곳. 아이의 작은 상상과 소중한 하루를 담아 세상에 하나뿐인 맞춤 동화를 만들어드려요.
+              상상이 이야기가 되는 곳. 아이의 작은 상상과 소중한 하루를 담아<br />세상에 하나뿐인 맞춤 동화를 만들어드려요.
             </p>
             <div className="flex items-center gap-2 mt-5">
               <button

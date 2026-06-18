@@ -159,8 +159,9 @@ export default function FoldSidebar() {
 
       {/* Profile */}
       <div className="p-3">
-        <div
-          className={`flex items-center gap-3 ${
+        <Link
+          to="/dashboard"
+          className={`flex items-center gap-3 rounded-xl hover:bg-primary-50/40 transition-colors cursor-pointer p-1 ${
             expanded ? "" : "justify-center"
           }`}
         >
@@ -178,7 +179,7 @@ export default function FoldSidebar() {
                   {userProfile.name}
                 </p>
                 <span className="inline-block px-1.5 py-[1px] rounded text-[9px] font-label bg-accent-500 text-foreground-950 dark:text-foreground-950 leading-tight flex-shrink-0">
-                  PREMIUM
+                  PRO
                 </span>
               </div>
               <p className="text-[11px] text-foreground-500 truncate leading-tight mt-0.5">
@@ -186,7 +187,7 @@ export default function FoldSidebar() {
               </p>
             </div>
           )}
-        </div>
+        </Link>
       </div>
     </aside>
   );

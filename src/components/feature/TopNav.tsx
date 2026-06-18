@@ -167,7 +167,7 @@ export default function TopNav({ isLoggedIn = false, onToggleLogin }: TopNavProp
             {/* Logo with icon — indented by sidebar width */}
             <Link to="/" className="flex items-center gap-2 md:gap-2.5 cursor-pointer pl-[var(--sidebar-width)]">
               <div className="w-7 h-7 flex-shrink-0 bg-primary-500 rounded-full flex items-center justify-center" aria-hidden="true">
-                <i className="ri-book-open-line text-white text-base leading-none"></i>
+                <i className="ri-book-open-fill text-white text-base leading-none"></i>
               </div>
               <span className="font-logo text-xl md:text-2xl text-primary-500 whitespace-nowrap">
                 토리동화
