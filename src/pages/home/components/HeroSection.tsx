@@ -27,7 +27,7 @@ export default function HeroSection({ isLoggedIn = false }: HeroSectionProps) {
               key={i}
               className="inline-block"
               style={{
-                animation: `char-to-yellow 0.5s ease-out ${i * 0.12}s both`,
+                animation: `char-to-yellow 3.5s ease-in-out ${i * 0.15}s infinite`,
                 letterSpacing: "0.12em",
               }}
             >
@@ -64,9 +64,8 @@ export default function HeroSection({ isLoggedIn = false }: HeroSectionProps) {
         </span>
       </div>
 
-      {/* Non-logged-in: CTA Cards */}
-      {!isLoggedIn && (
-        <div className="relative z-10 w-full mt-8 md:mt-10 pb-10 md:pb-12">
+      {/* CTA Cards — always visible */}
+      <div className="relative z-10 w-full mt-8 md:mt-10 pb-16 md:pb-20">
           <div className="max-w-2xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4">
             {/* Card 1: 선택형 */}
             <div className="relative rounded-3xl bg-background-50/60 backdrop-blur-sm border border-background-200/60 overflow-hidden py-4 md:py-5 px-0 flex flex-col items-center text-center gap-3 hover:border-primary-300 transition-all cursor-pointer">
@@ -122,7 +121,6 @@ export default function HeroSection({ isLoggedIn = false }: HeroSectionProps) {
             </div>
           </div>
         </div>
-      )}
 
       {/* Logged-in: scroll indicator */}
       {isLoggedIn && (

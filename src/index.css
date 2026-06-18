@@ -392,6 +392,7 @@ body.theme-moonstar {
 .dark ::-webkit-scrollbar-thumb { background: oklch(var(--primary-700)); }
 
 @keyframes char-to-yellow {
-  from { color: white; }
-  to { color: oklch(var(--accent-400)); }
+  0%, 10%  { color: white; }
+  30%, 70% { color: oklch(var(--accent-400)); }
+  90%, 100% { color: white; }
 }

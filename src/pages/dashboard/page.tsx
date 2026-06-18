@@ -171,7 +171,7 @@ export default function DashboardPage() {
                     {/* Y-axis labels */}
                     <div className="flex flex-col justify-between items-end pr-2 pb-5 flex-shrink-0 w-9">
                       {[...yAxisTicks].reverse().map((tick) => (
-                        <span key={tick} className="text-[9px] text-foreground-400 font-label leading-none">
+                        <span key={tick} className="text-[9px] text-foreground-400 dark:text-foreground-600 font-label leading-none">
                           {tick}
                         </span>
                       ))}
@@ -225,7 +225,7 @@ export default function DashboardPage() {
                                 </div>
                               )}
                             </div>
-                            <span className={`font-label text-foreground-400 ${isMonthly ? "text-[8px]" : "text-[10px]"} leading-none`}>
+                            <span className={`font-label text-foreground-400 dark:text-foreground-600 ${isMonthly ? "text-[8px]" : "text-[10px]"} leading-none`}>
                               {item.day}
                             </span>
                           </div>
@@ -235,7 +235,7 @@ export default function DashboardPage() {
                   </div>
 
                   {/* Footnote */}
-                  <p className="text-[9px] text-foreground-300 mt-3 text-right">
+                  <p className="text-[9px] text-foreground-300 dark:text-foreground-500 mt-3 text-right">
                     ※ 독서 완료 및 놀이마당 낱말 퀴즈 시 실시간 가산
                   </p>
                 </div>
@@ -252,7 +252,7 @@ export default function DashboardPage() {
                   <div className="flex flex-col lg:flex-row gap-3 mb-4">
                     {/* 독서 시간 설정 */}
                     <div className="flex-1 rounded-xl bg-background-100 dark:bg-background-200 border border-background-200/70 dark:border-background-300/50 p-4">
-                      <p className="text-xs text-foreground-500 mb-3">
+                      <p className="text-xs text-foreground-500 dark:text-foreground-700 mb-3">
                         독서 시간 설정
                       </p>
                       <div className="flex items-center gap-3 flex-wrap">
@@ -308,7 +308,7 @@ export default function DashboardPage() {
 
                     {/* 잔여 종료 시간 */}
                     <div className="flex-1 rounded-xl bg-background-100 dark:bg-background-200 border border-background-200/70 dark:border-background-300/50 p-4">
-                      <p className="text-xs text-foreground-500 mb-2">
+                      <p className="text-xs text-foreground-500 dark:text-foreground-700 mb-2">
                         잔여 종료 시간
                       </p>
                       <div className="flex items-center gap-3">
@@ -671,7 +671,7 @@ export default function DashboardPage() {
 
                 {/* Reading history */}
                 <div className="rounded-2xl bg-background-50 dark:bg-background-100 border border-background-200/70 dark:border-background-300/50 p-5 md:p-6">
-                  <p className="text-sm font-label text-foreground-700 mb-4">
+                  <p className="text-sm font-label text-foreground-700 dark:text-foreground-900 mb-4">
                     읽은 동화 히스토리
                   </p>
                   <div className="space-y-3">
@@ -691,7 +691,7 @@ export default function DashboardPage() {
                             {story.subtitle}
                           </p>
                         </div>
-                        <span className="text-xs text-foreground-400 flex-shrink-0">
+                        <span className="text-xs text-foreground-400 dark:text-foreground-600 flex-shrink-0">
                           {story.readAt}
                         </span>
                       </div>
@@ -701,13 +701,13 @@ export default function DashboardPage() {
 
                 {/* Reading report */}
                 <div className="rounded-2xl bg-background-50 dark:bg-background-100 border border-background-200/70 dark:border-background-300/50 p-5 md:p-6">
-                  <p className="text-sm font-label text-foreground-700 mb-4">
+                  <p className="text-sm font-label text-foreground-700 dark:text-foreground-900 mb-4">
                     독서 리포트
                   </p>
                   <div className="grid grid-cols-3 gap-3">
                     {/* Monthly read */}
                     <div className="flex flex-col items-center rounded-xl bg-background-100 dark:bg-background-200 p-4">
-                      <p className="text-xs text-foreground-500 mb-2 text-center">
+                      <p className="text-xs text-foreground-500 dark:text-foreground-700 mb-2 text-center">
                         이번달 독서량
                       </p>
                       <div className="w-14 h-14 rounded-full border-2 border-primary-500 flex items-center justify-center mb-1">
@@ -720,7 +720,7 @@ export default function DashboardPage() {
 
                     {/* Avg time */}
                     <div className="flex flex-col items-center rounded-xl bg-background-100 dark:bg-background-200 p-4">
-                      <p className="text-xs text-foreground-500 mb-2 text-center">
+                      <p className="text-xs text-foreground-500 dark:text-foreground-700 mb-2 text-center">
                         평균 독서 시간
                       </p>
                       <div className="w-14 h-14 rounded-full border-2 border-accent-500 flex items-center justify-center mb-1">
@@ -732,7 +732,7 @@ export default function DashboardPage() {
 
                     {/* Saved count */}
                     <div className="flex flex-col items-center rounded-xl bg-background-100 dark:bg-background-200 p-4">
-                      <p className="text-xs text-foreground-500 mb-2 text-center">
+                      <p className="text-xs text-foreground-500 dark:text-foreground-700 mb-2 text-center">
                         저장된 동화
                       </p>
                       <div className="w-14 h-14 rounded-full border-2 border-secondary-500 flex items-center justify-center mb-1">

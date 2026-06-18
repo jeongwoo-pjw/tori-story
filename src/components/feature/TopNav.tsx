@@ -246,11 +246,11 @@ export default function TopNav({ isLoggedIn = false, onToggleLogin }: TopNavProp
                   <button
                     type="button"
                     onClick={() => setParentLockOpen(true)}
-                    className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-accent-100/60 border border-accent-300 hover:bg-accent-200/80 hover:border-accent-400 transition-colors cursor-pointer whitespace-nowrap"
+                    className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-accent-100/60 dark:bg-accent-900/30 border border-accent-300 dark:border-accent-600 hover:bg-accent-200/80 hover:border-accent-400 transition-colors cursor-pointer whitespace-nowrap"
                     title="부모잠금"
                   >
-                    <i className="ri-lock-unlock-line text-accent-800 w-3.5 h-3.5 flex items-center justify-center text-xs"></i>
-                    <span className="text-[11px] font-label text-accent-900 whitespace-nowrap">부모잠금</span>
+                    <i className="ri-lock-unlock-line text-accent-800 dark:text-accent-300 w-3.5 h-3.5 flex items-center justify-center text-xs"></i>
+                    <span className="text-[11px] font-label text-accent-900 dark:text-accent-300 whitespace-nowrap">부모잠금</span>
                   </button>
 
                   {/* Child switcher — primary/pink color */}
@@ -416,7 +416,7 @@ export default function TopNav({ isLoggedIn = false, onToggleLogin }: TopNavProp
                     <button
                       type="button"
                       onClick={() => setParentLockOpen(true)}
-                      className="w-full flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-label text-accent-900 bg-accent-100/60 border border-accent-300 cursor-pointer whitespace-nowrap"
+                      className="w-full flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-label text-accent-900 dark:text-accent-300 bg-accent-100/60 dark:bg-accent-900/30 border border-accent-300 dark:border-accent-600 cursor-pointer whitespace-nowrap"
                     >
                       <i className="ri-lock-unlock-line w-4 h-4 flex items-center justify-center"></i>
                       부모잠금

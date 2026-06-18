@@ -103,7 +103,7 @@ function ProtagonistSection({
           value={name}
           onChange={(e) => setName(e.target.value)}
           placeholder="예: 민준이"
-          className="w-full px-3 py-2 rounded-xl border border-background-200 bg-background-50 text-foreground-950 focus:outline-none focus:ring-2 focus:ring-primary-400 text-sm"
+          className="w-full px-3 py-2 rounded-xl border border-background-200 bg-background-50 dark:bg-background-200 text-foreground-950 focus:outline-none focus:ring-2 focus:ring-primary-400 text-sm"
         />
       </div>
       <div className="flex-1">
@@ -126,7 +126,7 @@ function ProtagonistSection({
               type="text"
               value={ageInput}
               onChange={(e) => handleAgeInputChange(e.target.value)}
-              className="w-11 px-2 py-1.5 rounded-lg border border-background-200 bg-background-50 text-foreground-950 focus:outline-none focus:ring-2 focus:ring-primary-400 text-sm text-center"
+              className="w-11 px-2 py-1.5 rounded-lg border border-background-200 bg-background-50 dark:bg-background-200 text-foreground-950 focus:outline-none focus:ring-2 focus:ring-primary-400 text-sm text-center"
             />
             <span className="text-xs font-label text-foreground-500">세</span>
           </div>
@@ -218,6 +218,7 @@ export default function CreatePage() {
   const [customSelectTopic, setCustomSelectTopic] = useState("");
   const [customSelectTopicOpen, setCustomSelectTopicOpen] = useState(false);
   const [selectArtStyle, setSelectArtStyle] = useState("watercolor");
+  const [selectLength, setSelectLength] = useState("short");
   const [selectMotifs, setSelectMotifs] = useState<string[]>([]);
   const [selectMotifOpen, setSelectMotifOpen] = useState(true);
 
@@ -335,7 +336,7 @@ export default function CreatePage() {
             </div>
 
             {/* ── 8. 전체 콘텐츠 박스: primary 스트로크 강조 ── */}
-            <div className="rounded-3xl border-2 border-primary-300 bg-background-50 shadow-[0_0_0_4px_oklch(var(--primary-100)/0.5)] p-5 md:p-7">
+            <div className="rounded-3xl border-2 border-primary-300 bg-background-50 dark:bg-background-300 shadow-[0_0_0_4px_oklch(var(--primary-100)/0.5)] p-5 md:p-7">
 
               {/* 3·4. 박스 제목 + 설명 */}
               <div className="mb-5 pb-4 border-b border-background-200/60">
@@ -414,7 +415,7 @@ export default function CreatePage() {
                           value={customSelectTopic}
                           onChange={(e) => setCustomSelectTopic(e.target.value)}
                           placeholder="원하는 주제를 직접 입력해보세요"
-                          className="w-full px-3 py-2 rounded-xl border border-background-200 bg-background-50 text-foreground-950 focus:outline-none focus:ring-2 focus:ring-primary-400 text-sm"
+                          className="w-full px-3 py-2 rounded-xl border border-background-200 bg-background-50 dark:bg-background-200 text-foreground-950 focus:outline-none focus:ring-2 focus:ring-primary-400 text-sm"
                         />
                       </div>
                     )}
@@ -467,6 +468,50 @@ export default function CreatePage() {
                     </div>
                   </div>
 
+                  {/* 동화 분량 — flat */}
+                  <div className="py-4">
+                    <div className="flex items-center gap-1.5 mb-3">
+                      <i className="ri-book-open-line text-primary-600 text-sm"></i>
+                      <h3 className="text-sm font-heading text-foreground-950">동화 분량</h3>
+                    </div>
+                    <div className="grid grid-cols-3 gap-2">
+                      {LENGTH_CARDS.map((card) => {
+                        const active = selectLength === card.id;
+                        return (
+                          <button
+                            key={card.id}
+                            type="button"
+                            onClick={() => {
+                              if (card.isPro) setShowPremiumModal(true);
+                              else setSelectLength(card.id);
+                            }}
+                            className={`relative flex flex-col items-start gap-1.5 py-3 px-3 rounded-xl border transition-all cursor-pointer text-left ${
+                              active
+                                ? "border-primary-500 bg-primary-50 dark:bg-primary-900/30 ring-2 ring-primary-300"
+                                : "border-background-200 dark:border-background-300/60 hover:border-primary-300 hover:bg-primary-50/40"
+                            }`}
+                          >
+                            {!card.isPro && active && (
+                              <span className="absolute top-2 right-2 w-4 h-4 rounded-full bg-primary-500 flex items-center justify-center">
+                                <i className="ri-check-line text-background-50 text-[9px]"></i>
+                              </span>
+                            )}
+                            <div className="flex items-center gap-1.5 flex-wrap pr-5">
+                              <span className="font-heading text-sm text-foreground-950">{card.label}</span>
+                              <div className="flex items-center gap-1">
+                                <span className="text-[10px] text-foreground-500 whitespace-nowrap">{card.pages}</span>
+                                {card.isPro && (
+                                  <span className="px-1 py-0.5 rounded bg-amber-400 text-amber-900 text-[9px] font-label font-semibold leading-none">PRO</span>
+                                )}
+                              </div>
+                            </div>
+                            <p className="text-[10px] text-foreground-500 leading-snug">{card.desc}</p>
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+
                   {/* 하단 nav */}
                   {navRow(createBtn)}
                 </div>
@@ -509,27 +554,27 @@ export default function CreatePage() {
                   {/* STEP 1: 주인공 설정 */}
                   {currentStep === 1 && (
                     <div className="space-y-5">
-                      <div className="rounded-2xl bg-background-50 border border-background-200/70 p-5 md:p-6">
+                      <div className="rounded-2xl bg-background-50 dark:bg-background-200 border border-background-200/70 dark:border-background-300/60 p-5 md:p-6">
                         <label className="block text-sm font-label text-foreground-700 mb-2">오늘 이야기의 주인공은 누구인가요?</label>
                         <textarea
                           value={chatName}
                           onChange={(e) => setChatName(e.target.value)}
                           placeholder="둥근 얼굴에 노란 한복을 입은 여자아이 '미희', 하얀 털이 복실거리는 강아지 '아띠'"
                           rows={3}
-                          className="w-full px-4 py-3 rounded-xl border border-background-200 bg-background-50 text-foreground-950 focus:outline-none focus:ring-2 focus:ring-primary-400 text-sm resize-none min-h-[72px]"
+                          className="w-full px-4 py-3 rounded-xl border border-background-200 bg-background-50 dark:bg-background-200 text-foreground-950 focus:outline-none focus:ring-2 focus:ring-primary-400 text-sm resize-none min-h-[72px]"
                         />
                       </div>
-                      <div className="rounded-2xl bg-background-50 border border-background-200/70 p-5 md:p-6">
+                      <div className="rounded-2xl bg-background-50 dark:bg-background-200 border border-background-200/70 dark:border-background-300/60 p-5 md:p-6">
                         <label className="block text-sm font-label text-foreground-700 mb-2">아이의 나이(또는 학년)를 알려주세요.</label>
                         <input
                           type="text"
                           value={chatAge}
                           onChange={(e) => setChatAge(e.target.value)}
                           placeholder="예: 5세, 초등학교 1학년"
-                          className="w-full px-4 py-3 rounded-xl border border-background-200 bg-background-50 text-foreground-950 focus:outline-none focus:ring-2 focus:ring-primary-400 text-sm"
+                          className="w-full px-4 py-3 rounded-xl border border-background-200 bg-background-50 dark:bg-background-200 text-foreground-950 focus:outline-none focus:ring-2 focus:ring-primary-400 text-sm"
                         />
                       </div>
-                      <div className="rounded-2xl bg-background-50 border border-background-200/70 p-5 md:p-6">
+                      <div className="rounded-2xl bg-background-50 dark:bg-background-200 border border-background-200/70 dark:border-background-300/60 p-5 md:p-6">
                         <label className="block text-sm font-label text-foreground-700 mb-3">아이의 성별을 선택해 주세요.</label>
                         <div className="flex items-center gap-4">
                           {GENDER_OPTIONS.map((opt) => (
@@ -549,7 +594,7 @@ export default function CreatePage() {
                   {/* STEP 2: 주제 설정 */}
                   {currentStep === 2 && (
                     <div className="space-y-5">
-                      <div className="rounded-2xl bg-background-50 border border-background-200/70 p-5 md:p-6">
+                      <div className="rounded-2xl bg-background-50 dark:bg-background-200 border border-background-200/70 dark:border-background-300/60 p-5 md:p-6">
                         <label className="block text-sm font-label text-foreground-700 mb-2">어떤 주제의 동화를 원하시나요?</label>
                         <p className="text-xs text-foreground-500 mb-3">아이에게 전하고 싶은 이야기의 분위기를 선택해주세요.</p>
                         <div className="flex flex-wrap gap-2">
@@ -573,16 +618,16 @@ export default function CreatePage() {
                           <div className="mt-3">
                             <textarea value={customChatTopic} onChange={(e) => setCustomChatTopic(e.target.value)}
                               placeholder="원하는 주제를 직접 입력해보세요" rows={2}
-                              className="w-full px-4 py-3 rounded-xl border border-background-200 bg-background-50 text-foreground-950 focus:outline-none focus:ring-2 focus:ring-primary-400 text-sm resize-none min-h-[48px]" />
+                              className="w-full px-4 py-3 rounded-xl border border-background-200 bg-background-50 dark:bg-background-200 text-foreground-950 focus:outline-none focus:ring-2 focus:ring-primary-400 text-sm resize-none min-h-[48px]" />
                           </div>
                         )}
                       </div>
-                      <div className="rounded-2xl bg-background-50 border border-background-200/70 p-5 md:p-6">
+                      <div className="rounded-2xl bg-background-50 dark:bg-background-200 border border-background-200/70 dark:border-background-300/60 p-5 md:p-6">
                         <label className="block text-sm font-label text-foreground-700 mb-2">동화를 통해 전달하고 싶은 교훈이 있나요?</label>
                         <p className="text-xs text-foreground-500 mb-3">예: 친구와 사이좋게 지내는 법, 포기하지 않는 마음</p>
                         <textarea value={moral} onChange={(e) => setMoral(e.target.value)}
                           placeholder="전달하고 싶은 교훈을 입력해주세요" rows={3}
-                          className="w-full px-4 py-3 rounded-xl border border-background-200 bg-background-50 text-foreground-950 focus:outline-none focus:ring-2 focus:ring-primary-400 text-sm resize-none min-h-[72px]" />
+                          className="w-full px-4 py-3 rounded-xl border border-background-200 bg-background-50 dark:bg-background-200 text-foreground-950 focus:outline-none focus:ring-2 focus:ring-primary-400 text-sm resize-none min-h-[72px]" />
                       </div>
                       {navRow(<>{prevBtn}{nextBtn}</>)}
                     </div>
@@ -591,11 +636,11 @@ export default function CreatePage() {
                   {/* STEP 3: 그림체 설정 */}
                   {currentStep === 3 && (
                     <div className="space-y-5">
-                      <div className="rounded-2xl bg-background-50 border border-background-200/70 p-5 md:p-6">
+                      <div className="rounded-2xl bg-background-50 dark:bg-background-200 border border-background-200/70 dark:border-background-300/60 p-5 md:p-6">
                         <label className="block text-sm font-label text-foreground-700 mb-2">동화의 분위기를 결정하는 그림 스타일을 선택하세요.</label>
                         <textarea value={artStyleDesc} onChange={(e) => setArtStyleDesc(e.target.value)}
                           placeholder="예: 빈티지한 무드가 느껴지는 그림체였으면 좋겠어" rows={3}
-                          className="w-full px-4 py-3 rounded-xl border border-background-200 bg-background-50 text-foreground-950 focus:outline-none focus:ring-2 focus:ring-primary-400 text-sm resize-none min-h-[72px] mb-5" />
+                          className="w-full px-4 py-3 rounded-xl border border-background-200 bg-background-50 dark:bg-background-200 text-foreground-950 focus:outline-none focus:ring-2 focus:ring-primary-400 text-sm resize-none min-h-[72px] mb-5" />
                         <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
                           {ART_STYLES.map((style) => {
                             const active = chatArtStyle === style.id;
@@ -627,7 +672,7 @@ export default function CreatePage() {
                   {/* STEP 4: 동화 설정 */}
                   {currentStep === 4 && (
                     <div className="space-y-5">
-                      <div className="rounded-2xl bg-background-50 border border-background-200/70 p-5 md:p-6">
+                      <div className="rounded-2xl bg-background-50 dark:bg-background-200 border border-background-200/70 dark:border-background-300/60 p-5 md:p-6">
                         <p className="text-sm font-heading text-foreground-950 mb-4">동화 분량</p>
                         <div className="grid grid-cols-3 gap-3">
                           {LENGTH_CARDS.map((card) => {
