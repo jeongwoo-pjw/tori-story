@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import TopNav from "@/components/feature/TopNav";
 import Footer from "@/components/feature/Footer";
 import FoldSidebar from "@/components/feature/FoldSidebar";
@@ -10,6 +10,13 @@ import FreeTrialSection from "./components/FreeTrialSection";
 export default function Home() {
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(true);
 
+  // 비로그인 시 사이드바 너비 0으로 초기화
+  useEffect(() => {
+    if (!isLoggedIn) {
+      document.documentElement.style.setProperty("--sidebar-width", "0px");
+    }
+  }, [isLoggedIn]);
+
   return (
     <main className="min-h-screen bg-background-50 text-foreground-950">
       <TopNav
@@ -17,9 +24,9 @@ export default function Home() {
         onToggleLogin={() => setIsLoggedIn((v) => !v)}
       />
 
-      <FoldSidebar />
+      {isLoggedIn && <FoldSidebar />}
 
-      <div className="pl-[var(--sidebar-width)]">
+      <div className={isLoggedIn ? "pl-[var(--sidebar-width)]" : ""}>
         <HeroSection isLoggedIn={isLoggedIn} />
 
         {isLoggedIn ? (

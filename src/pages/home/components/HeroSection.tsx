@@ -21,7 +21,7 @@ export default function HeroSection({ isLoggedIn = false }: HeroSectionProps) {
 
       {/* Hero content - centered */}
       <div className="relative z-10 w-full px-4 md:px-8 text-center pt-16 md:pt-20">
-        <p className="text-[10px] md:text-xs mb-3 flex justify-center flex-wrap">
+        <p className="text-xs md:text-sm mb-3 flex justify-center flex-wrap">
           {TAGLINE.split("").map((char, i) => (
             <span
               key={i}
@@ -37,14 +37,14 @@ export default function HeroSection({ isLoggedIn = false }: HeroSectionProps) {
         </p>
 
         <h2
-          className="font-heading text-xl md:text-3xl lg:text-4xl text-white leading-tight max-w-3xl mx-auto animate-fade-up"
+          className="font-heading text-2xl md:text-4xl lg:text-5xl text-white leading-tight max-w-3xl mx-auto animate-fade-up"
           style={{ animationDelay: "0.1s" }}
         >
           옛이야기처럼 오래 남을, 우리 아이만의 이야기
         </h2>
 
         <p
-          className="mt-4 md:mt-5 text-xs md:text-sm text-white/80 leading-relaxed max-w-xl mx-auto animate-fade-up"
+          className="mt-4 md:mt-5 text-sm md:text-base text-white/80 leading-relaxed max-w-xl mx-auto animate-fade-up"
           style={{ animationDelay: "0.2s" }}
         >
           아이의 작은 상상과 소중한 하루를 담아

@@ -100,8 +100,8 @@ export default {
           "100%": { opacity: "1", transform: "translateY(0)" },
         },
         "bounce-slow": {
-          "0%, 100%": { transform: "translateY(0)" },
-          "50%": { transform: "translateY(8px)" },
+          "0%, 100%": { transform: "translateY(-6px)" },
+          "50%": { transform: "translateY(10px)" },
         },
       },
       animation: {
@@ -109,7 +109,7 @@ export default {
         wiggle: "wiggle 3s ease-in-out infinite",
         twinkle: "twinkle 2.4s ease-in-out infinite",
         "fade-up": "fade-up 0.7s ease-out both",
-        "bounce-slow": "bounce-slow 2s ease-in-out infinite",
+        "bounce-slow": "bounce-slow 2.2s ease-in-out infinite",
       },
     },
   },
