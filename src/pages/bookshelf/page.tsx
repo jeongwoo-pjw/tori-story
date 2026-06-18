@@ -67,11 +67,11 @@ export default function BookshelfPage() {
                     key={story.id}
                     className="rounded-2xl bg-background-50 dark:bg-background-100 border border-background-200/70 dark:border-background-300/50 overflow-hidden"
                   >
-                    <div className="w-full aspect-[16/10] relative overflow-hidden bg-secondary-100">
+                    <div className="w-full aspect-[4/3] relative overflow-hidden bg-secondary-50 flex items-center justify-center">
                       <img
                         src={story.image}
                         alt={story.title}
-                        className="w-full h-full object-cover object-top"
+                        className={`w-full h-full ${story.id === "s-006" ? "object-contain" : "object-cover"}`}
                       />
                       <span className="absolute top-2 left-2 px-2 py-0.5 rounded-full bg-background-50/95 backdrop-blur text-xs font-label text-foreground-900 whitespace-nowrap">
                         {story.tag}

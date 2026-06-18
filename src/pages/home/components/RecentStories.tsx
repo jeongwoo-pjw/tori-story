@@ -63,12 +63,12 @@ export default function RecentStories({ isLoggedIn }: RecentStoriesProps) {
               className="snap-start flex-shrink-0 w-[320px] md:w-[380px] group cursor-pointer"
             >
               <div className="relative rounded-2xl overflow-hidden bg-background-50 border border-background-200 group-hover:border-primary-300 transition-all">
-                {/* Wide horizontal image */}
-                <div className="aspect-[16/10] overflow-hidden">
+                {/* Story cover image */}
+                <div className="aspect-[4/3] overflow-hidden bg-secondary-50 flex items-center justify-center">
                   <img
                     src={story.cover}
                     alt={`${story.title} 동화 표지`}
-                    className="w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-500"
+                    className={`w-full h-full group-hover:scale-105 transition-transform duration-500 ${story.id === "s-006" ? "object-contain" : "object-cover"}`}
                   />
                 </div>
                 {/* Tag badge */}
