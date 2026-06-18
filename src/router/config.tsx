@@ -1,6 +1,7 @@
 import type { RouteObject } from "react-router-dom";
 import NotFound from "../pages/NotFound";
 import Home from "../pages/home/page";
+import Create from "../pages/create/page";
 import CreateSelect from "../pages/create-select/page";
 import CreateChat from "../pages/create-chat/page";
 import CreateProgress from "../pages/create-progress/page";
@@ -21,6 +22,10 @@ const routes: RouteObject[] = [
   {
     path: "/",
     element: <Home />,
+  },
+  {
+    path: "/create",
+    element: <Create />,
   },
   {
     path: "/create/select",

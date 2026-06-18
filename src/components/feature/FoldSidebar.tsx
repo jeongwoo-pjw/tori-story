@@ -2,14 +2,7 @@ import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 
 const sidebarMenus = [
-  {
-    icon: "ri-book-open-line",
-    label: "동화 만들기",
-    subItems: [
-      { label: "선택형 동화", path: "/create/select" },
-      { label: "대화형 동화", path: "/create/chat" },
-    ],
-  },
+  { icon: "ri-book-open-line", label: "동화 만들기", path: "/create" },
   { icon: "ri-puzzle-line", label: "놀이마당", path: "/report" },
   { icon: "ri-book-3-line", label: "내 책장", path: "/bookshelf" },
   { icon: "ri-dashboard-line", label: "아이 성장 분석", path: "/dashboard" },
@@ -40,7 +33,10 @@ export default function FoldSidebar() {
     setOpenSub(openSub === label ? null : label);
   };
 
-  const isActive = (path: string) => location.pathname === path;
+  const isActive = (path: string) =>
+    path === "/create"
+      ? location.pathname.startsWith("/create")
+      : location.pathname === path;
   const isParentActive = (subItems: { path: string }[]) =>
     subItems.some((sub) => location.pathname === sub.path);
 
