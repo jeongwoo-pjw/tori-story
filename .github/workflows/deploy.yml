@@ -34,6 +34,7 @@ jobs:
         run: npm run build
         env:
           BASE_PATH: /tori-story/
+          VITE_SOLAR_API_KEY: ${{ secrets.VITE_SOLAR_API_KEY }}
 
       - name: Copy index.html to 404.html (SPA routing)
         run: cp out/index.html out/404.html

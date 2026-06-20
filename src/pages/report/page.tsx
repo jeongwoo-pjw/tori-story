@@ -1,7 +1,8 @@
 import { useState, useEffect, useRef } from "react";
 import TopNav from "@/components/feature/TopNav";
 import FoldSidebar from "@/components/feature/FoldSidebar";
-import { RECENT_STORIES } from "@/mocks/bookshelf";
+import { getLibrary, getStoryById, saveAnalyticsRecord } from "@/services/library";
+import { getActivityData, generateActivityData, type ActivityData } from "@/services/activity";
 
 /* ── 상수 ─────────────────────────────────────────────── */
 
@@ -12,26 +13,7 @@ const ACTIVITIES = [
   { id: "vocabulary", title: "어휘활동", subtitle: "오늘의 말을 배워봐요", tagColor: "bg-foreground-100 text-foreground-900", image: `${__BASE_PATH__}activity-vocabulary.png` },
 ];
 
-const STORY_DESCRIPTIONS: Record<string, string> = {
-  "s-001": "도깨비와 함께 용기의 의미를 배우고 어휘를 탐험해요",
-  "s-002": "호랑이 친구와 우정의 소중함을 느끼며 낱말을 익혀요",
-  "s-003": "설날 밤의 따뜻한 가족 이야기로 감정을 표현해요",
-  "s-004": "제주 바다에서 자연의 신비를 담은 낱말을 배워요",
-  "s-005": "탈춤 속 지혜로운 토끼의 이야기로 창의력을 키워요",
-  "s-006": "별빛과 한복 속 우리 문화의 아름다운 말을 찾아요",
-};
-
-type ActivityContent =
-  | { type: "text"; intro: string; question: string; placeholder: string }
-  | { type: "emotion"; intro: string; question: string; options: string[] }
-  | { type: "choice"; intro: string; question: string; options: string[] };
-
-const ACTIVITY_CONTENT: Record<string, ActivityContent> = {
-  comprehension: { type: "text", intro: "동화 속 이야기를 얼마나 잘 이해했는지 확인해봐요!", question: "주인공이 이야기 속에서 가장 어려웠던 순간은 언제였나요? 자유롭게 적어보세요.", placeholder: "주인공의 마음을 상상하며 적어보세요..." },
-  emotion: { type: "emotion", intro: "이야기를 읽으며 느낀 감정을 탐색해봐요!", question: "이 이야기를 읽고 어떤 감정이 가장 크게 느껴졌나요?", options: ["😊 기쁨", "😢 슬픔", "😮 놀람", "😰 걱정", "😌 평온", "🥰 따뜻함"] },
-  creative: { type: "text", intro: "상상력을 마음껏 발휘해봐요!", question: "이야기의 결말을 나만의 방식으로 바꿔본다면 어떻게 될까요?", placeholder: "어떤 결말이면 좋을지 상상해서 적어보세요..." },
-  vocabulary: { type: "choice", intro: "오늘 동화에서 배운 낱말을 기억해봐요!", question: "다음 중 주인공이 가장 많이 보여준 모습과 어울리는 낱말을 골라보세요.", options: ["🦁 용기", "🤝 우정", "⭐ 지혜", "🌱 노력"] },
-};
+const EMOTION_OPTIONS = ["😊 기쁨", "😢 슬픔", "😮 놀람", "😰 걱정", "😌 평온", "🥰 따뜻함"];
 
 /* ── 브레이크아웃 게임 ──────────────────────────────────── */
 
@@ -247,11 +229,16 @@ function BreakoutGame({ onExit }: { onExit: () => void }) {
 /* ── 컴포넌트 ──────────────────────────────────────────── */
 
 export default function PlaygroundPage() {
+  const library = getLibrary();
+
   const [selectedStory, setSelectedStory] = useState<string | null>(null);
   const [currentActivity, setCurrentActivity] = useState<string | null>(null);
   const [completedActivities, setCompletedActivities] = useState<Record<string, string[]>>(() => {
     try { const saved = localStorage.getItem("tori-playground"); return saved ? JSON.parse(saved) : {}; } catch { return {}; }
   });
+  const [activityData, setActivityData] = useState<ActivityData | null>(null);
+  const [activityLoading, setActivityLoading] = useState(false);
+  const [activityError, setActivityError] = useState<string | null>(null);
   const [showCongrats, setShowCongrats] = useState(false);
   const [lastCompletedTitle, setLastCompletedTitle] = useState("");
   const [showSaveResult, setShowSaveResult] = useState(false);
@@ -263,16 +250,38 @@ export default function PlaygroundPage() {
     localStorage.setItem("tori-playground", JSON.stringify(completedActivities));
   }, [completedActivities]);
 
-  const currentStory = selectedStory ? RECENT_STORIES.find((s) => s.id === selectedStory) : null;
+  const currentEntry = selectedStory ? library.find((e) => e.id === selectedStory) : null;
   const doneList = selectedStory ? (completedActivities[selectedStory] ?? []) : [];
   const allDone = doneList.length === ACTIVITIES.length;
 
   const enterActivity = (actId: string) => {
-    setCurrentActivity(actId); setTextAnswer(""); setSelectedChoice(null);
+    setCurrentActivity(actId);
+    setTextAnswer("");
+    setSelectedChoice(null);
+    setActivityError(null);
+
+    if (!selectedStory) return;
+    const cached = getActivityData(selectedStory);
+    if (cached) {
+      setActivityData(cached);
+      return;
+    }
+
+    const story = getStoryById(selectedStory);
+    const age = currentEntry?.age ?? 5;
+    if (!story) {
+      setActivityData(null);
+      return;
+    }
+
+    setActivityLoading(true);
+    generateActivityData(selectedStory, story, age)
+      .then((data) => { setActivityData(data); setActivityLoading(false); })
+      .catch((err: Error) => { setActivityError(err.message); setActivityLoading(false); });
   };
 
   const handleCompleteActivity = () => {
-    if (!selectedStory || !currentActivity) return;
+    if (!selectedStory || !currentActivity || !currentEntry) return;
     const act = ACTIVITIES.find((a) => a.id === currentActivity)!;
     setLastCompletedTitle(act.title);
     setCompletedActivities((prev) => {
@@ -280,6 +289,21 @@ export default function PlaygroundPage() {
       if (existing.includes(currentActivity)) return prev;
       return { ...prev, [selectedStory]: [...existing, currentActivity] };
     });
+
+    // save analytics
+    const today = new Date().toISOString().slice(0, 10);
+    const existing = completedActivities[selectedStory] ?? [];
+    const newCompleted = existing.includes(currentActivity) ? existing : [...existing, currentActivity];
+    const vocabCount = newCompleted.includes("vocabulary") ? 6 : 0;
+    saveAnalyticsRecord({
+      date: today,
+      storyId: selectedStory,
+      storyTitle: currentEntry.title,
+      emotionChoice: currentActivity === "emotion" ? (selectedChoice ?? undefined) : undefined,
+      completedActivities: newCompleted,
+      vocabCount,
+    });
+
     setShowCongrats(true);
   };
 
@@ -291,11 +315,35 @@ export default function PlaygroundPage() {
   }
 
   /* ── 활동 상세 뷰 ─────────────────────────────────────── */
-  if (currentActivity && selectedStory && currentStory) {
+  if (currentActivity && selectedStory && currentEntry) {
     const act = ACTIVITIES.find((a) => a.id === currentActivity)!;
-    const content = ACTIVITY_CONTENT[currentActivity];
     const isDone = doneList.includes(currentActivity);
-    const canSubmit = content.type === "text" ? textAnswer.trim().length > 0 : selectedChoice !== null;
+    const isText = currentActivity === "comprehension" || currentActivity === "creative";
+    const isEmotion = currentActivity === "emotion";
+    const canSubmit = isText ? textAnswer.trim().length > 0 : selectedChoice !== null;
+
+    const getQuestion = (): string => {
+      if (!activityData) return "활동 질문을 불러오는 중...";
+      if (currentActivity === "comprehension") return activityData.comprehension.question;
+      if (currentActivity === "emotion") return activityData.emotion.question;
+      if (currentActivity === "creative") return activityData.creative.prompt;
+      if (currentActivity === "vocabulary") return "오늘 동화에서 배운 낱말 카드를 확인해보세요!";
+      return "";
+    };
+
+    const getPlaceholder = (): string => {
+      if (currentActivity === "comprehension") return "주인공의 마음을 상상하며 적어보세요...";
+      if (currentActivity === "creative") return activityData?.creative.hint ?? "자유롭게 상상해서 적어보세요...";
+      return "답변을 입력해 주세요";
+    };
+
+    const getModelAnswer = (): string | null => {
+      if (!activityData) return null;
+      if (currentActivity === "comprehension") return activityData.comprehension.modelAnswer;
+      return null;
+    };
+
+    const [showAnswer, setShowAnswer] = useState(false);
 
     return (
       <main className="min-h-screen bg-background-100 dark:bg-background-50 text-foreground-950 flex flex-col">
@@ -328,54 +376,101 @@ export default function PlaygroundPage() {
                   </div>
                   <div className="p-5 flex flex-col justify-center">
                     <span className={`inline-block px-2.5 py-1 rounded-lg text-xs font-label mb-2 ${act.tagColor}`}>{act.title}</span>
-                    <p className="text-sm text-foreground-600 leading-relaxed">{content.intro}</p>
+                    <p className="text-sm text-foreground-600 leading-relaxed">{act.subtitle}</p>
                   </div>
                 </div>
-                <div className="rounded-2xl bg-background-50 border border-background-200 p-5 md:p-6">
-                  <p className="font-label font-semibold text-foreground-950 mb-4 leading-relaxed">{content.question}</p>
-                  {content.type === "text" && (
-                    <textarea
-                      value={textAnswer}
-                      onChange={(e) => setTextAnswer(e.target.value)}
-                      placeholder={content.placeholder}
-                      rows={4}
-                      className="w-full rounded-xl border border-background-200 bg-background-100 px-4 py-3 text-sm font-label text-foreground-900 placeholder:text-foreground-400 focus:outline-none focus:ring-2 focus:ring-primary-400 resize-none transition"
-                    />
-                  )}
-                  {content.type === "emotion" && (
-                    <div className="grid grid-cols-3 gap-2">
-                      {content.options.map((opt) => (
+
+                {activityLoading ? (
+                  <div className="rounded-2xl bg-background-50 border border-background-200 p-10 flex flex-col items-center gap-3">
+                    <i className="ri-loader-4-line text-3xl text-primary-500 animate-spin"></i>
+                    <p className="text-sm font-label text-foreground-500">Solar AI가 활동 질문을 만들고 있어요...</p>
+                  </div>
+                ) : activityError ? (
+                  <div className="rounded-2xl bg-red-50 border border-red-200 p-5 text-center">
+                    <p className="text-sm text-red-600 font-label">{activityError}</p>
+                  </div>
+                ) : (
+                  <div className="rounded-2xl bg-background-50 border border-background-200 p-5 md:p-6">
+                    <p className="font-label font-semibold text-foreground-950 mb-4 leading-relaxed">{getQuestion()}</p>
+
+                    {/* 어휘 카드 */}
+                    {currentActivity === "vocabulary" && activityData && (
+                      <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+                        {activityData.vocabulary.map((card, i) => (
+                          <div key={i} className="rounded-xl border border-primary-200 bg-primary-50/40 p-3">
+                            <p className="font-heading text-base text-primary-700 mb-1">{card.word}</p>
+                            <p className="text-xs text-foreground-600 leading-snug mb-1.5">{card.meaning}</p>
+                            <p className="text-xs text-foreground-400 italic leading-snug">"{card.example}"</p>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+
+                    {/* 텍스트 답변 */}
+                    {isText && (
+                      <textarea
+                        value={textAnswer}
+                        onChange={(e) => setTextAnswer(e.target.value)}
+                        placeholder={getPlaceholder()}
+                        rows={4}
+                        className="w-full rounded-xl border border-background-200 bg-background-100 px-4 py-3 text-sm font-label text-foreground-900 placeholder:text-foreground-400 focus:outline-none focus:ring-2 focus:ring-primary-400 resize-none transition"
+                      />
+                    )}
+
+                    {/* 감정 선택 */}
+                    {isEmotion && (
+                      <div className="grid grid-cols-3 gap-2">
+                        {EMOTION_OPTIONS.map((opt) => (
+                          <button
+                            key={opt}
+                            type="button"
+                            onClick={() => setSelectedChoice(opt)}
+                            className={`py-3 rounded-xl border-2 text-sm font-label transition-all cursor-pointer hover:scale-105 active:scale-95 ${selectedChoice === opt ? "border-primary-500 bg-primary-50 text-primary-700 font-semibold" : "border-background-200 bg-background-100 text-foreground-700 hover:border-primary-300"}`}
+                          >
+                            {opt}
+                          </button>
+                        ))}
+                      </div>
+                    )}
+
+                    {/* 어휘 완료 선택 버튼 */}
+                    {currentActivity === "vocabulary" && activityData && (
+                      <div className="mt-4">
                         <button
-                          key={opt}
                           type="button"
-                          onClick={() => setSelectedChoice(opt)}
-                          className={`py-3 rounded-xl border-2 text-sm font-label transition-all cursor-pointer hover:scale-105 active:scale-95 ${selectedChoice === opt ? "border-primary-500 bg-primary-50 text-primary-700 font-semibold" : "border-background-200 bg-background-100 text-foreground-700 hover:border-primary-300"}`}
+                          onClick={() => setSelectedChoice("done")}
+                          className={`w-full py-3 rounded-xl border-2 text-sm font-label transition-all cursor-pointer ${selectedChoice === "done" ? "border-primary-500 bg-primary-50 text-primary-700" : "border-background-200 bg-background-100 text-foreground-700 hover:border-primary-300"}`}
                         >
-                          {opt}
+                          {selectedChoice === "done" ? "✓ 낱말을 모두 확인했어요!" : "낱말 카드를 모두 확인했어요"}
                         </button>
-                      ))}
-                    </div>
-                  )}
-                  {content.type === "choice" && (
-                    <div className="grid grid-cols-2 gap-3">
-                      {content.options.map((opt) => (
+                      </div>
+                    )}
+
+                    {/* 모범답안 */}
+                    {isText && getModelAnswer() && textAnswer.trim().length > 0 && (
+                      <div className="mt-3">
                         <button
-                          key={opt}
                           type="button"
-                          onClick={() => setSelectedChoice(opt)}
-                          className={`py-4 rounded-2xl border-2 text-base font-label font-semibold transition-all cursor-pointer hover:scale-105 active:scale-95 ${selectedChoice === opt ? "border-primary-500 bg-primary-50 text-primary-700" : "border-background-200 bg-background-100 text-foreground-800 hover:border-primary-300"}`}
+                          onClick={() => setShowAnswer(!showAnswer)}
+                          className="text-xs text-primary-600 underline cursor-pointer font-label"
                         >
-                          {opt}
+                          {showAnswer ? "모범답안 닫기" : "모범답안 확인하기"}
                         </button>
-                      ))}
-                    </div>
-                  )}
-                </div>
+                        {showAnswer && (
+                          <div className="mt-2 rounded-xl bg-primary-50 border border-primary-200 p-3">
+                            <p className="text-xs font-label text-primary-800 leading-relaxed">{getModelAnswer()}</p>
+                          </div>
+                        )}
+                      </div>
+                    )}
+                  </div>
+                )}
+
                 <button
                   type="button"
                   onClick={handleCompleteActivity}
-                  disabled={!canSubmit}
-                  className={`w-full py-3.5 rounded-xl font-label font-semibold text-sm transition-all duration-200 shadow-md ${canSubmit ? "bg-gradient-to-r from-primary-500 to-amber-400 text-foreground-950 hover:scale-[1.02] active:scale-95 cursor-pointer shadow-primary-200/50" : "bg-background-200 text-foreground-400 cursor-not-allowed"}`}
+                  disabled={!canSubmit || activityLoading}
+                  className={`w-full py-3.5 rounded-xl font-label font-semibold text-sm transition-all duration-200 shadow-md ${canSubmit && !activityLoading ? "bg-gradient-to-r from-primary-500 to-amber-400 text-foreground-950 hover:scale-[1.02] active:scale-95 cursor-pointer shadow-primary-200/50" : "bg-background-200 text-foreground-400 cursor-not-allowed"}`}
                 >
                   {isDone ? "다시 제출하기" : "활동 완료"}
                 </button>
@@ -549,72 +644,86 @@ export default function PlaygroundPage() {
                 어휘력을 재미있게 완성해 보세요!
               </p>
             </div>
-            <div className="grid grid-cols-2 md:grid-cols-3 gap-4 md:gap-6">
-              {RECENT_STORIES.map((story) => {
-                const doneCount = (completedActivities[story.id] ?? []).length;
-                const allStoreDone = doneCount === ACTIVITIES.length;
-                const inProgress = doneCount > 0 && !allStoreDone;
-                return (
-                  <div
-                    key={story.id}
-                    className="rounded-2xl bg-background-50 dark:bg-background-100 border border-background-200/70 dark:border-background-300/50 overflow-hidden flex flex-col"
-                  >
-                    <div className="w-full aspect-[4/3] relative overflow-hidden bg-secondary-50 flex items-center justify-center">
-                      <img
-                        src={story.image}
-                        alt={story.title}
-                        className={`w-full h-full ${story.id === "s-006" ? "object-contain" : "object-cover"}`}
-                      />
-                      <span className="absolute top-2 left-2 px-2 py-0.5 rounded-full bg-background-50/95 backdrop-blur text-xs font-label text-foreground-900 whitespace-nowrap">
-                        {story.tag}
-                      </span>
-                      {allStoreDone && (
-                        <span className="absolute top-2 right-2 px-2 py-0.5 rounded-full bg-emerald-500 text-white text-xs font-label whitespace-nowrap">
-                          🎉 완료
+
+            {library.length === 0 ? (
+              <div className="flex flex-col items-center justify-center py-20 text-foreground-400">
+                <i className="ri-quill-pen-line text-5xl mb-4"></i>
+                <p className="text-base font-label mb-2">아직 만든 동화가 없어요</p>
+                <p className="text-sm mb-5">동화를 먼저 만들고 독후활동을 시작해보세요!</p>
+                <a href="/create" className="px-6 py-2.5 rounded-full bg-primary-500 hover:bg-primary-600 text-foreground-950 text-sm font-label transition-colors cursor-pointer">
+                  동화 만들기
+                </a>
+              </div>
+            ) : (
+              <div className="grid grid-cols-2 md:grid-cols-3 gap-4 md:gap-6">
+                {library.map((entry) => {
+                  const doneCount = (completedActivities[entry.id] ?? []).length;
+                  const allStoreDone = doneCount === ACTIVITIES.length;
+                  const inProgress = doneCount > 0 && !allStoreDone;
+                  return (
+                    <div
+                      key={entry.id}
+                      className="rounded-2xl bg-background-50 dark:bg-background-100 border border-background-200/70 dark:border-background-300/50 overflow-hidden flex flex-col"
+                    >
+                      <div className="w-full aspect-[4/3] relative overflow-hidden bg-secondary-50 flex items-center justify-center">
+                        {entry.image ? (
+                          <img src={entry.image} alt={entry.title} className="w-full h-full object-cover" />
+                        ) : (
+                          <div className="w-full h-full flex items-center justify-center bg-primary-50">
+                            <i className="ri-book-open-line text-3xl text-primary-300"></i>
+                          </div>
+                        )}
+                        <span className="absolute top-2 left-2 px-2 py-0.5 rounded-full bg-background-50/95 backdrop-blur text-xs font-label text-foreground-900 whitespace-nowrap">
+                          {entry.tag}
                         </span>
-                      )}
-                      {inProgress && (
-                        <span className="absolute top-2 right-2 px-2 py-0.5 rounded-full bg-primary-500 text-foreground-950 text-xs font-label whitespace-nowrap">
-                          {doneCount}/4
-                        </span>
-                      )}
+                        {allStoreDone && (
+                          <span className="absolute top-2 right-2 px-2 py-0.5 rounded-full bg-emerald-500 text-white text-xs font-label whitespace-nowrap">
+                            🎉 완료
+                          </span>
+                        )}
+                        {inProgress && (
+                          <span className="absolute top-2 right-2 px-2 py-0.5 rounded-full bg-primary-500 text-foreground-950 text-xs font-label whitespace-nowrap">
+                            {doneCount}/4
+                          </span>
+                        )}
+                      </div>
+                      <div className="p-4 flex flex-col flex-1 gap-2">
+                        <h3 className="text-sm font-label font-semibold text-foreground-950 line-clamp-2 leading-snug">
+                          {entry.title}
+                        </h3>
+                        <p className="text-xs text-foreground-500 leading-relaxed flex-1">
+                          {entry.tag} 관련 어휘와 감정을 탐색해요
+                        </p>
+                        {doneCount > 0 && (
+                          <div className="flex items-center gap-1.5">
+                            {ACTIVITIES.map((act) => (
+                              <div
+                                key={act.id}
+                                className={`w-2 h-2 rounded-full transition-colors ${(completedActivities[entry.id] ?? []).includes(act.id) ? "bg-emerald-500" : "bg-background-200"}`}
+                              />
+                            ))}
+                            <span className="text-xs text-foreground-400 ml-0.5">{doneCount}/4 완료</span>
+                          </div>
+                        )}
+                        <button
+                          type="button"
+                          onClick={() => setSelectedStory(entry.id)}
+                          className={`w-full py-2.5 rounded-xl text-xs font-label font-semibold transition-all duration-200 cursor-pointer hover:scale-[1.02] active:scale-95 shadow-sm ${
+                            allStoreDone
+                              ? "bg-emerald-500 text-white hover:bg-emerald-600"
+                              : inProgress
+                                ? "bg-gradient-to-r from-primary-400 to-primary-500 text-foreground-950 hover:from-primary-500 hover:to-primary-600 shadow-primary-200"
+                                : "bg-gradient-to-r from-primary-500 to-amber-400 text-foreground-950 hover:from-primary-600 hover:to-amber-500 shadow-primary-200"
+                          }`}
+                        >
+                          {allStoreDone ? "🏆 모두 완료!" : inProgress ? "놀이터 이어가기" : "퀴즈 놀이터 입장"}
+                        </button>
+                      </div>
                     </div>
-                    <div className="p-4 flex flex-col flex-1 gap-2">
-                      <h3 className="text-sm font-label font-semibold text-foreground-950 line-clamp-2 leading-snug">
-                        {story.title}
-                      </h3>
-                      <p className="text-xs text-foreground-500 leading-relaxed flex-1">
-                        {STORY_DESCRIPTIONS[story.id]}
-                      </p>
-                      {doneCount > 0 && (
-                        <div className="flex items-center gap-1.5">
-                          {ACTIVITIES.map((act) => (
-                            <div
-                              key={act.id}
-                              className={`w-2 h-2 rounded-full transition-colors ${(completedActivities[story.id] ?? []).includes(act.id) ? "bg-emerald-500" : "bg-background-200"}`}
-                            />
-                          ))}
-                          <span className="text-xs text-foreground-400 ml-0.5">{doneCount}/4 완료</span>
-                        </div>
-                      )}
-                      <button
-                        type="button"
-                        onClick={() => setSelectedStory(story.id)}
-                        className={`w-full py-2.5 rounded-xl text-xs font-label font-semibold transition-all duration-200 cursor-pointer hover:scale-[1.02] active:scale-95 shadow-sm ${
-                          allStoreDone
-                            ? "bg-emerald-500 text-white hover:bg-emerald-600"
-                            : inProgress
-                              ? "bg-gradient-to-r from-primary-400 to-primary-500 text-foreground-950 hover:from-primary-500 hover:to-primary-600 shadow-primary-200"
-                              : "bg-gradient-to-r from-primary-500 to-amber-400 text-foreground-950 hover:from-primary-600 hover:to-amber-500 shadow-primary-200"
-                        }`}
-                      >
-                        {allStoreDone ? "🏆 모두 완료!" : inProgress ? "놀이터 이어가기" : "퀴즈 놀이터 입장"}
-                      </button>
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
+                  );
+                })}
+              </div>
+            )}
           </div>
         </div>
       </div>

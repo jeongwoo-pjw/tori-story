@@ -4,17 +4,17 @@ import TopNav from "@/components/feature/TopNav";
 import FoldSidebar from "@/components/feature/FoldSidebar";
 import {
   CHILD_PROFILE,
-  READING_HISTORY,
   READING_REPORT,
   NOTIFICATIONS,
   FOCUS_SETTINGS,
-  WEEKLY_READING_DATA,
-  LAST_WEEK_READING_DATA,
-  MONTHLY_READING_DATA,
-  EMOTION_DATA,
   RECOMMENDATIONS,
-  CHILDREN_LIST,
 } from "@/mocks/dashboard";
+import {
+  getLibrary,
+  computeVocabGrowth,
+  computeEmotionDistribution,
+  computeReadingHistory,
+} from "@/services/library";
 
 export default function DashboardPage() {
   const [animHeights, setAnimHeights] = useState<number[]>([]);
@@ -23,14 +23,20 @@ export default function DashboardPage() {
   const [showUserDropdown, setShowUserDropdown] = useState(false);
   const [showPeriodDropdown, setShowPeriodDropdown] = useState(false);
   const [selectedPeriod, setSelectedPeriod] = useState("이번 주");
-  const [selectedChild, setSelectedChild] = useState("한담이");
+
+  const library = getLibrary();
+  const weeklyData = computeVocabGrowth(7);
+  const monthlyData = computeVocabGrowth(30);
+  const readingHistory = computeReadingHistory(5);
+  const emotionDist = computeEmotionDistribution();
+
   const readingData =
     selectedPeriod === "이번 달"
-      ? MONTHLY_READING_DATA
+      ? monthlyData
       : selectedPeriod === "지난 주"
-      ? LAST_WEEK_READING_DATA
-      : WEEKLY_READING_DATA;
-  const maxValue = Math.max(...readingData.map((d) => d.value));
+      ? weeklyData
+      : weeklyData;
+  const maxValue = Math.max(...readingData.map((d) => d.value), 1);
   const [progressAnimating, setProgressAnimating] = useState(false);
   const [focusHours, setFocusHours] = useState(FOCUS_SETTINGS.readingTime.hours);
   const [focusMinutes, setFocusMinutes] = useState(FOCUS_SETTINGS.readingTime.minutes);
@@ -345,38 +351,35 @@ export default function DashboardPage() {
                     <p className="text-xs font-label text-foreground-400 dark:text-foreground-600 mb-4 leading-snug">놀이마당 후 아이가 발각한 자율 정서 교감 분포도 (실시간 누계)</p>
                     {/* 버블 컨테이너 — flex-1로 남은 높이 채움 */}
                     <div className="flex-1 rounded-xl bg-background-100 dark:bg-background-200 border border-background-200/60 dark:border-background-300/50 min-h-[200px] flex items-center justify-center overflow-hidden">
-                      <div className="flex items-center">
-                        {/* 기쁨 */}
-                        <div style={{ transform: "translateY(0px)", marginRight: "-24px", zIndex: 3, position: "relative" }}>
-                          <div
-                            className="animate-pulse-bubble flex flex-col items-center justify-center rounded-full"
-                            style={{ width: 140, height: 140, backgroundColor: "oklch(var(--primary-500))", animationDelay: "0s" }}
-                          >
-                            <span className="text-white font-label text-xs leading-none mb-1.5">{EMOTION_DATA[0].label}</span>
-                            <span className="text-white font-label font-bold text-3xl leading-none">{EMOTION_DATA[0].value}%</span>
-                          </div>
+                      {emotionDist.length === 0 ? (
+                        <div className="flex flex-col items-center gap-2 text-foreground-400">
+                          <i className="ri-emotion-line text-3xl"></i>
+                          <p className="text-xs font-label">놀이마당 완료 후 감정이 기록돼요</p>
                         </div>
-                        {/* 놀람 */}
-                        <div style={{ transform: "translateY(22px)", marginRight: "-18px", zIndex: 2, position: "relative" }}>
-                          <div
-                            className="animate-pulse-bubble flex flex-col items-center justify-center rounded-full"
-                            style={{ width: 110, height: 110, backgroundColor: "oklch(var(--accent-500))", animationDelay: "0.5s" }}
-                          >
-                            <span className="text-white font-label text-[11px] leading-none mb-1">{EMOTION_DATA[1].label}</span>
-                            <span className="text-white font-label font-bold text-xl leading-none">{EMOTION_DATA[1].value}%</span>
-                          </div>
+                      ) : (
+                        <div className="flex items-center">
+                          {emotionDist.slice(0, 3).map((e, idx) => {
+                            const sizes = [140, 110, 90];
+                            const yOffsets = [0, 22, -18];
+                            const margins = ["-24px", "-18px", "0px"];
+                            const colorVars = ["oklch(var(--primary-500))", "oklch(var(--accent-500))", "oklch(var(--secondary-500))"];
+                            const fontSizes = ["text-3xl", "text-xl", "text-lg"];
+                            const labelSizes = ["text-xs", "text-[11px]", "text-[10px]"];
+                            const size = sizes[idx] ?? 90;
+                            return (
+                              <div key={e.label} style={{ transform: `translateY(${yOffsets[idx] ?? 0}px)`, marginRight: margins[idx] ?? "0px", zIndex: 3 - idx, position: "relative" }}>
+                                <div
+                                  className="animate-pulse-bubble flex flex-col items-center justify-center rounded-full"
+                                  style={{ width: size, height: size, backgroundColor: colorVars[idx] ?? colorVars[0], animationDelay: `${idx * 0.5}s` }}
+                                >
+                                  <span className={`text-white font-label ${labelSizes[idx] ?? "text-xs"} leading-none mb-1`}>{e.label}</span>
+                                  <span className={`text-white font-label font-bold ${fontSizes[idx] ?? "text-lg"} leading-none`}>{e.value}%</span>
+                                </div>
+                              </div>
+                            );
+                          })}
                         </div>
-                        {/* 슬픔 */}
-                        <div style={{ transform: "translateY(-18px)", zIndex: 1, position: "relative" }}>
-                          <div
-                            className="animate-pulse-bubble flex flex-col items-center justify-center rounded-full"
-                            style={{ width: 90, height: 90, backgroundColor: "oklch(var(--secondary-500))", animationDelay: "1s" }}
-                          >
-                            <span className="text-white font-label text-[10px] leading-none mb-1">{EMOTION_DATA[2].label}</span>
-                            <span className="text-white font-label font-bold text-lg leading-none">{EMOTION_DATA[2].value}%</span>
-                          </div>
-                        </div>
-                      </div>
+                      )}
                     </div>
                   </div>
 
@@ -480,18 +483,25 @@ export default function DashboardPage() {
                     <Link to="/library" className="text-xs font-label text-primary-500 hover:text-primary-600 transition-colors">자세히</Link>
                   </div>
                   <div className="space-y-3 max-h-[260px] overflow-y-auto pr-1">
-                    {READING_HISTORY.map((story) => (
-                      <div key={story.id} className="flex items-center gap-3 rounded-xl bg-background-100 dark:bg-background-200 p-3">
-                        <div className="w-10 h-10 rounded-xl bg-white dark:bg-background-50 flex items-center justify-center flex-shrink-0 shadow-sm">
-                          <span className="text-xl">{story.emoji}</span>
-                        </div>
-                        <div className="flex-1 min-w-0">
-                          <p className="text-sm font-label text-foreground-950 truncate">{story.title}</p>
-                          <p className="text-xs font-label text-foreground-500">{story.subtitle}</p>
-                        </div>
-                        <span className="text-xs font-label text-foreground-400 dark:text-foreground-600 flex-shrink-0">{story.readAt}</span>
+                    {readingHistory.length === 0 ? (
+                      <div className="flex flex-col items-center justify-center py-8 text-foreground-400">
+                        <i className="ri-book-2-line text-2xl mb-2"></i>
+                        <p className="text-xs font-label">아직 읽은 동화가 없어요</p>
                       </div>
-                    ))}
+                    ) : (
+                      readingHistory.map((story) => (
+                        <div key={story.id} className="flex items-center gap-3 rounded-xl bg-background-100 dark:bg-background-200 p-3">
+                          <div className="w-10 h-10 rounded-xl bg-white dark:bg-background-50 flex items-center justify-center flex-shrink-0 shadow-sm">
+                            <span className="text-xl">{story.emoji}</span>
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <p className="text-sm font-label text-foreground-950 truncate">{story.title}</p>
+                            <p className="text-xs font-label text-foreground-500">최근 읽은 동화</p>
+                          </div>
+                          <span className="text-xs font-label text-foreground-400 dark:text-foreground-600 flex-shrink-0">{story.readAt}</span>
+                        </div>
+                      ))
+                    )}
                   </div>
                 </div>
 
@@ -528,7 +538,7 @@ export default function DashboardPage() {
                             />
                           </svg>
                           <div className="absolute inset-0 flex items-center justify-center">
-                            <span className="text-sm font-label font-bold text-secondary-500">{READING_REPORT.savedCount}편</span>
+                            <span className="text-sm font-label font-bold text-secondary-500">{library.length}편</span>
                           </div>
                         </div>
                       </div>
