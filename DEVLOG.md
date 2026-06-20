@@ -1,5 +1,102 @@
 # 토리동화 개발일지
 
+## 2026-06-21 — v0.4.0 Solar 대시보드 분석 · CTA 라우팅 수정 · UI 개선
+
+### 작업 내용
+
+#### 1. 대시보드 Solar API 데이터 분석 연동
+
+아이 성장 분석 페이지(`/dashboard`)의 세 섹션에 실제 Solar AI 분석 결과를 연결했습니다.
+
+**`src/services/solar.ts` — `analyzeChildData` 함수 추가**
+
+아이의 독서 기록(태그 목록, 동화 제목, 감정 반응, 누적 어휘 수)을 Solar `solar-pro` 모델에 전송하고 구조화된 JSON 분석 결과를 받아옵니다.
+
+```ts
+export interface DashboardAnalysis {
+  mainInterest: string;      // 주요 관심사
+  mainEmotion: string;       // 주로 느끼는 감정
+  personalityInsight: string; // 아이 성향 분석 문장
+  repeatThemes: Array<{ icon: string; title: string }>; // 반복 테마 3개
+  readingInsight: string;    // 독서 패턴 한 줄 코멘트
+}
+```
+
+**`src/services/library.ts` — 통계 헬퍼 함수 추가**
+
+| 함수 | 반환값 | 설명 |
+|------|--------|------|
+| `computeWeeklyStats()` | `{ weeklyCompleted, weeklyVocab }` | 최근 7일 완독 수·어휘 수 |
+| `computeMonthlyStats()` | `{ monthlyCompleted }` | 이번달 완독 수 |
+| `computeReadingStreak()` | `number` | 현재 연속 독서일 수 |
+| `getCachedDashboardAnalysis(libraryLength)` | `DashboardAnalysis \| null` | 1시간 TTL + 도서관 길이 검사 |
+| `setCachedDashboardAnalysis(data, libraryLength)` | `void` | localStorage 캐시 저장 |
+
+**`src/pages/dashboard/page.tsx` — 세 섹션 연동**
+
+- **자녀별 요약**: 이번주 완독·어휘는 `computeWeeklyStats()`, 주요 관심사·교감 감정·성향 분석은 Solar AI 결과 표시, 연속 독서는 `computeReadingStreak()` 실값
+- **반복 요청 테마**: `RECOMMENDATIONS` mock 제거 → `analysis.repeatThemes` 배열로 교체. 데이터 없으면 "동화를 읽으면 테마가 분석돼요" 안내 표시
+- **독서 리포트 이번달 독서량**: `computeMonthlyStats()` 실데이터, 목표 10편 기준
+- **독서 리포트 AI 코멘트**: `analysis.readingInsight` 파란 박스로 표시
+- 분석 중 로딩 스피너(`ri-loader-4-line animate-spin`) 표시
+
+**캐시 전략**: 동일 도서관 길이 + 1시간 미경과 시 Solar API 호출 없이 localStorage 캐시를 사용합니다.
+
+---
+
+#### 2. CTA 버튼 라우팅 수정
+
+홈 화면의 "선택형 만들기" · "대화형 만들기" CTA 버튼이 구 개별 페이지(`/create/select`, `/create/chat`)로 연결되던 문제를 수정했습니다.
+
+| 수정 전 | 수정 후 |
+|---------|---------|
+| `/create/select` | `/create` (선택형 탭 기본값) |
+| `/create/chat` | `/create?tab=chat` |
+
+- `HeroSection.tsx`, `EntryCards.tsx`, `FreeTrialSection.tsx` 링크 일괄 수정
+- `create/page.tsx`에 `useSearchParams` 추가 → `?tab=chat` 파라미터로 대화형 탭 자동 선택
+
+---
+
+#### 3. UI 통일성 · 가독성 개선
+
+**WhyToriSection 아이콘 박스 통일**
+
+"왜 토리동화일까요" 섹션의 6개 카드 아이콘 박스를 모두 동일한 스타일로 통일했습니다.
+
+- 변경 전: 카드마다 다른 `bg`, `iconColor` (bg-primary-100 ~ bg-accent-50)
+- 변경 후: 전체 `bg-primary-100 / text-primary-700` 통일
+
+**구독플랜 칩 컬러 개선**
+
+라이트모드 가독성 저하 문제 해결을 위해 배경 채도를 높이고 텍스트를 진하게 조정했습니다.
+
+| 항목 | 변경 전 | 변경 후 |
+|------|---------|---------|
+| 배경 | `-100 / -50` | `-200 / -300/60` |
+| 텍스트 | `-700 ~ -800` | `-900 ~ -950` |
+| 테두리 | `-200` | `-300 / -400/60` |
+| 다크모드 | 미지원 | `dark:bg-*-900/30 dark:text-*-300 dark:border-*-800/40` |
+
+---
+
+### 커밋 이력 (2026-06-21)
+
+| 커밋 해시 | 내용 |
+|-----------|------|
+| `e31855b` | feat: Solar 대시보드 분석, CTA 라우팅 수정, UI 통일성 개선 |
+
+---
+
+### 알려진 이슈 / 다음 스텝
+
+- [ ] 로그인 후 자녀 프로필을 DB에서 불러오기 (현재 mock 데이터)
+- [ ] 보호된 라우트 — 미로그인 시 홈으로 리다이렉트
+- [ ] Solar API 키 미설정 시 대시보드 폴백 UI 고도화
+- [ ] 결제 시스템 연동 (구독 플랜)
+
+---
+
 ## 2026-06-20 — v0.3.0 Supabase 인증 연동 (이메일 · 카카오 로그인)
 
 ### 작업 내용
