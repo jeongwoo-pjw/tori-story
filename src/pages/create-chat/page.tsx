@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import TopNav from "@/components/feature/TopNav";
 import FoldSidebar from "@/components/feature/FoldSidebar";
+import { STORY_REQUEST_KEY } from "@/services/solar";
 
 const STEPS = [
   { num: 1, label: "주인공 설정" },
@@ -100,11 +101,19 @@ export default function CreateChatPage() {
   };
 
   const handleCreate = () => {
-    setIsSubmitting(true);
-    setTimeout(() => {
-      setIsSubmitting(false);
-      navigate("/create/progress");
-    }, 1500);
+    const request = {
+      name,
+      age: parseInt(age, 10) || 5,
+      topics,
+      motifs: koreanMotifs,
+      artStyle: artStyle || "watercolor",
+      length: length as "short" | "normal" | "long",
+      gender,
+      moral,
+      customTopic,
+    };
+    localStorage.setItem(STORY_REQUEST_KEY, JSON.stringify(request));
+    navigate("/create/progress");
   };
 
   return (

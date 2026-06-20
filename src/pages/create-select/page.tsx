@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import TopNav from "@/components/feature/TopNav";
 import FoldSidebar from "@/components/feature/FoldSidebar";
+import { STORY_REQUEST_KEY } from "@/services/solar";
 
 const TOPIC_TAGS = [
   "용기", "나눔", "우정", "모험", "사랑", "지혜", "희망", "꿈", "가족", "친구",
@@ -273,11 +274,17 @@ export default function CreateSelectPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleCreate = () => {
-    setIsSubmitting(true);
-    setTimeout(() => {
-      setIsSubmitting(false);
-      navigate("/create/progress");
-    }, 1500);
+    const request = {
+      name: protagonistName,
+      age,
+      topics,
+      motifs: koreanMotifs,
+      artStyle,
+      length: "short" as const,
+      customTopic,
+    };
+    localStorage.setItem(STORY_REQUEST_KEY, JSON.stringify(request));
+    navigate("/create/progress");
   };
 
   return (

@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import TopNav from "@/components/feature/TopNav";
 import FoldSidebar from "@/components/feature/FoldSidebar";
+import { STORY_REQUEST_KEY } from "@/services/solar";
 
 // 5. 바다탐험·우주여행·동물원·숲속·왕국·마법·요정·드래곤 제거
 const TOPIC_TAGS = [
@@ -242,8 +243,29 @@ export default function CreatePage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleCreate = () => {
-    setIsSubmitting(true);
-    setTimeout(() => { setIsSubmitting(false); navigate("/create/progress"); }, 1500);
+    const request = tab === "select"
+      ? {
+          name: selectName,
+          age: selectAge,
+          topics: selectTopics,
+          motifs: selectMotifs,
+          artStyle: selectArtStyle,
+          length: selectLength as "short" | "normal" | "long",
+          customTopic: customSelectTopic,
+        }
+      : {
+          name: chatName,
+          age: parseInt(chatAge, 10) || 5,
+          topics: chatTopics,
+          motifs: chatMotifs,
+          artStyle: chatArtStyle || "watercolor",
+          length: length as "short" | "normal" | "long",
+          gender,
+          moral,
+          customTopic: customChatTopic,
+        };
+    localStorage.setItem(STORY_REQUEST_KEY, JSON.stringify(request));
+    navigate("/create/progress");
   };
 
   const toggleChatTopic = (tag: string) =>

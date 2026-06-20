@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { useAuth } from "@/contexts/AuthContext";
+import LoginModal from "@/components/feature/LoginModal";
 
 // Mock children data
 const children = [
@@ -41,7 +43,6 @@ function ParentLockPopup({
   return (
     <div className="fixed inset-0 z-[100] bg-black/50 backdrop-blur-sm flex items-center justify-center p-4">
       <div className="w-full max-w-sm rounded-3xl bg-background-50 dark:bg-background-100 border border-background-200 dark:border-background-300 p-7 text-center relative">
-        {/* Close button */}
         <button
           type="button"
           onClick={onClose}
@@ -94,12 +95,14 @@ function ParentLockPopup({
   );
 }
 
+// Props are kept optional for backward compatibility but auth state comes from context
 type TopNavProps = {
   isLoggedIn?: boolean;
   onToggleLogin?: () => void;
 };
 
-export default function TopNav({ isLoggedIn = false, onToggleLogin }: TopNavProps) {
+export default function TopNav(_props: TopNavProps) {
+  const { isLoggedIn, signOut } = useAuth();
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [lang, setLang] = useState<"KO" | "EN">("KO");
@@ -116,6 +119,7 @@ export default function TopNav({ isLoggedIn = false, onToggleLogin }: TopNavProp
   const [childOpen, setChildOpen] = useState(false);
   const [selectedChild, setSelectedChild] = useState(children[0]);
   const [parentLockOpen, setParentLockOpen] = useState(false);
+  const [loginModalOpen, setLoginModalOpen] = useState(false);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 24);
@@ -124,14 +128,12 @@ export default function TopNav({ isLoggedIn = false, onToggleLogin }: TopNavProp
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  // Apply stored theme on mount
   useEffect(() => {
     const body = document.body;
     themes.forEach((t) => body.classList.remove(t.className));
     body.classList.add(themes[themeIdx].className);
   }, []);
 
-  // Dark mode — sync to DOM and persist
   useEffect(() => {
     if (darkMode) document.documentElement.classList.add("dark");
     else document.documentElement.classList.remove("dark");
@@ -143,7 +145,6 @@ export default function TopNav({ isLoggedIn = false, onToggleLogin }: TopNavProp
     try { localStorage.setItem("tori-dark", String(next)); } catch {}
   };
 
-  // Theme apply
   const applyTheme = (idx: number) => {
     setThemeIdx(idx);
     const body = document.body;
@@ -151,6 +152,11 @@ export default function TopNav({ isLoggedIn = false, onToggleLogin }: TopNavProp
     body.classList.add(themes[idx].className);
     try { localStorage.setItem("tori-theme", String(idx)); } catch {}
     setThemePickOpen(false);
+  };
+
+  const handleLogout = async () => {
+    await signOut();
+    setMenuOpen(false);
   };
 
   return (
@@ -164,7 +170,7 @@ export default function TopNav({ isLoggedIn = false, onToggleLogin }: TopNavProp
       >
         <div className="w-full px-4 md:px-6 lg:px-10">
           <div className="flex items-center justify-between h-14 md:h-16">
-            {/* Logo with icon — indented by sidebar width */}
+            {/* Logo */}
             <Link to="/" className="flex items-center gap-2 md:gap-2.5 cursor-pointer pl-[var(--sidebar-width)]">
               <div className="w-7 h-7 flex-shrink-0 bg-primary-500 rounded-full flex items-center justify-center" aria-hidden="true">
                 <i className="ri-book-open-fill text-white text-base leading-none"></i>
@@ -176,7 +182,7 @@ export default function TopNav({ isLoggedIn = false, onToggleLogin }: TopNavProp
 
             {/* Desktop Nav */}
             <nav className="hidden md:flex items-center gap-3">
-              {/* Language toggle — one-touch */}
+              {/* Language toggle */}
               <button
                 type="button"
                 onClick={() => setLang((prev) => (prev === "KO" ? "EN" : "KO"))}
@@ -188,7 +194,7 @@ export default function TopNav({ isLoggedIn = false, onToggleLogin }: TopNavProp
                 </span>
               </button>
 
-              {/* Color switch — dropdown on touch */}
+              {/* Color switch */}
               <div className="relative">
                 <button
                   type="button"
@@ -224,7 +230,7 @@ export default function TopNav({ isLoggedIn = false, onToggleLogin }: TopNavProp
                 )}
               </div>
 
-              {/* Dark mode — icon only */}
+              {/* Dark mode */}
               <button
                 type="button"
                 onClick={toggleDark}
@@ -238,11 +244,11 @@ export default function TopNav({ isLoggedIn = false, onToggleLogin }: TopNavProp
                 <i className={`${darkMode ? "ri-moon-fill" : "ri-sun-line"} w-4 h-4 flex items-center justify-center text-sm`}></i>
               </button>
 
-              {/* Logged-in specific */}
+              {/* Auth section */}
               {isLoggedIn ? (
                 <div className="flex items-center gap-3">
                   <span className="text-foreground-300 text-sm select-none">|</span>
-                  {/* Parent lock — with text */}
+                  {/* Parent lock */}
                   <button
                     type="button"
                     onClick={() => setParentLockOpen(true)}
@@ -253,12 +259,12 @@ export default function TopNav({ isLoggedIn = false, onToggleLogin }: TopNavProp
                     <span className="text-[11px] font-label text-foreground-800 dark:text-accent-300 whitespace-nowrap">부모잠금</span>
                   </button>
 
-                  {/* Child switcher — primary/pink color */}
+                  {/* Child switcher */}
                   <div className="relative">
                     <button
                       type="button"
                       onClick={() => setChildOpen((v) => !v)}
-                      className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-primary-50/40 border border-primary-200 hover:bg-primary-100/60 hover:border-primary-300 transition-colors cursor-pointer whitespace-nowrap`}
+                      className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-primary-50/40 border border-primary-200 hover:bg-primary-100/60 hover:border-primary-300 transition-colors cursor-pointer whitespace-nowrap"
                     >
                       <i className="ri-user-smile-line text-foreground-700 w-4 h-4 flex items-center justify-center text-sm"></i>
                       <span className="text-xs font-label text-foreground-800 whitespace-nowrap">
@@ -291,9 +297,7 @@ export default function TopNav({ isLoggedIn = false, onToggleLogin }: TopNavProp
                         <div className="my-1 border-t border-background-200"></div>
                         <button
                           type="button"
-                          onClick={() => {
-                            setChildOpen(false);
-                          }}
+                          onClick={() => setChildOpen(false)}
                           className="w-full flex items-center gap-2 px-3 py-2.5 rounded-xl text-sm font-label text-foreground-700 hover:bg-secondary-100 transition-colors cursor-pointer whitespace-nowrap"
                         >
                           <i className="ri-user-add-line text-foreground-500 w-4 h-4 flex items-center justify-center"></i>
@@ -303,10 +307,10 @@ export default function TopNav({ isLoggedIn = false, onToggleLogin }: TopNavProp
                     )}
                   </div>
 
-                  {/* Logout — icon only */}
+                  {/* Logout */}
                   <button
                     type="button"
-                    onClick={onToggleLogin}
+                    onClick={handleLogout}
                     className="flex items-center justify-center w-9 h-9 rounded-full bg-background-100/70 dark:bg-background-200/80 hover:bg-background-200/90 dark:hover:bg-background-300/90 transition-colors cursor-pointer"
                     title="로그아웃"
                   >
@@ -316,14 +320,14 @@ export default function TopNav({ isLoggedIn = false, onToggleLogin }: TopNavProp
               ) : (
                 <div className="flex items-center gap-2">
                   <Link
-                    to="/plan"
+                    to="/subscription"
                     className="px-3 py-1.5 rounded-lg bg-primary-50/40 border border-primary-200 text-xs font-label text-foreground-700 hover:bg-primary-100/60 hover:border-primary-300 transition-colors whitespace-nowrap cursor-pointer"
                   >
                     구독
                   </Link>
                   <button
                     type="button"
-                    onClick={onToggleLogin}
+                    onClick={() => setLoginModalOpen(true)}
                     className="px-3 py-1.5 rounded-lg bg-accent-100/60 border border-accent-300 text-xs font-label text-accent-900 hover:bg-accent-200/80 hover:border-accent-400 transition-colors whitespace-nowrap cursor-pointer"
                   >
                     로그인
@@ -351,9 +355,7 @@ export default function TopNav({ isLoggedIn = false, onToggleLogin }: TopNavProp
           {menuOpen && (
             <div className="md:hidden pb-4 pt-2">
               <div className="rounded-2xl bg-background-50/95 backdrop-blur border border-primary-200 p-3 space-y-2">
-                {/* Mobile controls row */}
                 <div className="flex items-center gap-2 flex-wrap">
-                  {/* Language — one-touch */}
                   <button
                     type="button"
                     onClick={() => setLang((prev) => (prev === "KO" ? "EN" : "KO"))}
@@ -362,7 +364,6 @@ export default function TopNav({ isLoggedIn = false, onToggleLogin }: TopNavProp
                     <span className="text-xs font-label text-foreground-800">{lang}</span>
                   </button>
 
-                  {/* Color switch — dropdown */}
                   <div className="relative">
                     <button
                       type="button"
@@ -397,7 +398,6 @@ export default function TopNav({ isLoggedIn = false, onToggleLogin }: TopNavProp
                     )}
                   </div>
 
-                  {/* Dark mode — icon only */}
                   <button
                     type="button"
                     onClick={toggleDark}
@@ -442,10 +442,7 @@ export default function TopNav({ isLoggedIn = false, onToggleLogin }: TopNavProp
                     </div>
                     <button
                       type="button"
-                      onClick={() => {
-                        onToggleLogin?.();
-                        setMenuOpen(false);
-                      }}
+                      onClick={handleLogout}
                       className="w-full flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-label text-foreground-900 bg-primary-50/40 border border-primary-200 cursor-pointer whitespace-nowrap"
                     >
                       <i className="ri-logout-circle-r-line w-4 h-4 flex items-center justify-center"></i>
@@ -455,7 +452,7 @@ export default function TopNav({ isLoggedIn = false, onToggleLogin }: TopNavProp
                 ) : (
                   <div className="space-y-1 pt-2 border-t border-primary-200/70">
                     <Link
-                      to="/plan"
+                      to="/subscription"
                       onClick={() => setMenuOpen(false)}
                       className="block px-4 py-2.5 rounded-xl text-sm font-label text-foreground-900 bg-primary-50/40 border border-primary-200 cursor-pointer whitespace-nowrap"
                     >
@@ -464,7 +461,7 @@ export default function TopNav({ isLoggedIn = false, onToggleLogin }: TopNavProp
                     <button
                       type="button"
                       onClick={() => {
-                        onToggleLogin?.();
+                        setLoginModalOpen(true);
                         setMenuOpen(false);
                       }}
                       className="w-full px-4 py-2.5 rounded-xl bg-accent-100/60 border border-accent-300 text-sm font-label text-accent-900 hover:bg-accent-200/80 transition-colors whitespace-nowrap cursor-pointer"
@@ -490,20 +487,17 @@ export default function TopNav({ isLoggedIn = false, onToggleLogin }: TopNavProp
         />
       )}
 
-      {/* Click outside to close child dropdown */}
-      {childOpen && (
-        <div
-          className="fixed inset-0 z-40"
-          onClick={() => setChildOpen(false)}
-        ></div>
+      {/* Login modal */}
+      {loginModalOpen && (
+        <LoginModal onClose={() => setLoginModalOpen(false)} />
       )}
 
-      {/* Click outside to close theme dropdown */}
+      {/* Click outside to close dropdowns */}
+      {childOpen && (
+        <div className="fixed inset-0 z-40" onClick={() => setChildOpen(false)}></div>
+      )}
       {themePickOpen && (
-        <div
-          className="fixed inset-0 z-40"
-          onClick={() => setThemePickOpen(false)}
-        ></div>
+        <div className="fixed inset-0 z-40" onClick={() => setThemePickOpen(false)}></div>
       )}
     </>
   );
