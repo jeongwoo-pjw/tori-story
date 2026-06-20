@@ -1,11 +1,11 @@
 import { Link } from "react-router-dom";
 
 const planFeatures = [
-  { label: "무제한 동화 생성", bg: "bg-primary-100", text: "text-primary-800", border: "border-primary-200" },
-  { label: "고화질 저장 · PDF 출력", bg: "bg-accent-100", text: "text-accent-800", border: "border-accent-200" },
-  { label: "AI 음성 나레이션", bg: "bg-secondary-100", text: "text-secondary-900", border: "border-secondary-200" },
-  { label: "독후 활동 연계", bg: "bg-primary-50", text: "text-primary-700", border: "border-primary-200" },
-  { label: "독서 습관 리포트", bg: "bg-accent-50", text: "text-accent-700", border: "border-accent-200" },
+  { label: "무제한 동화 생성", bg: "bg-primary-100 dark:bg-primary-900/30", text: "text-primary-800 dark:text-primary-300", border: "border-primary-200 dark:border-primary-800/40" },
+  { label: "고화질 저장 · PDF 출력", bg: "bg-accent-100 dark:bg-accent-900/30", text: "text-accent-800 dark:text-accent-300", border: "border-accent-200 dark:border-accent-800/40" },
+  { label: "AI 음성 나레이션", bg: "bg-secondary-100 dark:bg-secondary-900/30", text: "text-secondary-900 dark:text-secondary-300", border: "border-secondary-200 dark:border-secondary-800/40" },
+  { label: "독후 활동 연계", bg: "bg-primary-100 dark:bg-primary-900/30", text: "text-primary-700 dark:text-primary-300", border: "border-primary-200 dark:border-primary-800/40" },
+  { label: "독서 습관 리포트", bg: "bg-accent-100 dark:bg-accent-900/30", text: "text-accent-700 dark:text-accent-300", border: "border-accent-200 dark:border-accent-800/40" },
 ];
 
 export default function FreeTrialSection() {
@@ -30,7 +30,7 @@ export default function FreeTrialSection() {
           </p>
           <div className="mt-6">
             <Link
-              to="/create/select"
+              to="/create"
               className="inline-flex items-center justify-center px-7 py-3.5 rounded-full bg-primary-500 hover:bg-primary-600 text-foreground-950 dark:text-foreground-950 font-label text-base transition-colors whitespace-nowrap cursor-pointer"
             >
               무료로 시작하기
@@ -55,7 +55,7 @@ export default function FreeTrialSection() {
                 </p>
               </div>
               <Link
-                to="/plan"
+                to="/subscription"
                 className="inline-flex items-center justify-center gap-2 px-7 py-3 rounded-full bg-foreground-900 hover:bg-foreground-800 text-background-50 font-label text-sm transition-colors whitespace-nowrap cursor-pointer flex-shrink-0"
               >
                 구독혜택보기

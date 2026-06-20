@@ -5,43 +5,31 @@ const features = [
     icon: "ri-user-smile-line",
     title: "완전 맞춤 제작",
     desc: "아이 이름과 취향이 담긴 이야기로 몰입감을 높여요",
-    bg: "bg-primary-100",
-    iconColor: "text-primary-800",
   },
   {
     icon: "ri-shield-check-line",
     title: "안전한 콘텐츠",
     desc: "모든 동화는 연령별 안전 기준을 준수해 제작돼요",
-    bg: "bg-secondary-200",
-    iconColor: "text-secondary-900",
   },
   {
     icon: "ri-book-2-line",
     title: "내 책장 보관",
     desc: "만든 동화를 저장하고 언제든 다시 읽을 수 있어요",
-    bg: "bg-accent-100",
-    iconColor: "text-accent-800",
   },
   {
     icon: "ri-line-chart-line",
     title: "독서 습관 관리",
     desc: "아이의 독서 패턴을 분석해 건강한 습관을 만들어요",
-    bg: "bg-primary-100",
-    iconColor: "text-primary-800",
   },
   {
     icon: "ri-mic-2-line",
     title: "음성 지원",
     desc: "AI 보이스가 동화를 직접 읽어주어 몰입도를 높여요",
-    bg: "bg-accent-100",
-    iconColor: "text-accent-800",
   },
   {
     icon: "ri-pencil-ruler-line",
     title: "독후 활동 연계",
     desc: "동화를 다 읽은 후 퀴즈와 그림 그리기 등 활동을 제공해요",
-    bg: "bg-secondary-200",
-    iconColor: "text-secondary-900",
   },
 ];
 
@@ -68,8 +56,8 @@ export default function WhyToriSection() {
               className="rounded-2xl bg-background-50 border border-background-200 p-6 hover:border-primary-300 transition-all"
               style={{ animationDelay: `${idx * 0.1}s` }}
             >
-              <div className={`w-12 h-12 rounded-2xl ${f.bg} flex items-center justify-center mb-4`}>
-                <i className={`${f.icon} ${f.iconColor} text-2xl w-6 h-6 flex items-center justify-center`}></i>
+              <div className="w-12 h-12 rounded-2xl bg-primary-100 flex items-center justify-center mb-4">
+                <i className={`${f.icon} text-primary-700 text-2xl w-6 h-6 flex items-center justify-center`}></i>
               </div>
               <h3 className="font-heading text-lg text-foreground-950">{f.title}</h3>
               <p className="mt-2 text-sm text-foreground-700 leading-relaxed">{f.desc}</p>

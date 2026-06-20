@@ -76,7 +76,7 @@ export default function EntryCards() {
             </div>
 
             <Link
-              to="/create/select"
+              to="/create"
               className="mt-auto inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-full bg-primary-500 hover:bg-primary-600 text-foreground-950 dark:text-foreground-950 font-label text-sm transition-colors whitespace-nowrap"
             >
               <i className="ri-magic-line w-4 h-4 flex items-center justify-center"></i>
@@ -138,7 +138,7 @@ export default function EntryCards() {
             </div>
 
             <Link
-              to="/create/chat"
+              to="/create?tab=chat"
               className="mt-auto inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-full bg-accent-500 hover:bg-accent-600 text-foreground-950 dark:text-foreground-950 font-label text-sm transition-colors whitespace-nowrap"
             >
               <i className="ri-chat-smile-3-line w-4 h-4 flex items-center justify-center"></i>

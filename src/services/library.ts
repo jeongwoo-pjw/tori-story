@@ -1,4 +1,4 @@
-import type { GeneratedStory, StoryRequest } from "./solar";
+import type { GeneratedStory, StoryRequest, DashboardAnalysis } from "./solar";
 
 export interface LibraryEntry {
   id: string;
@@ -164,6 +164,81 @@ export function computeEmotionDistribution(): { label: string; value: number; co
     value: Math.round((count / total) * 100),
     color: COLORS[i % COLORS.length],
   }));
+}
+
+// ── 대시보드 통계 ──────────────────────────────────────────────────
+
+export function computeWeeklyStats() {
+  const library = getLibrary();
+  const analytics = getAnalytics();
+  const weekAgo = new Date();
+  weekAgo.setDate(weekAgo.getDate() - 7);
+
+  const weeklyCompleted = library.filter(
+    (e) => e.status === "completed" && new Date(e.lastReadAt) >= weekAgo
+  ).length;
+
+  const weeklyVocab = analytics
+    .filter((a) => new Date(a.date) >= weekAgo)
+    .reduce((sum, a) => sum + a.vocabCount, 0);
+
+  return { weeklyCompleted, weeklyVocab };
+}
+
+export function computeMonthlyStats() {
+  const library = getLibrary();
+  const now = new Date();
+  const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+
+  const monthlyCompleted = library.filter(
+    (e) => e.status === "completed" && new Date(e.lastReadAt) >= startOfMonth
+  ).length;
+
+  return { monthlyCompleted };
+}
+
+export function computeReadingStreak() {
+  const analytics = getAnalytics();
+  if (analytics.length === 0) return 0;
+
+  const uniqueDates = [...new Set(analytics.map((a) => a.date))].sort().reverse();
+  let streak = 0;
+  const cursor = new Date();
+
+  for (const dateStr of uniqueDates) {
+    if (dateStr === cursor.toISOString().slice(0, 10)) {
+      streak++;
+      cursor.setDate(cursor.getDate() - 1);
+    } else {
+      break;
+    }
+  }
+  return streak;
+}
+
+// ── 대시보드 분석 캐시 ─────────────────────────────────────────────
+
+const DASHBOARD_ANALYSIS_KEY = "tori_dashboard_analysis";
+const ANALYSIS_TTL_MS = 60 * 60 * 1000; // 1시간
+
+export function getCachedDashboardAnalysis(libraryLength: number): DashboardAnalysis | null {
+  try {
+    const raw = localStorage.getItem(DASHBOARD_ANALYSIS_KEY);
+    if (!raw) return null;
+    const { data, timestamp, cachedLength } = JSON.parse(raw);
+    if (Date.now() - timestamp > ANALYSIS_TTL_MS) return null;
+    if (cachedLength !== libraryLength) return null;
+    return data as DashboardAnalysis;
+  } catch {
+    return null;
+  }
+}
+
+export function setCachedDashboardAnalysis(data: DashboardAnalysis, libraryLength: number) {
+  localStorage.setItem(
+    DASHBOARD_ANALYSIS_KEY,
+    JSON.stringify({ data, timestamp: Date.now(), cachedLength: libraryLength })
+  );
 }
 
 /** 최근 읽은 동화 히스토리 */

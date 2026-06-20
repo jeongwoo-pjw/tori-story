@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import TopNav from "@/components/feature/TopNav";
 import FoldSidebar from "@/components/feature/FoldSidebar";
 import { STORY_REQUEST_KEY } from "@/services/solar";
@@ -210,7 +210,10 @@ function KoreanMotifSection({
 
 export default function CreatePage() {
   const navigate = useNavigate();
-  const [tab, setTab] = useState<"select" | "chat">("select");
+  const [searchParams] = useSearchParams();
+  const [tab, setTab] = useState<"select" | "chat">(
+    searchParams.get("tab") === "chat" ? "chat" : "select"
+  );
 
   // ── 선택형 state ─────────────────────────────────────────────────
   const [selectName, setSelectName] = useState("");

@@ -210,3 +210,81 @@ export async function generateStory(req: StoryRequest): Promise<GeneratedStory> 
 
 export const STORY_REQUEST_KEY = "tori_story_request";
 export const STORY_RESULT_KEY = "tori_story_result";
+
+// ── 대시보드 데이터 분석 ──────────────────────────────────────────
+
+export interface DashboardAnalysis {
+  mainInterest: string;
+  mainEmotion: string;
+  personalityInsight: string;
+  repeatThemes: Array<{ icon: string; title: string }>;
+  readingInsight: string;
+}
+
+export async function analyzeChildData(params: {
+  childName: string;
+  childAge: number;
+  tags: string[];
+  titles: string[];
+  emotions: string[];
+  totalVocab: number;
+}): Promise<DashboardAnalysis> {
+  const apiKey = import.meta.env.VITE_SOLAR_API_KEY;
+  if (!apiKey) throw new Error("VITE_SOLAR_API_KEY가 설정되지 않았습니다.");
+
+  const tagList = params.tags.slice(0, 20).join(", ") || "없음";
+  const titleList = params.titles.slice(0, 10).join(", ") || "없음";
+  const emotionList = params.emotions.filter(Boolean).slice(0, 20).join(", ") || "없음";
+
+  const prompt = `당신은 아동 독서 성향 분석 전문가입니다.
+아래 아이의 독서 기록을 분석하여 JSON으로만 응답하세요.
+
+아이: ${params.childName} (${params.childAge}세)
+읽은 동화 주제 태그: ${tagList}
+읽은 동화 제목: ${titleList}
+감정 반응 기록: ${emotionList}
+누적 어휘 학습: ${params.totalVocab}개
+
+아래 JSON 형식으로만 응답하세요. 다른 텍스트는 절대 포함하지 마세요:
+{
+  "mainInterest": "주요 관심사 2단어 이내",
+  "mainEmotion": "주로 느끼는 감정 1단어",
+  "personalityInsight": "아이 성향 분석 문장 40자 이내 (~해요 말투)",
+  "repeatThemes": [
+    {"icon": "이모지 1개", "title": "반복 테마 설명 15자 이내"},
+    {"icon": "이모지 1개", "title": "반복 테마 설명 15자 이내"},
+    {"icon": "이모지 1개", "title": "반복 테마 설명 15자 이내"}
+  ],
+  "readingInsight": "독서 패턴 한 줄 코멘트 30자 이내 (~해요 말투)"
+}`;
+
+  const response = await fetch("https://api.upstage.ai/v1/solar/chat/completions", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${apiKey}`,
+    },
+    body: JSON.stringify({
+      model: "solar-pro",
+      messages: [{ role: "user", content: prompt }],
+      temperature: 0.7,
+      max_tokens: 600,
+    }),
+  });
+
+  if (!response.ok) {
+    const errorText = await response.text();
+    throw new Error(`Solar API 오류 (${response.status}): ${errorText}`);
+  }
+
+  const data = await response.json();
+  const content: string = data.choices[0].message.content;
+
+  try {
+    const jsonMatch = content.match(/\{[\s\S]*\}/);
+    if (!jsonMatch) throw new Error("JSON 없음");
+    return JSON.parse(jsonMatch[0]) as DashboardAnalysis;
+  } catch {
+    throw new Error("Solar 응답 파싱 실패: " + content.slice(0, 200));
+  }
+}

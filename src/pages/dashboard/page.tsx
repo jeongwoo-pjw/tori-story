@@ -7,14 +7,20 @@ import {
   READING_REPORT,
   NOTIFICATIONS,
   FOCUS_SETTINGS,
-  RECOMMENDATIONS,
 } from "@/mocks/dashboard";
 import {
   getLibrary,
+  getAnalytics,
   computeVocabGrowth,
   computeEmotionDistribution,
   computeReadingHistory,
+  computeWeeklyStats,
+  computeMonthlyStats,
+  computeReadingStreak,
+  getCachedDashboardAnalysis,
+  setCachedDashboardAnalysis,
 } from "@/services/library";
+import { analyzeChildData, type DashboardAnalysis } from "@/services/solar";
 
 export default function DashboardPage() {
   const [animHeights, setAnimHeights] = useState<number[]>([]);
@@ -25,6 +31,10 @@ export default function DashboardPage() {
   const [selectedPeriod, setSelectedPeriod] = useState("이번 주");
 
   const library = getLibrary();
+  const { weeklyCompleted, weeklyVocab } = computeWeeklyStats();
+  const streak = computeReadingStreak();
+  const { monthlyCompleted } = computeMonthlyStats();
+  const MONTHLY_GOAL = 10;
   const weeklyData = computeVocabGrowth(7);
   const monthlyData = computeVocabGrowth(30);
   const readingHistory = computeReadingHistory(5);
@@ -46,6 +56,8 @@ export default function DashboardPage() {
   const [timerSeconds, setTimerSeconds] = useState(0);
   const [totalTimerSeconds, setTotalTimerSeconds] = useState(0);
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const [analysis, setAnalysis] = useState<DashboardAnalysis | null>(null);
+  const [analysisLoading, setAnalysisLoading] = useState(false);
 
   const CIRC = 87.96;
   const timerArc =
@@ -55,10 +67,9 @@ export default function DashboardPage() {
       ? CIRC
       : 0;
 
-  const monthlyPercent =
-    READING_REPORT.monthlyGoal > 0
-      ? Math.round((READING_REPORT.monthlyRead / READING_REPORT.monthlyGoal) * 100)
-      : 0;
+  const monthlyPercent = MONTHLY_GOAL > 0
+    ? Math.min(100, Math.round((monthlyCompleted / MONTHLY_GOAL) * 100))
+    : 0;
 
   const handleAutoLimitToggle = () => {
     const next = !autoLimit;
@@ -121,6 +132,34 @@ export default function DashboardPage() {
     const t = setTimeout(() => setProgressAnimating(true), 200);
     return () => clearTimeout(t);
   }, []);
+
+  useEffect(() => {
+    const cached = getCachedDashboardAnalysis(library.length);
+    if (cached) { setAnalysis(cached); return; }
+    if (library.length === 0) return;
+
+    const analytics = getAnalytics();
+    const tags = library.map((e) => e.tag);
+    const titles = library.map((e) => e.title);
+    const emotions = analytics.map((a) => a.emotionChoice).filter((e): e is string => Boolean(e));
+    const totalVocab = analytics.reduce((sum, a) => sum + a.vocabCount, 0);
+
+    setAnalysisLoading(true);
+    analyzeChildData({
+      childName: CHILD_PROFILE.name,
+      childAge: CHILD_PROFILE.age,
+      tags,
+      titles,
+      emotions,
+      totalVocab,
+    })
+      .then((result) => {
+        setAnalysis(result);
+        setCachedDashboardAnalysis(result, library.length);
+      })
+      .catch(console.error)
+      .finally(() => setAnalysisLoading(false));
+  }, [library.length]);
 
   return (
     <main className="min-h-screen bg-background-50 text-foreground-950">
@@ -237,27 +276,35 @@ export default function DashboardPage() {
                         <img src={CHILD_PROFILE.avatar} alt={CHILD_PROFILE.name} className="w-11 h-11 rounded-full object-cover flex-shrink-0" />
                         <div>
                           <p className="text-sm font-label text-foreground-950">{CHILD_PROFILE.name}({CHILD_PROFILE.age}세)</p>
-                          <p className="text-xs font-label text-primary-500 mt-0.5">이번주 완독 8편 · 신규 어휘 학습 30개</p>
+                          <p className="text-xs font-label text-primary-500 mt-0.5">
+                            이번주 완독 {weeklyCompleted}편 · 신규 어휘 학습 {weeklyVocab}개
+                          </p>
                         </div>
                       </div>
                       <div className="flex gap-2">
                         <div className="flex-1 rounded-lg border border-background-300/60 dark:border-background-400/50 p-3 text-center">
                           <p className="text-[11px] font-label text-foreground-400 mb-1">주요 관심사</p>
-                          <p className="text-sm font-label font-semibold text-primary-600 dark:text-primary-400">한옥</p>
+                          <p className="text-sm font-label font-semibold text-primary-600 dark:text-primary-400">
+                            {analysisLoading ? <i className="ri-loader-4-line animate-spin" /> : (analysis?.mainInterest ?? "—")}
+                          </p>
                         </div>
                         <div className="flex-1 rounded-lg border border-background-300/60 dark:border-background-400/50 p-3 text-center">
                           <p className="text-[11px] font-label text-foreground-400 mb-1">교감 감정</p>
-                          <p className="text-sm font-label font-semibold text-accent-600 dark:text-accent-400">기쁨</p>
+                          <p className="text-sm font-label font-semibold text-accent-600 dark:text-accent-400">
+                            {analysisLoading ? <i className="ri-loader-4-line animate-spin" /> : (analysis?.mainEmotion ?? "—")}
+                          </p>
                         </div>
                         <div className="flex-1 rounded-lg border border-background-300/60 dark:border-background-400/50 p-3 text-center">
                           <p className="text-[11px] font-label text-foreground-400 mb-1">연속 독서</p>
-                          <p className="text-sm font-label font-semibold text-secondary-600 dark:text-secondary-400">5일</p>
+                          <p className="text-sm font-label font-semibold text-secondary-600 dark:text-secondary-400">{streak}일</p>
                         </div>
                       </div>
                       <div className="flex items-start gap-2">
                         <i className="ri-sparkling-2-line text-accent-400 text-sm flex-shrink-0 mt-0.5"></i>
                         <p className="text-xs font-label text-foreground-500 dark:text-foreground-600 leading-relaxed">
-                          아이 성향 분석: <span className="font-semibold text-foreground-800 dark:text-foreground-400">"balanced"</span> 성향으로, 풍부한 시각 자극에 흥미를 느끼며 독서를 아름다운 놀이 기회로 인지하고 있어요.
+                          {analysisLoading
+                            ? "AI가 독서 기록을 분석하고 있어요..."
+                            : (analysis?.personalityInsight ?? "독서 기록이 쌓이면 성향 분석이 시작돼요.")}
                         </p>
                       </div>
                     </div>
@@ -268,12 +315,23 @@ export default function DashboardPage() {
                     <h2 className="font-label text-base font-semibold text-foreground-950 mb-1">반복 요청 테마</h2>
                     <p className="text-xs font-label text-foreground-400 dark:text-foreground-600 mb-4 leading-snug">아이가 주도적으로 누적하여 열람한 단어 및 핵심 취향</p>
                     <div className="flex flex-col gap-2 flex-1">
-                      {RECOMMENDATIONS.map((rec) => (
-                        <div key={rec.id} className="flex items-center gap-3 rounded-xl bg-background-100 dark:bg-background-200 p-3.5 flex-1">
-                          <span className="text-lg flex-shrink-0 leading-none">{rec.icon}</span>
-                          <p className="text-xs font-label text-foreground-700 dark:text-foreground-400 leading-snug">{rec.title}</p>
+                      {analysisLoading ? (
+                        <div className="flex-1 flex items-center justify-center text-foreground-400 py-6">
+                          <i className="ri-loader-4-line animate-spin text-2xl"></i>
                         </div>
-                      ))}
+                      ) : (analysis?.repeatThemes ?? []).length === 0 ? (
+                        <div className="flex-1 flex flex-col items-center justify-center gap-2 text-foreground-400 py-6">
+                          <i className="ri-book-search-line text-2xl"></i>
+                          <p className="text-xs font-label">동화를 읽으면 테마가 분석돼요</p>
+                        </div>
+                      ) : (
+                        (analysis?.repeatThemes ?? []).map((theme, i) => (
+                          <div key={i} className="flex items-center gap-3 rounded-xl bg-background-100 dark:bg-background-200 p-3.5 flex-1">
+                            <span className="text-lg flex-shrink-0 leading-none">{theme.icon}</span>
+                            <p className="text-xs font-label text-foreground-700 dark:text-foreground-400 leading-snug">{theme.title}</p>
+                          </div>
+                        ))
+                      )}
                     </div>
                   </div>
 
@@ -560,11 +618,21 @@ export default function DashboardPage() {
                         </svg>
                         <div className="absolute inset-0 flex items-center justify-center">
                           <span className="text-[10px] font-label font-bold text-primary-500 text-center leading-tight">
-                            {READING_REPORT.monthlyRead}/{READING_REPORT.monthlyGoal}편
+                            {monthlyCompleted}/{MONTHLY_GOAL}편
                           </span>
                         </div>
                       </div>
                     </div>
+
+                    {/* AI 독서 코멘트 */}
+                    {(analysis?.readingInsight || analysisLoading) && (
+                      <div className="rounded-xl bg-primary-50 dark:bg-primary-950/30 border border-primary-100 dark:border-primary-900/40 p-3.5 flex items-start gap-2">
+                        <i className="ri-sparkling-2-line text-primary-400 text-sm flex-shrink-0 mt-0.5"></i>
+                        <p className="text-xs font-label text-primary-700 dark:text-primary-300 leading-relaxed">
+                          {analysisLoading ? "AI가 독서 패턴을 분석 중이에요..." : analysis?.readingInsight}
+                        </p>
+                      </div>
+                    )}
 
                   </div>
                 </div>
