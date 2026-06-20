@@ -16,6 +16,7 @@
 
 | 기능 | 설명 |
 |------|------|
+| **로그인** | 이메일+비밀번호 / 카카오 소셜 로그인 (Supabase Auth) |
 | **선택형 동화** | 장르·주인공·배경을 고르면 AI가 동화 생성 |
 | **대화형 동화** | 아이와 채팅하듯 대화하며 이야기 완성 |
 | **내 책장** | 생성한 동화 저장·조회·공유 |
@@ -30,6 +31,7 @@
 - **Routing** — React Router DOM v7
 - **Styling** — Tailwind CSS v3 (oklch 색상 토큰)
 - **UI** — Remix Icon, Font Awesome, Google Fonts (Jua, Gowun Dodum 등), 망고보드 별별체(산돌구름)
+- **인증 / DB** — Supabase (이메일+비밀번호, 카카오 OAuth)
 - **국제화** — i18next
 - **드래그&드롭** — @dnd-kit/core
 - **배포** — GitHub Pages (GitHub Actions 자동 CI/CD)
@@ -40,7 +42,11 @@
 # 의존성 설치
 npm install
 
-# 개발 서버 실행 (http://localhost:5173)
+# 환경 변수 설정
+cp .env.example .env
+# .env에 VITE_SUPABASE_URL, VITE_SUPABASE_ANON_KEY 입력
+
+# 개발 서버 실행 (http://localhost:3001)
 npm run dev
 
 # 프로덕션 빌드
@@ -54,7 +60,9 @@ npm run preview
 
 ```
 src/
-├── components/feature/   # 공통 컴포넌트 (TopNav, Sidebar, Footer 등)
+├── components/feature/   # 공통 컴포넌트 (TopNav, Sidebar, Footer, LoginModal 등)
+├── contexts/             # React Context (AuthContext)
+├── lib/                  # 외부 클라이언트 초기화 (supabase.ts)
 ├── i18n/                 # 다국어 설정
 ├── mocks/                # 목업 데이터
 ├── pages/                # 페이지별 컴포넌트
@@ -67,7 +75,8 @@ src/
 │   ├── settings/
 │   ├── subscription/
 │   └── viewer/
-└── router/               # 라우터 설정
+├── router/               # 라우터 설정
+└── services/             # Solar API, 도서관 데이터 처리
 ```
 
 ## 배포 구조

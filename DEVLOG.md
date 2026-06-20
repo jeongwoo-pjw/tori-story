@@ -1,5 +1,87 @@
 # 토리동화 개발일지
 
+## 2026-06-20 — v0.3.0 Supabase 인증 연동 (이메일 · 카카오 로그인)
+
+### 작업 내용
+
+#### 1. Supabase 클라이언트 설정
+
+`src/lib/supabase.ts`를 신규 생성하여 Supabase JS 클라이언트를 초기화합니다.  
+환경 변수(`VITE_SUPABASE_URL`, `VITE_SUPABASE_ANON_KEY`)를 Vite의 `import.meta.env`로 주입하여 키가 소스코드에 노출되지 않도록 분리했습니다.
+
+#### 2. AuthContext — 전역 인증 상태 관리
+
+`src/contexts/AuthContext.tsx`에 React Context 기반 인증 레이어를 구현했습니다.
+
+| 항목 | 내용 |
+|------|------|
+| 제공 값 | `user`, `session`, `isLoggedIn`, `loading` |
+| 이메일 로그인 | `signInWithPassword` |
+| 이메일 회원가입 | `signUp` + `emailRedirectTo`로 현재 앱 URL 명시 |
+| 카카오 로그인 | `signInWithOAuth({ provider: 'kakao' })` + OIDC 스코프 지정 |
+| 로그아웃 | `signOut` + 사이드바 너비 초기화 |
+
+`onAuthStateChange` 리스너로 토큰 갱신·세션 변경을 자동 반영합니다.
+
+```ts
+supabase.auth.onAuthStateChange((_event, session) => {
+  setSession(session);
+  setUser(session?.user ?? null);
+});
+```
+
+#### 3. LoginModal 컴포넌트
+
+`src/components/feature/LoginModal.tsx`를 신규 생성했습니다.
+
+- 로그인 / 회원가입 탭 전환
+- 이메일 + 비밀번호 폼 (비밀번호 확인 유효성 검사)
+- 카카오 로그인 버튼 (노란 배경 + 카카오 로고 SVG)
+- 에러·안내 메시지 인라인 표시
+
+#### 4. TopNav — props → Context 전환
+
+기존 `isLoggedIn?: boolean` / `onToggleLogin?` props를 제거하고 `useAuth()`로 교체했습니다.
+
+- **로그인 버튼** → `loginModalOpen` 상태로 LoginModal 렌더
+- **로그아웃 버튼** → `signOut()` 호출
+- 기존 props는 `_props`로 수신 후 무시 (하위 호환)
+
+#### 5. 카카오 KOE205 오류 해결
+
+Supabase가 카카오 OAuth를 OIDC 방식으로 처리하기 때문에, 카카오 개발자 콘솔에서 **OpenID Connect 활성화** 및 **동의항목** 설정이 필요했습니다.  
+코드에서도 `scopes: "profile_nickname profile_image account_email openid"`를 명시하여 누락 없이 요청합니다.
+
+#### 6. 이메일 확인 리다이렉트 수정
+
+Supabase `Site URL`이 이전 프로젝트(`start04`)로 설정되어 확인 메일의 링크가 잘못된 도메인으로 연결되는 문제를 수정했습니다.
+
+- `signUpWithEmail`에 `emailRedirectTo: window.location.origin` 추가
+- Supabase 대시보드 Site URL → `http://localhost:3001` 변경
+- Redirect URLs에 `http://localhost:3001` / `http://localhost:3001/**` 추가
+
+#### 7. 동화 생성 요청 LocalStorage 저장
+
+create 3종 페이지(`/create`, `/create/select`, `/create/chat`)에서 `handleCreate` 시 동화 생성 요청 객체를 `STORY_REQUEST_KEY`로 localStorage에 저장한 뒤 `/create/progress`로 이동하도록 변경했습니다 (기존 setTimeout 더미 로직 제거).
+
+---
+
+### 커밋 이력 (2026-06-20)
+
+| 커밋 해시 | 내용 |
+|-----------|------|
+| `58f2bed` | feat: Supabase 인증 연동 (이메일/카카오 로그인) |
+
+---
+
+### 알려진 이슈 / 다음 스텝
+
+- [ ] 로그인 후 자녀 프로필을 DB에서 불러오기 (현재 mock 데이터)
+- [ ] 보호된 라우트 — 미로그인 시 홈으로 리다이렉트
+- [ ] 이메일 확인 완료 후 자동 로그인 처리
+
+---
+
 ## 2026-06-19 — v0.2.0 놀이마당 전면 개편 · UI 디테일 개선
 
 ### 작업 내용
