@@ -35,6 +35,8 @@ jobs:
         env:
           BASE_PATH: /tori-story/
           VITE_SOLAR_API_KEY: ${{ secrets.VITE_SOLAR_API_KEY }}
+          VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
+          VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY }}
 
       - name: Copy index.html to 404.html (SPA routing)
         run: cp out/index.html out/404.html
