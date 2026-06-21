@@ -540,9 +540,9 @@ export default function DashboardPage() {
                   <div className="text-center">
                     <p className="text-xs font-label text-foreground-500 mb-2">최근 좋아한 감정</p>
                     <div className="flex flex-wrap gap-1.5 justify-center">
-                      {["기쁨", "따뜻함", "평온"].map((emotion) => (
-                        <span key={emotion} className="inline-flex items-center px-2.5 py-1 rounded-full bg-accent-100 text-accent-900 text-xs font-label">
-                          {emotion}
+                      {[{ label: "기쁨", emoji: "😊" }, { label: "따뜻함", emoji: "🥰" }, { label: "평온", emoji: "😌" }].map(({ label, emoji }) => (
+                        <span key={label} className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-accent-100 text-accent-900 text-xs font-label">
+                          <span>{emoji}</span>{label}
                         </span>
                       ))}
                     </div>
@@ -553,7 +553,7 @@ export default function DashboardPage() {
                 <div className="rounded-2xl bg-background-50 dark:bg-background-100 border border-background-200/70 dark:border-background-300/50 p-5 md:p-6">
                   <div className="flex items-center justify-between mb-4">
                     <p className="text-sm font-label text-foreground-700 dark:text-foreground-900">읽은 동화 히스토리</p>
-                    <Link to="/library" className="text-xs font-label text-primary-500 hover:text-primary-600 transition-colors">자세히</Link>
+                    <Link to="/bookshelf" className="text-xs font-label text-primary-500 hover:text-primary-600 transition-colors">자세히</Link>
                   </div>
                   <div className="space-y-3 max-h-[260px] overflow-y-auto pr-1">
                     {readingHistory.length === 0 ? (
@@ -643,7 +643,7 @@ export default function DashboardPage() {
                     {(analysis?.readingInsight || analysisLoading) && (
                       <div className="rounded-xl bg-primary-50/20 dark:bg-primary-950/30 border border-background-200/70 dark:border-primary-900/40 p-3.5 flex items-start gap-2">
                         <i className="ri-sparkling-2-line text-primary-500 text-sm flex-shrink-0 mt-0.5"></i>
-                        <p className="text-xs font-label text-foreground-900 dark:text-primary-300 leading-relaxed">
+                        <p className="text-xs font-label text-black dark:text-primary-300 leading-relaxed">
                           {analysisLoading ? "AI가 독서 패턴을 분석 중이에요..." : analysis?.readingInsight}
                         </p>
                       </div>

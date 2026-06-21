@@ -159,8 +159,10 @@ export function computeEmotionDistribution(): { label: string; value: number; co
   const counts: Record<string, number> = {};
   for (const r of records) {
     if (r.emotionChoice) {
-      const name = r.emotionChoice.replace(/^\S+\s/, ""); // 이모지 제거
-      counts[name] = (counts[name] ?? 0) + 1;
+      for (const choice of r.emotionChoice.split("|")) {
+        const name = choice.trim().replace(/^\S+\s/, ""); // 이모지 제거
+        if (name) counts[name] = (counts[name] ?? 0) + 1;
+      }
     }
   }
   const total = Object.values(counts).reduce((s, v) => s + v, 0) || 1;

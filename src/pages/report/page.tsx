@@ -246,7 +246,8 @@ export default function PlaygroundPage() {
   const [showSaveResult, setShowSaveResult] = useState(false);
   const [textAnswer, setTextAnswer] = useState("");
   const [selectedChoice, setSelectedChoice] = useState<string | null>(null);
-  const [gameView, setGameView] = useState(false);
+  const [selectedEmotions, setSelectedEmotions] = useState<string[]>([]);
+  const [gameView, setGameView] = useState<string | null>(null);
   const [showAnswer, setShowAnswer] = useState(false);
 
   useEffect(() => {
@@ -261,6 +262,7 @@ export default function PlaygroundPage() {
     setCurrentActivity(actId);
     setTextAnswer("");
     setSelectedChoice(null);
+    setSelectedEmotions([]);
     setActivityError(null);
 
     if (!selectedStory) return;
@@ -302,7 +304,7 @@ export default function PlaygroundPage() {
       date: today,
       storyId: selectedStory,
       storyTitle: currentEntry.title,
-      emotionChoice: currentActivity === "emotion" ? (selectedChoice ?? undefined) : undefined,
+      emotionChoice: currentActivity === "emotion" ? (selectedEmotions.length > 0 ? selectedEmotions.join("|") : undefined) : undefined,
       completedActivities: newCompleted,
       vocabCount,
     });
@@ -313,8 +315,8 @@ export default function PlaygroundPage() {
   const handleCongratsClose = () => { setShowCongrats(false); setCurrentActivity(null); };
 
   /* ── 게임 뷰 ─────────────────────────────────────────── */
-  if (gameView && selectedStory && currentEntry) {
-    return <BreakoutGame onExit={() => setGameView(false)} />;
+  if (gameView === "breakout" && selectedStory && currentEntry) {
+    return <BreakoutGame onExit={() => setGameView(null)} />;
   }
 
   /* ── 활동 상세 뷰 ─────────────────────────────────────── */
@@ -323,7 +325,7 @@ export default function PlaygroundPage() {
     const isDone = doneList.includes(currentActivity);
     const isText = currentActivity === "comprehension" || currentActivity === "creative";
     const isEmotion = currentActivity === "emotion";
-    const canSubmit = isText ? textAnswer.trim().length > 0 : selectedChoice !== null;
+    const canSubmit = isText ? textAnswer.trim().length > 0 : isEmotion ? selectedEmotions.length > 0 : selectedChoice !== null;
 
     const getQuestion = (): string => {
       if (!activityData) return "활동 질문을 불러오는 중...";
@@ -418,19 +420,22 @@ export default function PlaygroundPage() {
                       />
                     )}
 
-                    {/* 감정 선택 */}
+                    {/* 감정 선택 (다중 선택) */}
                     {isEmotion && (
                       <div className="grid grid-cols-3 gap-2">
-                        {EMOTION_OPTIONS.map((opt) => (
-                          <button
-                            key={opt}
-                            type="button"
-                            onClick={() => setSelectedChoice(opt)}
-                            className={`py-3 rounded-xl border-2 text-sm font-label transition-all cursor-pointer hover:scale-105 active:scale-95 ${selectedChoice === opt ? "border-primary-500 bg-primary-50 text-primary-700 font-semibold" : "border-background-200 bg-background-100 text-foreground-700 hover:border-primary-300"}`}
-                          >
-                            {opt}
-                          </button>
-                        ))}
+                        {EMOTION_OPTIONS.map((opt) => {
+                          const selected = selectedEmotions.includes(opt);
+                          return (
+                            <button
+                              key={opt}
+                              type="button"
+                              onClick={() => setSelectedEmotions((prev) => selected ? prev.filter((e) => e !== opt) : [...prev, opt])}
+                              className={`py-3 rounded-xl border-2 text-sm font-label transition-all cursor-pointer hover:scale-105 active:scale-95 ${selected ? "border-primary-500 bg-primary-50 text-primary-700 font-semibold" : "border-background-200 bg-background-100 text-foreground-700 hover:border-primary-300"}`}
+                            >
+                              {opt}
+                            </button>
+                          );
+                        })}
                       </div>
                     )}
 
@@ -540,18 +545,29 @@ export default function PlaygroundPage() {
               <div className="flex-1 flex flex-col items-center justify-center">
                 {/* 전체 완료 배너 */}
                 {allDone && (
-                  <div className="w-full mb-5 px-4 py-3 rounded-2xl bg-gradient-to-r from-emerald-50 to-primary-50 border border-emerald-200 text-sm font-label text-emerald-700 flex items-center justify-between gap-3">
-                    <span className="flex items-center gap-2">
+                  <div className="w-full mb-5 rounded-2xl bg-gradient-to-r from-emerald-50 to-primary-50 border border-emerald-200 p-4">
+                    <div className="flex items-center gap-2 mb-3">
                       <i className="ri-trophy-line text-amber-500 text-base"></i>
-                      모든 활동을 완료했어요! 이제 신나는 게임을 통해 머리를 식혀봐요 🎮
-                    </span>
-                    <button
-                      type="button"
-                      onClick={() => setGameView(true)}
-                      className="flex-shrink-0 px-4 py-1.5 rounded-full bg-gradient-to-r from-amber-400 to-primary-500 text-foreground-950 text-xs font-label font-semibold hover:scale-105 active:scale-95 transition-all cursor-pointer shadow-sm"
-                    >
-                      🎮 게임 시작하기
-                    </button>
+                      <span className="text-sm font-label font-semibold text-emerald-700">모든 활동 완료! 게임으로 머리를 식혀봐요 🎮</span>
+                    </div>
+                    <div className="grid grid-cols-3 gap-3">
+                      {[
+                        { id: "breakout", name: "블록깨기", preview: "🧱", desc: "패들로 블록을 모두 부숴요", available: true },
+                        { id: "memory", name: "카드뒤집기", preview: "🃏", desc: "짝을 맞춰 기억력을 키워요", available: false },
+                        { id: "quiz", name: "낱말퀴즈", preview: "📝", desc: "오늘 배운 낱말로 퀴즈!", available: false },
+                      ].map((game) => (
+                        <button
+                          key={game.id}
+                          type="button"
+                          onClick={() => game.available && setGameView(game.id)}
+                          className={`flex flex-col items-center gap-1.5 rounded-xl border-2 p-3 transition-all ${game.available ? "border-primary-300 bg-white hover:scale-105 active:scale-95 cursor-pointer hover:border-primary-500 hover:shadow-md" : "border-background-200 bg-background-100 cursor-not-allowed opacity-60"}`}
+                        >
+                          <span className="text-2xl">{game.preview}</span>
+                          <span className="text-xs font-label font-semibold text-foreground-900">{game.name}</span>
+                          <span className="text-[10px] font-label text-foreground-500 text-center leading-snug">{game.available ? game.desc : "준비 중"}</span>
+                        </button>
+                      ))}
+                    </div>
                   </div>
                 )}
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-5 md:gap-7 w-full">
