@@ -120,7 +120,11 @@ export function saveAnalyticsRecord(record: AnalyticsRecord) {
   const records = getAnalytics();
   const existing = records.findIndex((r) => r.storyId === record.storyId && r.date === record.date);
   if (existing >= 0) {
-    records[existing] = { ...records[existing], ...record };
+    // undefined 값은 기존 필드를 덮어쓰지 않음 (emotionChoice 등 보존)
+    const incoming = Object.fromEntries(
+      Object.entries(record).filter(([, v]) => v !== undefined)
+    ) as Partial<AnalyticsRecord>;
+    records[existing] = { ...records[existing], ...incoming };
   } else {
     records.push(record);
   }
@@ -243,6 +247,30 @@ export function setCachedDashboardAnalysis(data: DashboardAnalysis, libraryLengt
   );
 }
 
+const STORY_EMOJI_MAP: Array<[RegExp, string]> = [
+  [/탈춤|탈|축제/, "🎭"],
+  [/한복/, "👘"],
+  [/가족/, "🏡"],
+  [/사랑/, "🌸"],
+  [/용기|용감|도전/, "🌟"],
+  [/우정|친구/, "🤝"],
+  [/바다|파도|물고기/, "🌊"],
+  [/별빛|별|하늘|달/, "⭐"],
+  [/도깨비|귀신|마법/, "👺"],
+  [/호랑이/, "🐯"],
+  [/토끼/, "🐰"],
+  [/한옥|고궁|전통/, "🏯"],
+  [/여행|모험/, "🗺️"],
+];
+
+function getStoryEmoji(tag: string, title: string): string {
+  const text = `${tag} ${title}`;
+  for (const [pattern, emoji] of STORY_EMOJI_MAP) {
+    if (pattern.test(text)) return emoji;
+  }
+  return "📖";
+}
+
 /** 최근 읽은 동화 히스토리 */
 export function computeReadingHistory(limit = 5) {
   return getLibrary()
@@ -251,6 +279,6 @@ export function computeReadingHistory(limit = 5) {
       id: e.id,
       title: e.title,
       readAt: getLastReadLabel(e.lastReadAt),
-      emoji: "📖",
+      emoji: getStoryEmoji(e.tag, e.title),
     }));
 }

@@ -22,6 +22,16 @@ import {
 } from "@/services/library";
 import { analyzeChildData, type DashboardAnalysis } from "@/services/solar";
 
+function firstEmoji(str: string): string {
+  if (!str) return "📖";
+  try {
+    const seg = new Intl.Segmenter(undefined, { granularity: "grapheme" });
+    return [...seg.segment(str)][0]?.segment ?? str[0] ?? "📖";
+  } catch {
+    return str[0] ?? "📖";
+  }
+}
+
 export default function DashboardPage() {
   const [animHeights, setAnimHeights] = useState<number[]>([]);
   const [showNotif, setShowNotif] = useState(false);
@@ -39,6 +49,19 @@ export default function DashboardPage() {
   const monthlyData = useMemo(() => computeVocabGrowth(30), []);
   const readingHistory = useMemo(() => computeReadingHistory(5), []);
   const emotionDist = useMemo(() => computeEmotionDistribution(), []);
+
+  const recentEmotions = useMemo(() => {
+    const analytics = getAnalytics();
+    const seen = new Set<string>();
+    const result: string[] = [];
+    for (const a of [...analytics].reverse()) {
+      if (a.emotionChoice && !seen.has(a.emotionChoice) && result.length < 3) {
+        seen.add(a.emotionChoice);
+        result.push(a.emotionChoice);
+      }
+    }
+    return result;
+  }, []);
 
   const readingData = useMemo(
     () =>
@@ -331,7 +354,7 @@ export default function DashboardPage() {
                       ) : (
                         (analysis?.repeatThemes ?? []).map((theme, i) => (
                           <div key={i} className="flex items-center gap-3 rounded-xl bg-background-100 dark:bg-background-200 p-3.5 flex-1">
-                            <span className="text-lg flex-shrink-0 leading-none">{theme.icon}</span>
+                            <span className="text-lg flex-shrink-0 leading-none">{firstEmoji(theme.icon)}</span>
                             <p className="text-xs font-label text-foreground-700 dark:text-foreground-400 leading-snug">{theme.title}</p>
                           </div>
                         ))
@@ -529,11 +552,19 @@ export default function DashboardPage() {
                   </div>
                   <div className="text-center">
                     <p className="text-xs font-label text-foreground-500 mb-2">최근 좋아한 감정</p>
-                    <div className="flex items-center justify-center">
-                      <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-accent-100 text-accent-900 text-sm font-label">
-                        {CHILD_PROFILE.recentEmotion}
-                        <i className="ri-emotion-laugh-line text-base"></i>
-                      </span>
+                    <div className="flex flex-wrap gap-1.5 justify-center">
+                      {recentEmotions.length === 0 ? (
+                        <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-accent-100 text-accent-900 text-sm font-label">
+                          {CHILD_PROFILE.recentEmotion}
+                          <i className="ri-emotion-laugh-line text-base"></i>
+                        </span>
+                      ) : (
+                        recentEmotions.map((emotion) => (
+                          <span key={emotion} className="inline-flex items-center px-2.5 py-1 rounded-full bg-accent-100 text-accent-900 text-xs font-label">
+                            {emotion}
+                          </span>
+                        ))
+                      )}
                     </div>
                   </div>
                 </div>
@@ -632,7 +663,7 @@ export default function DashboardPage() {
                     {(analysis?.readingInsight || analysisLoading) && (
                       <div className="rounded-xl bg-primary-50 dark:bg-primary-950/30 border border-primary-100 dark:border-primary-900/40 p-3.5 flex items-start gap-2">
                         <i className="ri-sparkling-2-line text-primary-400 text-sm flex-shrink-0 mt-0.5"></i>
-                        <p className="text-xs font-label text-primary-700 dark:text-primary-300 leading-relaxed">
+                        <p className="text-xs font-label text-foreground-800 dark:text-primary-300 leading-relaxed">
                           {analysisLoading ? "AI가 독서 패턴을 분석 중이에요..." : analysis?.readingInsight}
                         </p>
                       </div>

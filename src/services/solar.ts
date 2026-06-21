@@ -275,9 +275,9 @@ export async function analyzeChildData(params: {
   "mainEmotion": "주로 느끼는 감정 1단어",
   "personalityInsight": "아이 성향 분석 문장 40자 이내 (~해요 말투)",
   "repeatThemes": [
-    {"icon": "이모지 1개", "title": "반복 테마 설명 15자 이내"},
-    {"icon": "이모지 1개", "title": "반복 테마 설명 15자 이내"},
-    {"icon": "이모지 1개", "title": "반복 테마 설명 15자 이내"}
+    {"icon": "이모지 딱 1개만(절대 2개 이상 금지)", "title": "반복 테마 설명 15자 이내"},
+    {"icon": "이모지 딱 1개만(절대 2개 이상 금지)", "title": "반복 테마 설명 15자 이내"},
+    {"icon": "이모지 딱 1개만(절대 2개 이상 금지)", "title": "반복 테마 설명 15자 이내"}
   ],
   "readingInsight": "독서 패턴 한 줄 코멘트 30자 이내 (~해요 말투)"
 }`;
