@@ -5,6 +5,8 @@ import { getStoryById, saveAnalyticsRecord } from "@/services/library";
 import { useLibrary } from "@/hooks/useLibrary";
 import { getActivityData, generateActivityData, type ActivityData } from "@/services/activity";
 import { getDummyThumbnail } from "@/services/dummyLookup";
+import TetrisGame from "./TetrisGame";
+import MemoryMatchGame from "./MemoryMatchGame";
 
 /* ── 상수 ─────────────────────────────────────────────── */
 
@@ -318,6 +320,12 @@ export default function PlaygroundPage() {
   if (gameView === "breakout" && selectedStory && currentEntry) {
     return <BreakoutGame onExit={() => setGameView(null)} />;
   }
+  if (gameView === "tetris" && selectedStory && currentEntry) {
+    return <TetrisGame onExit={() => setGameView(null)} />;
+  }
+  if (gameView === "memory" && selectedStory && currentEntry) {
+    return <MemoryMatchGame onExit={() => setGameView(null)} />;
+  }
 
   /* ── 활동 상세 뷰 ─────────────────────────────────────── */
   if (currentActivity && selectedStory && currentEntry) {
@@ -552,19 +560,19 @@ export default function PlaygroundPage() {
                     </div>
                     <div className="grid grid-cols-3 gap-3">
                       {[
-                        { id: "breakout", name: "블록깨기", preview: "🧱", desc: "패들로 블록을 모두 부숴요", available: true },
-                        { id: "memory", name: "카드뒤집기", preview: "🃏", desc: "짝을 맞춰 기억력을 키워요", available: false },
-                        { id: "quiz", name: "낱말퀴즈", preview: "📝", desc: "오늘 배운 낱말로 퀴즈!", available: false },
+                        { id: "breakout", name: "블록깨기", preview: "🧱", desc: "패들로 블록을 부숴요" },
+                        { id: "memory",   name: "카드뒤집기", preview: "🃏", desc: "짝을 찾아 기억력 UP" },
+                        { id: "tetris",   name: "테트리스", preview: "🟦", desc: "블록을 쌓아 줄을 맞춰요" },
                       ].map((game) => (
                         <button
                           key={game.id}
                           type="button"
-                          onClick={() => game.available && setGameView(game.id)}
-                          className={`flex flex-col items-center gap-1.5 rounded-xl border-2 p-3 transition-all ${game.available ? "border-primary-300 bg-white hover:scale-105 active:scale-95 cursor-pointer hover:border-primary-500 hover:shadow-md" : "border-background-200 bg-background-100 cursor-not-allowed opacity-60"}`}
+                          onClick={() => setGameView(game.id)}
+                          className="flex flex-col items-center gap-1.5 rounded-xl border-2 border-primary-300 bg-white hover:scale-105 active:scale-95 cursor-pointer hover:border-primary-500 hover:shadow-md p-3 transition-all"
                         >
                           <span className="text-2xl">{game.preview}</span>
                           <span className="text-xs font-label font-semibold text-foreground-900">{game.name}</span>
-                          <span className="text-[10px] font-label text-foreground-500 text-center leading-snug">{game.available ? game.desc : "준비 중"}</span>
+                          <span className="text-[10px] font-label text-foreground-500 text-center leading-snug">{game.desc}</span>
                         </button>
                       ))}
                     </div>
