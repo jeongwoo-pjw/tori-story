@@ -644,14 +644,14 @@ export default function DashboardPage() {
                     </div>
 
                     {/* AI 독서 코멘트 */}
-                    {(analysis?.readingInsight || analysisLoading) && (
-                      <div className="rounded-xl bg-primary-50/20 dark:bg-primary-950/30 border border-background-200/70 dark:border-primary-900/40 p-3.5 flex items-start gap-2">
-                        <i className="ri-sparkling-2-line text-primary-500 text-sm flex-shrink-0 mt-0.5"></i>
-                        <p className="text-xs font-label dark:!text-primary-300 leading-relaxed" style={{ color: "black" }}>
-                          {analysisLoading ? "AI가 독서 패턴을 분석 중이에요..." : analysis?.readingInsight}
-                        </p>
-                      </div>
-                    )}
+                    <div className="rounded-xl bg-primary-50/40 dark:bg-primary-950/30 border border-primary-200/60 dark:border-primary-900/40 p-3.5 flex items-start gap-2">
+                      <i className={`ri-sparkling-2-line text-primary-500 text-sm flex-shrink-0 mt-0.5 ${analysisLoading ? "animate-spin" : ""}`}></i>
+                      <p className="text-xs font-label dark:!text-primary-300 leading-relaxed" style={{ color: "black" }}>
+                        {analysisLoading
+                          ? "AI가 독서 패턴을 분석 중이에요..."
+                          : (analysis?.readingInsight ?? "동화를 더 읽으면 독서 성향 분석이 시작돼요.")}
+                      </p>
+                    </div>
 
                   </div>
                 </div>
