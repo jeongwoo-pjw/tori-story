@@ -494,10 +494,10 @@ export default function TopNav(_props: TopNavProps) {
 
       {/* Click outside to close dropdowns */}
       {childOpen && (
-        <div className="fixed inset-0 z-40" onClick={() => setChildOpen(false)}></div>
+        <div className="fixed inset-0 z-[35]" onClick={() => setChildOpen(false)}></div>
       )}
       {themePickOpen && (
-        <div className="fixed inset-0 z-40" onClick={() => setThemePickOpen(false)}></div>
+        <div className="fixed inset-0 z-[35]" onClick={() => setThemePickOpen(false)}></div>
       )}
     </>
   );
