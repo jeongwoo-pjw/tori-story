@@ -14,11 +14,13 @@ function AuthErrorBanner() {
 
     const params = new URLSearchParams(hash.slice(1));
     const code = params.get("error_code");
+    const desc = params.get("error_description");
 
     if (code === "otp_expired") {
       setMessage("인증 링크가 만료됐습니다. 다시 회원가입하거나 로그인해 주세요.");
     } else if (params.get("error")) {
-      setMessage("인증 중 오류가 발생했습니다. 다시 시도해 주세요.");
+      const detail = desc ? ` (${decodeURIComponent(desc.replace(/\+/g, " "))})` : code ? ` [${code}]` : "";
+      setMessage(`인증 중 오류가 발생했습니다.${detail}`);
     }
 
     window.history.replaceState(null, "", window.location.pathname);

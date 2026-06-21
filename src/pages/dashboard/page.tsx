@@ -30,23 +30,27 @@ export default function DashboardPage() {
   const [showPeriodDropdown, setShowPeriodDropdown] = useState(false);
   const [selectedPeriod, setSelectedPeriod] = useState("이번 주");
 
-  const library = getLibrary();
-  const { weeklyCompleted, weeklyVocab } = computeWeeklyStats();
-  const streak = computeReadingStreak();
-  const { monthlyCompleted } = computeMonthlyStats();
+  const library = useMemo(() => getLibrary(), []);
+  const { weeklyCompleted, weeklyVocab } = useMemo(() => computeWeeklyStats(), []);
+  const streak = useMemo(() => computeReadingStreak(), []);
+  const { monthlyCompleted } = useMemo(() => computeMonthlyStats(), []);
   const MONTHLY_GOAL = 10;
-  const weeklyData = computeVocabGrowth(7);
-  const monthlyData = computeVocabGrowth(30);
-  const readingHistory = computeReadingHistory(5);
-  const emotionDist = computeEmotionDistribution();
+  const weeklyData = useMemo(() => computeVocabGrowth(7), []);
+  const monthlyData = useMemo(() => computeVocabGrowth(30), []);
+  const readingHistory = useMemo(() => computeReadingHistory(5), []);
+  const emotionDist = useMemo(() => computeEmotionDistribution(), []);
 
-  const readingData =
-    selectedPeriod === "이번 달"
-      ? monthlyData
-      : selectedPeriod === "지난 주"
-      ? weeklyData
-      : weeklyData;
-  const maxValue = Math.max(...readingData.map((d) => d.value), 1);
+  const readingData = useMemo(
+    () =>
+      selectedPeriod === "이번 달"
+        ? monthlyData
+        : weeklyData,
+    [selectedPeriod, monthlyData, weeklyData]
+  );
+  const maxValue = useMemo(
+    () => Math.max(...readingData.map((d) => d.value), 1),
+    [readingData]
+  );
   const [progressAnimating, setProgressAnimating] = useState(false);
   const [focusHours, setFocusHours] = useState(FOCUS_SETTINGS.readingTime.hours);
   const [focusMinutes, setFocusMinutes] = useState(FOCUS_SETTINGS.readingTime.minutes);
