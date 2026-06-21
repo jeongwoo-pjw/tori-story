@@ -247,6 +247,7 @@ export default function PlaygroundPage() {
   const [textAnswer, setTextAnswer] = useState("");
   const [selectedChoice, setSelectedChoice] = useState<string | null>(null);
   const [gameView, setGameView] = useState(false);
+  const [showAnswer, setShowAnswer] = useState(false);
 
   useEffect(() => {
     localStorage.setItem("tori-playground", JSON.stringify(completedActivities));
@@ -344,8 +345,6 @@ export default function PlaygroundPage() {
       if (currentActivity === "comprehension") return activityData.comprehension.modelAnswer;
       return null;
     };
-
-    const [showAnswer, setShowAnswer] = useState(false);
 
     return (
       <main className="min-h-screen bg-background-100 dark:bg-background-50 text-foreground-950 flex flex-col">
@@ -481,7 +480,7 @@ export default function PlaygroundPage() {
           </div>
         </div>
         {showCongrats && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center bg-foreground-950/50 backdrop-blur-sm px-4">
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-foreground-950/50 backdrop-blur-sm px-4" onClick={(e) => { if (e.target === e.currentTarget) handleCongratsClose(); }}>
             <div className="w-full max-w-sm rounded-3xl bg-background-50 p-7 shadow-2xl text-center border border-background-200">
               <div className="text-5xl mb-4 animate-bounce">🎉</div>
               <h2 className="font-heading text-xl text-foreground-950 mb-2">축하합니다!</h2>
@@ -605,7 +604,7 @@ export default function PlaygroundPage() {
 
         {/* 놀이결과 저장 모달 */}
         {showSaveResult && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center bg-foreground-950/50 backdrop-blur-sm px-4">
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-foreground-950/50 backdrop-blur-sm px-4" onClick={(e) => { if (e.target === e.currentTarget) setShowSaveResult(false); }}>
             <div className="w-full max-w-sm rounded-3xl bg-background-50 p-7 shadow-2xl text-center border border-background-200">
               <div className="w-14 h-14 rounded-full bg-emerald-100 flex items-center justify-center mx-auto mb-4">
                 <i className="ri-shield-check-line text-emerald-600 text-2xl"></i>
@@ -652,9 +651,9 @@ export default function PlaygroundPage() {
                 <i className="ri-quill-pen-line text-5xl mb-4"></i>
                 <p className="text-base font-label mb-2">아직 만든 동화가 없어요</p>
                 <p className="text-sm mb-5">동화를 먼저 만들고 독후활동을 시작해보세요!</p>
-                <a href="/create" className="px-6 py-2.5 rounded-full bg-primary-500 hover:bg-primary-600 text-foreground-950 text-sm font-label transition-colors cursor-pointer">
+                <Link to="/create" className="px-6 py-2.5 rounded-full bg-primary-500 hover:bg-primary-600 text-foreground-950 text-sm font-label transition-colors cursor-pointer">
                   동화 만들기
-                </a>
+                </Link>
               </div>
             ) : (
               <div className="grid grid-cols-2 md:grid-cols-3 gap-4 md:gap-6">

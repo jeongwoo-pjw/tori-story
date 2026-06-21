@@ -56,7 +56,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       provider: "kakao",
       options: {
         redirectTo: window.location.origin + __BASE_PATH__,
-        scopes: "profile_nickname profile_image account_email openid",
+        scopes: "profile_nickname profile_image account_email",
       },
     });
     return { error: error?.message ?? null };
