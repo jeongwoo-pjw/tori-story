@@ -75,10 +75,10 @@ export default function CreateProgressPage() {
         title: book.title,
         pages: book.pages.map((p) => ({
           text: p.text,
-          image: `/books/${p.image}`,
+          image: `${__BASE_PATH__}books/${p.image}`,
         })),
       };
-      const thumbnailImage = `/books/${book.thumbnail}`;
+      const thumbnailImage = `${__BASE_PATH__}books/${book.thumbnail}`;
       try {
         const entry = addToLibrary(story, request, thumbnailImage);
         setEntryId(entry.id);

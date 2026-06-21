@@ -38,7 +38,7 @@ export default function DummyBooksPage() {
                 {/* Thumbnail */}
                 <div className="relative w-full aspect-[4/3] bg-background-100 overflow-hidden">
                   <img
-                    src={`/books/${book.thumbnail}`}
+                    src={`${__BASE_PATH__}books/${book.thumbnail}`}
                     alt={book.title}
                     className="w-full h-full object-cover object-top"
                     onError={(e) => {

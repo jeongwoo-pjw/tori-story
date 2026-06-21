@@ -43,7 +43,7 @@ export default function DummyViewerPage() {
     registered.current = true;
     const story = {
       title: book.title,
-      pages: book.pages.map((p) => ({ text: p.text, image: `/books/${p.image}` })),
+      pages: book.pages.map((p) => ({ text: p.text, image: `${__BASE_PATH__}books/${p.image}` })),
     };
     const request = {
       name: book.name,
@@ -53,7 +53,7 @@ export default function DummyViewerPage() {
       artStyle: book.style,
       length: "short" as const,
     };
-    const entry = addToLibrary(story, request, `/books/${book.thumbnail}`);
+    const entry = addToLibrary(story, request, `${__BASE_PATH__}books/${book.thumbnail}`);
     setEntryId(entry.id);
   }, [book]);
 
@@ -113,7 +113,7 @@ export default function DummyViewerPage() {
     setEditOpen(false);
   }
 
-  const imgSrc = (filename: string) => `/books/${filename}`;
+  const imgSrc = (filename: string) => `${__BASE_PATH__}books/${filename}`;
 
   return (
     <main className="min-h-screen bg-background-50 text-foreground-950">
