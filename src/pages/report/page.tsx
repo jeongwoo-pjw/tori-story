@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, type ReactNode } from "react";
 import { Link } from "react-router-dom";
 import TopNav from "@/components/feature/TopNav";
 import FoldSidebar from "@/components/feature/FoldSidebar";
@@ -32,11 +32,66 @@ const ACTIVITIES = [
 
 const EMOTION_OPTIONS = ["😊 기쁨", "😢 슬픔", "😮 놀람", "😰 걱정", "😌 평온", "🥰 따뜻함"];
 
+/* ── 게임 탭 / 공통 페이지 쉘 ───────────────────────────── */
+
+const GAME_TABS = [
+  { id: "breakout", icon: "🧱", label: "블록깨기", activeStyle: { background: "rgba(110,255,241,0.2)", color: "#6efff1" } },
+  { id: "memory",   icon: "🃏", label: "카드 뒤집기", activeStyle: { background: "rgba(167,139,250,0.2)", color: "#a78bfa" } },
+  { id: "tetris",   icon: "🟦", label: "테트리스",  activeStyle: { background: "rgba(110,255,241,0.15)", color: "#6efff1" } },
+];
+
+function GameShell({ activeGame, onExit, onSwitchGame, children }: {
+  activeGame: string;
+  onExit: () => void;
+  onSwitchGame: (g: string) => void;
+  children: ReactNode;
+}) {
+  return (
+    <main className="min-h-screen bg-background-100 dark:bg-background-50 text-foreground-950 flex flex-col">
+      <TopNav isLoggedIn={true} />
+      <FoldSidebar />
+      <div className="pl-[var(--sidebar-width)] pt-14 md:pt-16 pb-12 flex-1 flex flex-col">
+        <div className="px-4 md:px-8 lg:px-12 flex-1 flex flex-col">
+          <div className="max-w-2xl mx-auto w-full flex-1 flex flex-col">
+            <div className="pt-6 mb-4 flex flex-col gap-3">
+              <button
+                type="button"
+                onClick={onExit}
+                className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full border border-background-200 bg-background-50 hover:bg-primary-50 text-sm font-label text-foreground-700 transition-colors cursor-pointer self-start"
+              >
+                <i className="ri-arrow-left-line w-4 h-4 flex items-center justify-center"></i>
+                활동으로 돌아가기
+              </button>
+              <div className="flex items-center gap-1 p-1 rounded-xl self-start" style={{ background: "#131830" }}>
+                {GAME_TABS.map((tab) => (
+                  <button
+                    key={tab.id}
+                    type="button"
+                    onClick={() => onSwitchGame(tab.id)}
+                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-label font-semibold transition-all cursor-pointer"
+                    style={tab.id === activeGame ? tab.activeStyle : { color: "rgba(255,255,255,0.45)" }}
+                  >
+                    <span>{tab.icon}</span>
+                    <span>{tab.label}</span>
+                  </button>
+                ))}
+              </div>
+            </div>
+            <div className="rounded-xl overflow-hidden" style={{ border: "1px solid #1f2545" }}>
+              {children}
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+  );
+}
+
 /* ── 브레이크아웃 게임 ──────────────────────────────────── */
 
 type Brick = { x: number; y: number; color: string; alive: boolean; points: number };
 
-function BreakoutGame({ onExit }: { onExit: () => void }) {
+function BreakoutGame() {
   const cvs = useRef<HTMLCanvasElement>(null);
   const g = useRef({
     paddleX: 205, ballX: 250, ballY: 550, bvx: 3, bvy: -4,
@@ -174,72 +229,54 @@ function BreakoutGame({ onExit }: { onExit: () => void }) {
   }, []);
 
   return (
-    <main className="min-h-screen bg-background-100 dark:bg-background-50 text-foreground-950 flex flex-col">
-      <TopNav isLoggedIn={true} />
-      <FoldSidebar />
-      <div className="pl-[var(--sidebar-width)] pt-14 md:pt-16 pb-12 flex-1 flex flex-col">
-        <div className="px-4 md:px-8 lg:px-12 flex-1 flex flex-col">
-          <div className="max-w-2xl mx-auto w-full flex-1 flex flex-col">
-            <div className="pt-6 mb-4">
+    <div style={{ background: "#131830", padding: "16px" }}>
+      <div style={{ maxWidth: 560, margin: "0 auto", width: "100%" }}>
+        {/* HUD */}
+        <div className="grid grid-cols-4 gap-2 mb-4">
+          {([["SCORE", hud.score], ["BEST", hud.best], ["LEVEL", hud.level], ["LIVES", hud.lives]] as [string, string | number][]).map(([label, val]) => (
+            <div key={label} className="rounded-xl p-2.5 text-center" style={{ background: "#0d1020", border: "1px solid #1f2545" }}>
+              <span className="block text-[10px] tracking-widest mb-0.5" style={{ color: "#8b91b5" }}>{label}</span>
+              <b className="text-lg font-label" style={{ color: "#6efff1", fontFeatureSettings: '"tnum"' }}>{val}</b>
+            </div>
+          ))}
+        </div>
+        {/* Canvas + overlay */}
+        <div className="relative rounded-xl overflow-hidden" style={{ aspectRatio: "500/600" }}>
+          <canvas
+            ref={cvs}
+            width={W}
+            height={H}
+            className="w-full h-full block"
+            style={{ cursor: "none", background: "#131830" }}
+            onMouseMove={e => {
+              const r = cvs.current!.getBoundingClientRect();
+              g.current.mouseX = ((e.clientX - r.left) / r.width) * W;
+            }}
+            onMouseLeave={() => { g.current.mouseX = null; }}
+            onTouchMove={e => {
+              e.preventDefault();
+              const r = cvs.current!.getBoundingClientRect();
+              g.current.mouseX = ((e.touches[0].clientX - r.left) / r.width) * W;
+            }}
+          />
+          {overlay.show && (
+            <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 p-5 text-center" style={{ background: "rgba(10,14,31,.92)" }}>
+              <h2 className="text-2xl font-label font-bold tracking-wider" style={{ color: "#eef0fa" }}>{overlay.title}</h2>
+              <p className="text-sm font-label" style={{ color: "#8b91b5" }}>{overlay.sub}</p>
               <button
                 type="button"
-                onClick={onExit}
-                className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full border border-background-200 bg-background-50 hover:bg-primary-50 text-sm font-label text-foreground-700 transition-colors cursor-pointer"
+                onClick={startGame}
+                className="mt-2 px-7 py-3 rounded-full font-label font-bold text-sm cursor-pointer transition-all hover:brightness-110"
+                style={{ background: "#6efff1", color: "#0a0e1f" }}
               >
-                <i className="ri-arrow-left-line w-4 h-4 flex items-center justify-center"></i>
-                활동으로 돌아가기
+                {overlay.btn}
               </button>
             </div>
-            <div style={{ maxWidth: 560, margin: "0 auto", width: "100%" }}>
-              {/* HUD */}
-              <div className="grid grid-cols-4 gap-2 mb-4">
-                {([["SCORE", hud.score], ["BEST", hud.best], ["LEVEL", hud.level], ["LIVES", hud.lives]] as [string, string | number][]).map(([label, val]) => (
-                  <div key={label} className="rounded-xl p-2.5 text-center" style={{ background: "#131830", border: "1px solid #1f2545" }}>
-                    <span className="block text-[10px] tracking-widest mb-0.5" style={{ color: "#8b91b5" }}>{label}</span>
-                    <b className="text-lg font-label" style={{ color: "#6efff1", fontFeatureSettings: '"tnum"' }}>{val}</b>
-                  </div>
-                ))}
-              </div>
-              {/* Canvas + overlay */}
-              <div className="relative rounded-xl overflow-hidden" style={{ aspectRatio: "500/600", border: "1px solid #1f2545" }}>
-                <canvas
-                  ref={cvs}
-                  width={W}
-                  height={H}
-                  className="w-full h-full block"
-                  style={{ cursor: "none", background: "#131830" }}
-                  onMouseMove={e => {
-                    const r = cvs.current!.getBoundingClientRect();
-                    g.current.mouseX = ((e.clientX - r.left) / r.width) * W;
-                  }}
-                  onMouseLeave={() => { g.current.mouseX = null; }}
-                  onTouchMove={e => {
-                    e.preventDefault();
-                    const r = cvs.current!.getBoundingClientRect();
-                    g.current.mouseX = ((e.touches[0].clientX - r.left) / r.width) * W;
-                  }}
-                />
-                {overlay.show && (
-                  <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 p-5 text-center" style={{ background: "rgba(10,14,31,.92)" }}>
-                    <h2 className="text-2xl font-label font-bold tracking-wider" style={{ color: "#eef0fa" }}>{overlay.title}</h2>
-                    <p className="text-sm font-label" style={{ color: "#8b91b5" }}>{overlay.sub}</p>
-                    <button
-                      type="button"
-                      onClick={startGame}
-                      className="mt-2 px-7 py-3 rounded-full font-label font-bold text-sm cursor-pointer transition-all hover:brightness-110"
-                      style={{ background: "#6efff1", color: "#0a0e1f" }}
-                    >
-                      {overlay.btn}
-                    </button>
-                  </div>
-                )}
-              </div>
-              <p className="text-center text-xs mt-3 font-label" style={{ color: "#8b91b5" }}>← → 방향키 또는 마우스 이동 · 스페이스 일시정지</p>
-            </div>
-          </div>
+          )}
         </div>
+        <p className="text-center text-xs mt-3 font-label" style={{ color: "#8b91b5" }}>← → 방향키 또는 마우스 이동 · 스페이스 일시정지</p>
       </div>
-    </main>
+    </div>
   );
 }
 
@@ -348,98 +385,15 @@ export default function PlaygroundPage() {
 
   const handleCongratsClose = () => { setShowCongrats(false); setCurrentActivity(null); };
 
-  /* ── 게임 선택 뷰 ───────────────────────────────────── */
-  if (gameView === "select") {
-    return (
-      <main className="min-h-screen bg-background-100 dark:bg-background-50 text-foreground-950 flex flex-col">
-        <TopNav isLoggedIn={true} />
-        <FoldSidebar />
-        <div className="pl-[var(--sidebar-width)] pt-14 md:pt-16 pb-12 flex-1 flex flex-col">
-          <div className="px-4 md:px-8 lg:px-12 py-8 flex-1 flex flex-col">
-            <div className="max-w-3xl mx-auto w-full flex-1 flex flex-col">
-              <div className="mb-8 flex items-center gap-4">
-                <button
-                  type="button"
-                  onClick={() => setGameView(null)}
-                  className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full border border-background-200 bg-background-50 hover:bg-primary-50 text-sm font-label text-foreground-700 transition-colors cursor-pointer flex-shrink-0"
-                >
-                  <i className="ri-arrow-left-line"></i>
-                  돌아가기
-                </button>
-                <div>
-                  <h2 className="font-heading text-xl text-foreground-950">게임 선택</h2>
-                  <p className="text-xs font-label text-foreground-500 mt-0.5">활동을 모두 완료했어요! 원하는 게임을 골라요 🎮</p>
-                </div>
-              </div>
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
-                {[
-                  {
-                    id: "breakout",
-                    name: "블록깨기",
-                    icon: "🧱",
-                    bg: "from-cyan-50 to-blue-50 dark:from-cyan-950/30 dark:to-blue-950/30",
-                    border: "border-blue-200 dark:border-blue-800",
-                    badge: "인기",
-                    badgeColor: "bg-blue-100 text-blue-700",
-                    desc: "패들로 블록을 모두 부숴요",
-                    detail: "마우스 또는 방향키로 패들 조작",
-                  },
-                  {
-                    id: "memory",
-                    name: "카드 뒤집기",
-                    icon: "🃏",
-                    bg: "from-purple-50 to-pink-50 dark:from-purple-950/30 dark:to-pink-950/30",
-                    border: "border-purple-200 dark:border-purple-800",
-                    badge: "기억력",
-                    badgeColor: "bg-purple-100 text-purple-700",
-                    desc: "짝을 찾아 기억력을 키워요",
-                    detail: "3단계 난이도 · 최고기록 도전",
-                  },
-                  {
-                    id: "tetris",
-                    name: "테트리스",
-                    icon: "🟦",
-                    bg: "from-teal-50 to-emerald-50 dark:from-teal-950/30 dark:to-emerald-950/30",
-                    border: "border-teal-200 dark:border-teal-800",
-                    badge: "집중력",
-                    badgeColor: "bg-teal-100 text-teal-700",
-                    desc: "블록을 쌓아 줄을 맞춰요",
-                    detail: "방향키 · 스페이스=하드드롭",
-                  },
-                ].map((game) => (
-                  <button
-                    key={game.id}
-                    type="button"
-                    onClick={() => setGameView(game.id)}
-                    className={`flex flex-col items-center rounded-3xl border-2 ${game.border} bg-gradient-to-br ${game.bg} p-6 hover:scale-[1.03] active:scale-[0.98] transition-all cursor-pointer shadow-sm hover:shadow-lg group text-left`}
-                  >
-                    <span className="text-6xl mb-4 group-hover:scale-110 transition-transform inline-block">{game.icon}</span>
-                    <span className={`inline-block px-2.5 py-0.5 rounded-full text-[10px] font-label font-semibold mb-3 ${game.badgeColor}`}>{game.badge}</span>
-                    <h3 className="font-heading text-lg text-foreground-950 mb-1 w-full text-center">{game.name}</h3>
-                    <p className="text-xs font-label text-foreground-600 text-center leading-relaxed mb-1">{game.desc}</p>
-                    <p className="text-[10px] font-label text-foreground-400 text-center mb-4">{game.detail}</p>
-                    <div className="w-full py-2.5 rounded-xl bg-gradient-to-r from-primary-500 to-amber-400 text-foreground-950 text-sm font-label font-semibold text-center">
-                      시작하기 →
-                    </div>
-                  </button>
-                ))}
-              </div>
-            </div>
-          </div>
-        </div>
-      </main>
-    );
-  }
-
   /* ── 게임 뷰 ─────────────────────────────────────────── */
-  if (gameView === "breakout" && selectedStory && currentEntry) {
-    return <BreakoutGame onExit={() => setGameView(null)} />;
-  }
-  if (gameView === "tetris" && selectedStory && currentEntry) {
-    return <TetrisGame onExit={() => setGameView(null)} />;
-  }
-  if (gameView === "memory" && selectedStory && currentEntry) {
-    return <MemoryMatchGame onExit={() => setGameView(null)} />;
+  if ((gameView === "breakout" || gameView === "tetris" || gameView === "memory") && selectedStory && currentEntry) {
+    return (
+      <GameShell activeGame={gameView} onExit={() => setGameView(null)} onSwitchGame={setGameView}>
+        {gameView === "breakout" && <BreakoutGame />}
+        {gameView === "tetris"   && <TetrisGame />}
+        {gameView === "memory"   && <MemoryMatchGame onExit={() => setGameView(null)} />}
+      </GameShell>
+    );
   }
 
   /* ── 활동 상세 뷰 ─────────────────────────────────────── */
@@ -890,7 +844,7 @@ export default function PlaygroundPage() {
                     </span>
                     <button
                       type="button"
-                      onClick={() => setGameView("select")}
+                      onClick={() => setGameView("breakout")}
                       className="flex-shrink-0 px-4 py-1.5 rounded-full bg-gradient-to-r from-amber-400 to-primary-500 text-foreground-950 text-xs font-label font-semibold hover:scale-105 active:scale-95 transition-all cursor-pointer shadow-sm"
                     >
                       🎮 게임 시작하기

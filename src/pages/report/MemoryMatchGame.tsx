@@ -113,15 +113,7 @@ export default function MemoryMatchGame({ onExit }: { onExit: () => void }) {
   const colClass: Record<number, string> = { 3: "grid-cols-3", 4: "grid-cols-4" };
 
   return (
-    <main className="min-h-screen bg-[#0f1020] flex flex-col text-white">
-      <div className="flex items-center justify-between px-4 py-3 border-b border-white/10">
-        <button type="button" onClick={onExit} className="text-sm font-label text-white/70 hover:text-white flex items-center gap-1 cursor-pointer">
-          ← 돌아가기
-        </button>
-        <span className="font-label font-bold tracking-widest" style={{ color: "#a78bfa" }}>카드 뒤집기</span>
-        <div className="w-20" />
-      </div>
-
+    <div className="flex flex-col text-white" style={{ background: "#0f1020" }}>
       <div className="flex items-center justify-between px-4 py-2 gap-4 text-xs font-label border-b border-white/10">
         <div className="flex gap-4">
           <div><span className="text-white/40">시간 </span><span className="text-white font-bold">{fmt(timeMs)}</span></div>
@@ -224,6 +216,6 @@ export default function MemoryMatchGame({ onExit }: { onExit: () => void }) {
           </div>
         </div>
       )}
-    </main>
+    </div>
   );
 }

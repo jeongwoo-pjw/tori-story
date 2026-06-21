@@ -29,7 +29,7 @@ function rotateCW(blocks: number[][]): number[][] {
   return out;
 }
 
-export default function TetrisGame({ onExit }: { onExit: () => void }) {
+export default function TetrisGame() {
   const mainRef = useRef<HTMLCanvasElement>(null);
   const nextRef = useRef<HTMLCanvasElement>(null);
   const holdRef = useRef<HTMLCanvasElement>(null);
@@ -303,16 +303,8 @@ export default function TetrisGame({ onExit }: { onExit: () => void }) {
   }, []);
 
   return (
-    <main className="min-h-screen bg-[#0a0a14] text-white flex flex-col">
-      <div className="flex items-center justify-between px-4 py-3 border-b border-white/10">
-        <button type="button" onClick={onExit} className="text-sm font-label text-white/70 hover:text-white flex items-center gap-1 cursor-pointer">
-          ← 돌아가기
-        </button>
-        <span className="font-label font-bold tracking-widest text-[#6efff1]">TETRIS</span>
-        <div className="w-20" />
-      </div>
-
-      <div className="flex-1 flex items-start justify-center gap-3 p-3 overflow-auto">
+    <div className="flex flex-col text-white" style={{ background: "#0a0a14" }}>
+      <div className="flex items-start justify-center gap-3 p-3 overflow-auto">
         <div className="flex flex-col items-center gap-2">
           <span className="text-[10px] font-label text-white/40 tracking-wider">HOLD</span>
           <canvas ref={holdRef} width={HW} height={HH} className="rounded border border-white/10" />
@@ -362,6 +354,6 @@ export default function TetrisGame({ onExit }: { onExit: () => void }) {
         </div>
         <p className="text-[10px] font-label text-white/30">C=홀드 · 스페이스=하드드롭 · P=일시정지</p>
       </div>
-    </main>
+    </div>
   );
 }
