@@ -14,6 +14,12 @@ import {
   SuinCreativeActivity,
   SuinVocabActivity,
 } from "./SuinActivities";
+import {
+  MijunPuzzleActivity,
+  MijunCreativeCard,
+  MijunVocabActivity,
+} from "./MijunActivities";
+import { MiheeCardSortActivity, MiheeVocabQuiz, MiheeCreativeCard, MIHEE_VOCAB } from "./MiheeActivities";
 
 /* ── 상수 ─────────────────────────────────────────────── */
 
@@ -259,6 +265,8 @@ export default function PlaygroundPage() {
   const [gameView, setGameView] = useState<string | null>(null);
   const [showAnswer, setShowAnswer] = useState(false);
   const [demoSubmitReady, setDemoSubmitReady] = useState(false);
+  const [miheeVocabConfirmed, setMiheeVocabConfirmed] = useState(false);
+  const [vocabQuizAnswers, setVocabQuizAnswers] = useState<Record<number, string>>({});
 
   useEffect(() => {
     localStorage.setItem("tori-playground", JSON.stringify(completedActivities));
@@ -268,6 +276,8 @@ export default function PlaygroundPage() {
   const doneList = selectedStory ? (completedActivities[selectedStory] ?? []) : [];
   const allDone = doneList.length === ACTIVITIES.length;
   const isSuinDemo = currentEntry?.title === "수인이와 반짝반짝 가족의 하루";
+  const isMijunDemo = currentEntry?.title === "민준이의 용기있는 한복 여행";
+  const isMiheeDemo = currentEntry?.title === "미희와 신나는 탈춤 축제";
 
   const enterActivity = (actId: string) => {
     setCurrentActivity(actId);
@@ -276,10 +286,16 @@ export default function PlaygroundPage() {
     setSelectedEmotions([]);
     setActivityError(null);
     setDemoSubmitReady(false);
+    setMiheeVocabConfirmed(false);
+    setVocabQuizAnswers({});
 
     if (!selectedStory) return;
 
-    if (currentEntry?.title === "수인이와 반짝반짝 가족의 하루") {
+    if (
+      currentEntry?.title === "수인이와 반짝반짝 가족의 하루" ||
+      currentEntry?.title === "민준이의 용기있는 한복 여행" ||
+      currentEntry?.title === "미희와 신나는 탈춤 축제"
+    ) {
       setActivityData(null);
       return;
     }
@@ -430,14 +446,27 @@ export default function PlaygroundPage() {
   if (currentActivity && selectedStory && currentEntry) {
     const act = ACTIVITIES.find((a) => a.id === currentActivity)!;
     const isDone = doneList.includes(currentActivity);
-    const isText = isSuinDemo ? false : (currentActivity === "comprehension" || currentActivity === "creative");
+    const isText = (isSuinDemo || isMijunDemo) ? false : isMiheeDemo ? currentActivity === "creative" : (currentActivity === "comprehension" || currentActivity === "creative");
     const isEmotion = currentActivity === "emotion";
 
     let canSubmit: boolean;
     if (isSuinDemo) {
       if (currentActivity === "comprehension" || currentActivity === "creative") canSubmit = demoSubmitReady;
       else if (currentActivity === "emotion") canSubmit = selectedEmotions.length > 0;
-      else canSubmit = demoSubmitReady; // vocabulary: reached last card
+      else canSubmit = demoSubmitReady;
+    } else if (isMijunDemo) {
+      if (currentActivity === "comprehension") canSubmit = demoSubmitReady;
+      else if (currentActivity === "emotion") canSubmit = selectedEmotions.length > 0;
+      else if (currentActivity === "creative") canSubmit = textAnswer.trim().length > 0;
+      else canSubmit = demoSubmitReady;
+    } else if (isMiheeDemo) {
+      if (currentActivity === "comprehension") canSubmit = demoSubmitReady && textAnswer.trim().length > 0;
+      else if (currentActivity === "emotion") canSubmit = selectedEmotions.length > 0;
+      else if (currentActivity === "creative") canSubmit = textAnswer.trim().length > 0;
+      else {
+        if (!miheeVocabConfirmed) canSubmit = false;
+        else canSubmit = MIHEE_VOCAB.every((_, i) => (vocabQuizAnswers[i] ?? "").trim().length > 0);
+      }
     } else {
       canSubmit = isText ? textAnswer.trim().length > 0 : isEmotion ? selectedEmotions.length > 0 : selectedChoice !== null;
     }
@@ -450,6 +479,19 @@ export default function PlaygroundPage() {
         if (currentActivity === "vocabulary") return "오늘 배운 낱말을 써봐요!";
         return "";
       }
+      if (isMijunDemo) {
+        if (currentActivity === "comprehension") return "민준이의 용기있는 모습을 다시 떠올려볼까요?";
+        if (currentActivity === "emotion") return "민준이는 어떤 감정을 느꼈을까요?";
+        if (currentActivity === "creative") return "민준이가 친구와 새로운 놀이를 한다면?";
+        if (currentActivity === "vocabulary") return "오늘 배운 낱말을 써봐요!";
+        return "";
+      }
+      if (isMiheeDemo) {
+        if (currentActivity === "emotion") return "미희는 어떤 감정을 느꼈을까요?";
+        if (currentActivity === "creative") return "미희와 친구가 다음에 어떤 놀이를 할지 상상해봐요!";
+        if (currentActivity === "vocabulary") return "오늘 배운 낱말을 써봐요!";
+        return "";
+      }
       if (!activityData) return "활동 질문을 불러오는 중...";
       if (currentActivity === "comprehension") return activityData.comprehension.question;
       if (currentActivity === "emotion") return activityData.emotion.question;
@@ -459,16 +501,35 @@ export default function PlaygroundPage() {
     };
 
     const getPlaceholder = (): string => {
+      if (isMijunDemo && currentActivity === "creative") return "줄거리와 결말을 다시 한번 읽어보고 민준이가 친구와 어떤 놀이를 할지 상상해서 써보세요.";
+      if (isMiheeDemo && currentActivity === "comprehension") return "미희 친구의 마음을 상상하며 적어보세요...";
+      if (isMiheeDemo && currentActivity === "creative") return "미희와 친구가 함께 할 새로운 놀이를 상상해서 2~3문장으로 써봐요.";
       if (currentActivity === "comprehension") return "주인공의 마음을 상상하며 적어보세요...";
       if (currentActivity === "creative") return activityData?.creative.hint ?? "자유롭게 상상해서 적어보세요...";
       return "답변을 입력해 주세요";
     };
 
     const getModelAnswer = (): string | null => {
+      if (isMijunDemo && currentActivity === "creative") return "민준이는 친구들과 함께 징검다리 달리기 대회를 열기로 했어요. 모두 함께 웃으며 돌 위를 깡충깡충 건너고, 마지막엔 손을 잡고 강가에 앉아 이야기를 나눴어요.";
+      if (isMiheeDemo && currentActivity === "comprehension") return "탈을 받은 친구는 처음엔 수줍었지만, 미희와 함께 탈춤을 추자 외로움이 사라지고 기쁘고 따뜻한 마음이 들었을 거예요.";
+      if (isMiheeDemo && currentActivity === "creative") return "미희와 친구는 다음날 색깔 탈을 함께 만들기로 했어요. 붓으로 꽃과 별을 그린 탈을 쓰고 마당에서 신나게 춤을 추었어요.";
       if (!activityData) return null;
       if (currentActivity === "comprehension") return activityData.comprehension.modelAnswer;
       return null;
     };
+
+    const ModelAnswerToggle = ({ answer }: { answer: string }) => (
+      <div className="mt-3">
+        <button type="button" onClick={() => setShowAnswer(!showAnswer)} className="text-xs text-primary-600 underline cursor-pointer font-label">
+          {showAnswer ? "모범답안 닫기" : "모범답안 확인하기"}
+        </button>
+        {showAnswer && (
+          <div className="mt-2 rounded-xl bg-primary-50 border border-primary-200 p-3">
+            <p className="text-xs font-label text-primary-800 leading-relaxed">{answer}</p>
+          </div>
+        )}
+      </div>
+    );
 
     return (
       <main className="min-h-screen bg-background-100 dark:bg-background-50 text-foreground-950 flex flex-col">
@@ -501,14 +562,13 @@ export default function PlaygroundPage() {
                   </div>
                   <div className="p-5 flex flex-col justify-center">
                     <span className={`inline-block px-2.5 py-1 rounded-lg text-xs font-label mb-2 ${act.tagColor}`}>{act.title}</span>
-                    <p className="text-sm text-foreground-600 leading-relaxed">{act.subtitle}</p>
+                    <p className="text-sm text-foreground-600 leading-relaxed">{(isMijunDemo || isMiheeDemo) && act.id === "creative" ? "상상을 이어가요" : act.subtitle}</p>
                   </div>
                 </div>
 
                 {isSuinDemo ? (
                   <div className="rounded-2xl bg-background-50 border border-background-200 p-5 md:p-6">
                     <p className="font-label font-semibold text-foreground-950 mb-4 leading-relaxed">{getQuestion()}</p>
-
                     {currentActivity === "comprehension" && (
                       <SuinPuzzleActivity
                         thumbnailSrc={getDummyThumbnail(currentEntry.title) ?? ""}
@@ -532,6 +592,136 @@ export default function PlaygroundPage() {
                       <SuinVocabActivity onAllSeen={() => setDemoSubmitReady(true)} />
                     )}
                   </div>
+                ) : isMijunDemo ? (
+                  <div className="rounded-2xl bg-background-50 border border-background-200 p-5 md:p-6">
+                    <p className="font-label font-semibold text-foreground-950 mb-4 leading-relaxed">{getQuestion()}</p>
+                    {currentActivity === "comprehension" && (
+                      <MijunPuzzleActivity
+                        pieceSrc={`${__BASE_PATH__}books/2_page3.png`}
+                        onReady={() => setDemoSubmitReady(true)}
+                      />
+                    )}
+                    {currentActivity === "emotion" && (
+                      <SuinEmotionActivity
+                        selectedEmotions={selectedEmotions}
+                        onToggle={(opt) =>
+                          setSelectedEmotions((prev) =>
+                            prev.includes(opt) ? prev.filter((e) => e !== opt) : [...prev, opt]
+                          )
+                        }
+                      />
+                    )}
+                    {currentActivity === "creative" && (
+                      <>
+                        <MijunCreativeCard />
+                        <textarea
+                          value={textAnswer}
+                          onChange={(e) => setTextAnswer(e.target.value)}
+                          placeholder={getPlaceholder()}
+                          rows={4}
+                          className="w-full rounded-xl border border-background-200 bg-background-100 px-4 py-3 text-sm font-label text-foreground-900 placeholder:text-foreground-400 focus:outline-none focus:ring-2 focus:ring-primary-400 resize-none transition"
+                        />
+                        {textAnswer.trim().length > 0 && <ModelAnswerToggle answer={getModelAnswer()!} />}
+                      </>
+                    )}
+                    {currentActivity === "vocabulary" && (
+                      <MijunVocabActivity onAllSeen={() => setDemoSubmitReady(true)} />
+                    )}
+                  </div>
+                ) : isMiheeDemo ? (
+                  currentActivity === "comprehension" ? (
+                    <div className="flex flex-col gap-4">
+                      <div className="rounded-2xl bg-background-50 border border-background-200 p-5 md:p-6">
+                        <p className="font-label font-semibold text-foreground-950 mb-4 leading-relaxed">미희의 이야기를 올바른 순서대로 맞춰볼까요?</p>
+                        <MiheeCardSortActivity onSolved={() => setDemoSubmitReady(true)} />
+                      </div>
+                      <div className="rounded-2xl bg-background-50 border border-background-200 p-5 md:p-6">
+                        <p className="font-label font-semibold text-foreground-950 mb-4 leading-relaxed">미희가 외로운 친구에게 탈을 건네줄 때, 그 친구는 어떤 마음이었을까요?</p>
+                        <textarea
+                          value={textAnswer}
+                          onChange={(e) => setTextAnswer(e.target.value)}
+                          placeholder={getPlaceholder()}
+                          rows={4}
+                          className="w-full rounded-xl border border-background-200 bg-background-100 px-4 py-3 text-sm font-label text-foreground-900 placeholder:text-foreground-400 focus:outline-none focus:ring-2 focus:ring-primary-400 resize-none transition"
+                        />
+                        {textAnswer.trim().length > 0 && <ModelAnswerToggle answer={getModelAnswer()!} />}
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="rounded-2xl bg-background-50 border border-background-200 p-5 md:p-6">
+                      <p className="font-label font-semibold text-foreground-950 mb-4 leading-relaxed">{getQuestion()}</p>
+                      {currentActivity === "emotion" && (
+                        <SuinEmotionActivity
+                          selectedEmotions={selectedEmotions}
+                          onToggle={(opt) =>
+                            setSelectedEmotions((prev) =>
+                              prev.includes(opt) ? prev.filter((e) => e !== opt) : [...prev, opt]
+                            )
+                          }
+                        />
+                      )}
+                      {currentActivity === "creative" && (
+                        <>
+                          <MiheeCreativeCard />
+                          <textarea
+                            value={textAnswer}
+                            onChange={(e) => setTextAnswer(e.target.value)}
+                            placeholder={getPlaceholder()}
+                            rows={4}
+                            className="w-full rounded-xl border border-background-200 bg-background-100 px-4 py-3 text-sm font-label text-foreground-900 placeholder:text-foreground-400 focus:outline-none focus:ring-2 focus:ring-primary-400 resize-none transition"
+                          />
+                          {textAnswer.trim().length > 0 && <ModelAnswerToggle answer={getModelAnswer()!} />}
+                        </>
+                      )}
+                      {currentActivity === "vocabulary" && !miheeVocabConfirmed && (
+                        <>
+                          <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+                            {MIHEE_VOCAB.map((card, i) => (
+                              <div key={i} className="rounded-xl border border-primary-200 bg-primary-50/40 p-3">
+                                <p className="font-heading text-base text-primary-700 mb-1">{card.word}</p>
+                                <p className="text-xs text-foreground-600 leading-snug mb-1.5">{card.meaning}</p>
+                                <p className="text-xs text-foreground-400 italic leading-snug">"{card.example}"</p>
+                              </div>
+                            ))}
+                          </div>
+                          <div className="mt-4">
+                            <button
+                              type="button"
+                              onClick={() => setMiheeVocabConfirmed(true)}
+                              className="w-full py-3 rounded-xl border-2 text-sm font-label transition-all cursor-pointer border-background-200 bg-background-100 text-foreground-700 hover:border-primary-300"
+                            >
+                              낱말 카드를 모두 확인했어요
+                            </button>
+                          </div>
+                        </>
+                      )}
+                      {currentActivity === "vocabulary" && miheeVocabConfirmed && (
+                        <>
+                          <div className="mb-3">
+                            <button type="button" onClick={() => setShowAnswer(!showAnswer)} className="text-xs text-primary-600 underline cursor-pointer font-label">
+                              {showAnswer ? "낱말 카드 닫기" : "모범답안 확인하기"}
+                            </button>
+                            {showAnswer && (
+                              <div className="mt-3 grid grid-cols-2 md:grid-cols-3 gap-3">
+                                {MIHEE_VOCAB.map((card, i) => (
+                                  <div key={i} className="rounded-xl border border-primary-200 bg-primary-50/40 p-3">
+                                    <p className="font-heading text-base text-primary-700 mb-1">{card.word}</p>
+                                    <p className="text-xs text-foreground-600 leading-snug mb-1.5">{card.meaning}</p>
+                                    <p className="text-xs text-foreground-400 italic leading-snug">"{card.example}"</p>
+                                  </div>
+                                ))}
+                              </div>
+                            )}
+                          </div>
+                          <MiheeVocabQuiz
+                            vocabWords={MIHEE_VOCAB}
+                            answers={vocabQuizAnswers}
+                            onChange={(idx, val) => setVocabQuizAnswers((prev) => ({ ...prev, [idx]: val }))}
+                          />
+                        </>
+                      )}
+                    </div>
+                  )
                 ) : activityLoading ? (
                   <div className="rounded-2xl bg-background-50 border border-background-200 p-10 flex flex-col items-center gap-3">
                     <i className="ri-loader-4-line text-3xl text-primary-500 animate-spin"></i>
@@ -546,7 +736,7 @@ export default function PlaygroundPage() {
                     <p className="font-label font-semibold text-foreground-950 mb-4 leading-relaxed">{getQuestion()}</p>
 
                     {/* 어휘 카드 */}
-                    {currentActivity === "vocabulary" && activityData && (
+                    {currentActivity === "vocabulary" && activityData && (!isMiheeDemo || !miheeVocabConfirmed) && (
                       <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
                         {activityData.vocabulary.map((card, i) => (
                           <div key={i} className="rounded-xl border border-primary-200 bg-primary-50/40 p-3">
@@ -588,7 +778,7 @@ export default function PlaygroundPage() {
                       </div>
                     )}
 
-                    {/* 어휘 완료 선택 버튼 */}
+                    {/* 어휘 완료 선택 버튼 (일반 AI) */}
                     {currentActivity === "vocabulary" && activityData && (
                       <div className="mt-4">
                         <button
@@ -600,7 +790,6 @@ export default function PlaygroundPage() {
                         </button>
                       </div>
                     )}
-
                     {/* 모범답안 */}
                     {isText && getModelAnswer() && textAnswer.trim().length > 0 && (
                       <div className="mt-3">
