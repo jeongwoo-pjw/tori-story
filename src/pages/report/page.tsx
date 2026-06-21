@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from "react";
+import { Link } from "react-router-dom";
 import TopNav from "@/components/feature/TopNav";
 import FoldSidebar from "@/components/feature/FoldSidebar";
 import { getStoryById, saveAnalyticsRecord } from "@/services/library";
@@ -7,13 +8,19 @@ import { getActivityData, generateActivityData, type ActivityData } from "@/serv
 import { getDummyThumbnail } from "@/services/dummyLookup";
 import TetrisGame from "./TetrisGame";
 import MemoryMatchGame from "./MemoryMatchGame";
+import {
+  SuinPuzzleActivity,
+  SuinEmotionActivity,
+  SuinCreativeActivity,
+  SuinVocabActivity,
+} from "./SuinActivities";
 
 /* ── 상수 ─────────────────────────────────────────────── */
 
 const ACTIVITIES = [
   { id: "comprehension", title: "이해력 활동", subtitle: "이야기를 다시 떠올려요", tagColor: "bg-primary-100 text-primary-900", image: `${__BASE_PATH__}activity-comprehension.png` },
   { id: "emotion", title: "감정탐색", subtitle: "감정을 느끼고 표현해요", tagColor: "bg-accent-100 text-accent-900", image: `${__BASE_PATH__}activity-emotion.png` },
-  { id: "creative", title: "창의력 활동", subtitle: "손으로 만들어봐요", tagColor: "bg-secondary-100 text-secondary-900", image: `${__BASE_PATH__}activity-creative.png` },
+  { id: "creative", title: "창의력 활동", subtitle: "따라 써봐요", tagColor: "bg-secondary-100 text-secondary-900", image: `${__BASE_PATH__}activity-creative.png` },
   { id: "vocabulary", title: "어휘활동", subtitle: "오늘의 말을 배워봐요", tagColor: "bg-foreground-100 text-foreground-900", image: `${__BASE_PATH__}activity-vocabulary.png` },
 ];
 
@@ -251,6 +258,7 @@ export default function PlaygroundPage() {
   const [selectedEmotions, setSelectedEmotions] = useState<string[]>([]);
   const [gameView, setGameView] = useState<string | null>(null);
   const [showAnswer, setShowAnswer] = useState(false);
+  const [demoSubmitReady, setDemoSubmitReady] = useState(false);
 
   useEffect(() => {
     localStorage.setItem("tori-playground", JSON.stringify(completedActivities));
@@ -259,6 +267,7 @@ export default function PlaygroundPage() {
   const currentEntry = selectedStory ? library.find((e) => e.id === selectedStory) : null;
   const doneList = selectedStory ? (completedActivities[selectedStory] ?? []) : [];
   const allDone = doneList.length === ACTIVITIES.length;
+  const isSuinDemo = currentEntry?.title === "수인이와 반짝반짝 가족의 하루";
 
   const enterActivity = (actId: string) => {
     setCurrentActivity(actId);
@@ -266,8 +275,15 @@ export default function PlaygroundPage() {
     setSelectedChoice(null);
     setSelectedEmotions([]);
     setActivityError(null);
+    setDemoSubmitReady(false);
 
     if (!selectedStory) return;
+
+    if (currentEntry?.title === "수인이와 반짝반짝 가족의 하루") {
+      setActivityData(null);
+      return;
+    }
+
     const cached = getActivityData(selectedStory);
     if (cached) {
       setActivityData(cached);
@@ -414,11 +430,26 @@ export default function PlaygroundPage() {
   if (currentActivity && selectedStory && currentEntry) {
     const act = ACTIVITIES.find((a) => a.id === currentActivity)!;
     const isDone = doneList.includes(currentActivity);
-    const isText = currentActivity === "comprehension" || currentActivity === "creative";
+    const isText = isSuinDemo ? false : (currentActivity === "comprehension" || currentActivity === "creative");
     const isEmotion = currentActivity === "emotion";
-    const canSubmit = isText ? textAnswer.trim().length > 0 : isEmotion ? selectedEmotions.length > 0 : selectedChoice !== null;
+
+    let canSubmit: boolean;
+    if (isSuinDemo) {
+      if (currentActivity === "comprehension" || currentActivity === "creative") canSubmit = demoSubmitReady;
+      else if (currentActivity === "emotion") canSubmit = selectedEmotions.length > 0;
+      else canSubmit = demoSubmitReady; // vocabulary: reached last card
+    } else {
+      canSubmit = isText ? textAnswer.trim().length > 0 : isEmotion ? selectedEmotions.length > 0 : selectedChoice !== null;
+    }
 
     const getQuestion = (): string => {
+      if (isSuinDemo) {
+        if (currentActivity === "comprehension") return "그림 조각을 맞춰서 오늘 동화를 완성해볼까요?";
+        if (currentActivity === "emotion") return "오늘 동화에서 수인이는 어떤 감정을 느꼈을까요?";
+        if (currentActivity === "creative") return "수인이네 가족은 다음날 어떤 새로운 놀이를 할까요?";
+        if (currentActivity === "vocabulary") return "오늘 배운 낱말을 써봐요!";
+        return "";
+      }
       if (!activityData) return "활동 질문을 불러오는 중...";
       if (currentActivity === "comprehension") return activityData.comprehension.question;
       if (currentActivity === "emotion") return activityData.emotion.question;
@@ -474,7 +505,34 @@ export default function PlaygroundPage() {
                   </div>
                 </div>
 
-                {activityLoading ? (
+                {isSuinDemo ? (
+                  <div className="rounded-2xl bg-background-50 border border-background-200 p-5 md:p-6">
+                    <p className="font-label font-semibold text-foreground-950 mb-4 leading-relaxed">{getQuestion()}</p>
+
+                    {currentActivity === "comprehension" && (
+                      <SuinPuzzleActivity
+                        thumbnailSrc={getDummyThumbnail(currentEntry.title) ?? ""}
+                        onReady={() => setDemoSubmitReady(true)}
+                      />
+                    )}
+                    {currentActivity === "emotion" && (
+                      <SuinEmotionActivity
+                        selectedEmotions={selectedEmotions}
+                        onToggle={(opt) =>
+                          setSelectedEmotions((prev) =>
+                            prev.includes(opt) ? prev.filter((e) => e !== opt) : [...prev, opt]
+                          )
+                        }
+                      />
+                    )}
+                    {currentActivity === "creative" && (
+                      <SuinCreativeActivity onReady={() => setDemoSubmitReady(true)} />
+                    )}
+                    {currentActivity === "vocabulary" && (
+                      <SuinVocabActivity onAllSeen={() => setDemoSubmitReady(true)} />
+                    )}
+                  </div>
+                ) : activityLoading ? (
                   <div className="rounded-2xl bg-background-50 border border-background-200 p-10 flex flex-col items-center gap-3">
                     <i className="ri-loader-4-line text-3xl text-primary-500 animate-spin"></i>
                     <p className="text-sm font-label text-foreground-500">Solar AI가 활동 질문을 만들고 있어요...</p>
