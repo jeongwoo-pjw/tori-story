@@ -1,11 +1,11 @@
 import { Link } from "react-router-dom";
 
 const planFeatures = [
-  { label: "무제한 동화 생성",    bg: "bg-primary-200 dark:bg-primary-900/30",   text: "text-primary-900 dark:text-primary-300",   border: "border-primary-300 dark:border-primary-800/40" },
-  { label: "고화질 저장 · PDF 출력", bg: "bg-accent-200 dark:bg-accent-900/30",  text: "text-accent-900 dark:text-accent-300",     border: "border-accent-300 dark:border-accent-800/40" },
-  { label: "AI 음성 나레이션",    bg: "bg-secondary-200 dark:bg-secondary-900/30", text: "text-secondary-900 dark:text-secondary-300", border: "border-secondary-300 dark:border-secondary-800/40" },
-  { label: "독후 활동 연계",      bg: "bg-primary-300/60 dark:bg-primary-900/30", text: "text-primary-950 dark:text-primary-300",   border: "border-primary-400/60 dark:border-primary-800/40" },
-  { label: "독서 습관 리포트",    bg: "bg-accent-300/60 dark:bg-accent-900/30",  text: "text-accent-950 dark:text-accent-300",     border: "border-accent-400/60 dark:border-accent-800/40" },
+  { label: "무제한 동화 생성",    bg: "bg-primary-200 dark:bg-primary-900/30",   text: "text-foreground-900 dark:text-primary-300",   border: "border-primary-300 dark:border-primary-800/40" },
+  { label: "고화질 저장 · PDF 출력", bg: "bg-accent-200 dark:bg-accent-900/30",  text: "text-foreground-900 dark:text-accent-300",     border: "border-accent-300 dark:border-accent-800/40" },
+  { label: "AI 음성 나레이션",    bg: "bg-secondary-200 dark:bg-secondary-900/30", text: "text-foreground-900 dark:text-secondary-300", border: "border-secondary-300 dark:border-secondary-800/40" },
+  { label: "독후 활동 연계",      bg: "bg-primary-300/60 dark:bg-primary-900/30", text: "text-foreground-950 dark:text-primary-300",   border: "border-primary-400/60 dark:border-primary-800/40" },
+  { label: "독서 습관 리포트",    bg: "bg-accent-300/60 dark:bg-accent-900/30",  text: "text-foreground-950 dark:text-accent-300",     border: "border-accent-400/60 dark:border-accent-800/40" },
 ];
 
 export default function FreeTrialSection() {
