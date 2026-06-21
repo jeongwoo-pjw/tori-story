@@ -316,6 +316,89 @@ export default function PlaygroundPage() {
 
   const handleCongratsClose = () => { setShowCongrats(false); setCurrentActivity(null); };
 
+  /* ── 게임 선택 뷰 ───────────────────────────────────── */
+  if (gameView === "select") {
+    return (
+      <main className="min-h-screen bg-background-100 dark:bg-background-50 text-foreground-950 flex flex-col">
+        <TopNav isLoggedIn={true} />
+        <FoldSidebar />
+        <div className="pl-[var(--sidebar-width)] pt-14 md:pt-16 pb-12 flex-1 flex flex-col">
+          <div className="px-4 md:px-8 lg:px-12 py-8 flex-1 flex flex-col">
+            <div className="max-w-3xl mx-auto w-full flex-1 flex flex-col">
+              <div className="mb-8 flex items-center gap-4">
+                <button
+                  type="button"
+                  onClick={() => setGameView(null)}
+                  className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full border border-background-200 bg-background-50 hover:bg-primary-50 text-sm font-label text-foreground-700 transition-colors cursor-pointer flex-shrink-0"
+                >
+                  <i className="ri-arrow-left-line"></i>
+                  돌아가기
+                </button>
+                <div>
+                  <h2 className="font-heading text-xl text-foreground-950">게임 선택</h2>
+                  <p className="text-xs font-label text-foreground-500 mt-0.5">활동을 모두 완료했어요! 원하는 게임을 골라요 🎮</p>
+                </div>
+              </div>
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
+                {[
+                  {
+                    id: "breakout",
+                    name: "블록깨기",
+                    icon: "🧱",
+                    bg: "from-cyan-50 to-blue-50 dark:from-cyan-950/30 dark:to-blue-950/30",
+                    border: "border-blue-200 dark:border-blue-800",
+                    badge: "인기",
+                    badgeColor: "bg-blue-100 text-blue-700",
+                    desc: "패들로 블록을 모두 부숴요",
+                    detail: "마우스 또는 방향키로 패들 조작",
+                  },
+                  {
+                    id: "memory",
+                    name: "카드 뒤집기",
+                    icon: "🃏",
+                    bg: "from-purple-50 to-pink-50 dark:from-purple-950/30 dark:to-pink-950/30",
+                    border: "border-purple-200 dark:border-purple-800",
+                    badge: "기억력",
+                    badgeColor: "bg-purple-100 text-purple-700",
+                    desc: "짝을 찾아 기억력을 키워요",
+                    detail: "3단계 난이도 · 최고기록 도전",
+                  },
+                  {
+                    id: "tetris",
+                    name: "테트리스",
+                    icon: "🟦",
+                    bg: "from-teal-50 to-emerald-50 dark:from-teal-950/30 dark:to-emerald-950/30",
+                    border: "border-teal-200 dark:border-teal-800",
+                    badge: "집중력",
+                    badgeColor: "bg-teal-100 text-teal-700",
+                    desc: "블록을 쌓아 줄을 맞춰요",
+                    detail: "방향키 · 스페이스=하드드롭",
+                  },
+                ].map((game) => (
+                  <button
+                    key={game.id}
+                    type="button"
+                    onClick={() => setGameView(game.id)}
+                    className={`flex flex-col items-center rounded-3xl border-2 ${game.border} bg-gradient-to-br ${game.bg} p-6 hover:scale-[1.03] active:scale-[0.98] transition-all cursor-pointer shadow-sm hover:shadow-lg group text-left`}
+                  >
+                    <span className="text-6xl mb-4 group-hover:scale-110 transition-transform inline-block">{game.icon}</span>
+                    <span className={`inline-block px-2.5 py-0.5 rounded-full text-[10px] font-label font-semibold mb-3 ${game.badgeColor}`}>{game.badge}</span>
+                    <h3 className="font-heading text-lg text-foreground-950 mb-1 w-full text-center">{game.name}</h3>
+                    <p className="text-xs font-label text-foreground-600 text-center leading-relaxed mb-1">{game.desc}</p>
+                    <p className="text-[10px] font-label text-foreground-400 text-center mb-4">{game.detail}</p>
+                    <div className="w-full py-2.5 rounded-xl bg-gradient-to-r from-primary-500 to-amber-400 text-foreground-950 text-sm font-label font-semibold text-center">
+                      시작하기 →
+                    </div>
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
+    );
+  }
+
   /* ── 게임 뷰 ─────────────────────────────────────────── */
   if (gameView === "breakout" && selectedStory && currentEntry) {
     return <BreakoutGame onExit={() => setGameView(null)} />;
@@ -553,29 +636,18 @@ export default function PlaygroundPage() {
               <div className="flex-1 flex flex-col items-center justify-center">
                 {/* 전체 완료 배너 */}
                 {allDone && (
-                  <div className="w-full mb-5 rounded-2xl bg-gradient-to-r from-emerald-50 to-primary-50 border border-emerald-200 p-4">
-                    <div className="flex items-center gap-2 mb-3">
+                  <div className="w-full mb-5 px-4 py-3 rounded-2xl bg-gradient-to-r from-emerald-50 to-primary-50 border border-emerald-200 text-sm font-label text-emerald-700 flex items-center justify-between gap-3">
+                    <span className="flex items-center gap-2">
                       <i className="ri-trophy-line text-amber-500 text-base"></i>
-                      <span className="text-sm font-label font-semibold text-emerald-700">모든 활동 완료! 게임으로 머리를 식혀봐요 🎮</span>
-                    </div>
-                    <div className="grid grid-cols-3 gap-3">
-                      {[
-                        { id: "breakout", name: "블록깨기", preview: "🧱", desc: "패들로 블록을 부숴요" },
-                        { id: "memory",   name: "카드뒤집기", preview: "🃏", desc: "짝을 찾아 기억력 UP" },
-                        { id: "tetris",   name: "테트리스", preview: "🟦", desc: "블록을 쌓아 줄을 맞춰요" },
-                      ].map((game) => (
-                        <button
-                          key={game.id}
-                          type="button"
-                          onClick={() => setGameView(game.id)}
-                          className="flex flex-col items-center gap-1.5 rounded-xl border-2 border-primary-300 bg-white hover:scale-105 active:scale-95 cursor-pointer hover:border-primary-500 hover:shadow-md p-3 transition-all"
-                        >
-                          <span className="text-2xl">{game.preview}</span>
-                          <span className="text-xs font-label font-semibold text-foreground-900">{game.name}</span>
-                          <span className="text-[10px] font-label text-foreground-500 text-center leading-snug">{game.desc}</span>
-                        </button>
-                      ))}
-                    </div>
+                      모든 활동을 완료했어요! 이제 신나는 게임을 통해 머리를 식혀봐요 🎮
+                    </span>
+                    <button
+                      type="button"
+                      onClick={() => setGameView("select")}
+                      className="flex-shrink-0 px-4 py-1.5 rounded-full bg-gradient-to-r from-amber-400 to-primary-500 text-foreground-950 text-xs font-label font-semibold hover:scale-105 active:scale-95 transition-all cursor-pointer shadow-sm"
+                    >
+                      🎮 게임 시작하기
+                    </button>
                   </div>
                 )}
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-5 md:gap-7 w-full">
