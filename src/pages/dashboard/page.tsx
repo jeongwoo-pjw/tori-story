@@ -22,6 +22,12 @@ import {
 } from "@/services/library";
 import { analyzeChildData, type DashboardAnalysis } from "@/services/solar";
 
+const MOCK_EMOTION_DIST = [
+  { label: "기쁨",   value: 60 },
+  { label: "따뜻함", value: 25 },
+  { label: "평온",   value: 15 },
+];
+
 function firstEmoji(str: string): string {
   if (!str) return "📖";
   try {
@@ -50,18 +56,6 @@ export default function DashboardPage() {
   const readingHistory = useMemo(() => computeReadingHistory(5), []);
   const emotionDist = useMemo(() => computeEmotionDistribution(), []);
 
-  const recentEmotions = useMemo(() => {
-    const analytics = getAnalytics();
-    const seen = new Set<string>();
-    const result: string[] = [];
-    for (const a of [...analytics].reverse()) {
-      if (a.emotionChoice && !seen.has(a.emotionChoice) && result.length < 3) {
-        seen.add(a.emotionChoice);
-        result.push(a.emotionChoice);
-      }
-    }
-    return result;
-  }, []);
 
   const readingData = useMemo(
     () =>
@@ -436,35 +430,28 @@ export default function DashboardPage() {
                     <p className="text-xs font-label text-foreground-400 dark:text-foreground-600 mb-4 leading-snug">놀이마당 후 아이가 발각한 자율 정서 교감 분포도 (실시간 누계)</p>
                     {/* 버블 컨테이너 — flex-1로 남은 높이 채움 */}
                     <div className="flex-1 rounded-xl bg-background-100 dark:bg-background-200 border border-background-200/60 dark:border-background-300/50 min-h-[200px] flex items-center justify-center overflow-hidden">
-                      {emotionDist.length === 0 ? (
-                        <div className="flex flex-col items-center gap-2 text-foreground-400">
-                          <i className="ri-emotion-line text-3xl"></i>
-                          <p className="text-xs font-label">놀이마당 완료 후 감정이 기록돼요</p>
-                        </div>
-                      ) : (
-                        <div className="flex items-center">
-                          {emotionDist.slice(0, 3).map((e, idx) => {
-                            const sizes = [140, 110, 90];
-                            const yOffsets = [0, 22, -18];
-                            const margins = ["-24px", "-18px", "0px"];
-                            const colorVars = ["oklch(var(--primary-500))", "oklch(var(--accent-500))", "oklch(var(--secondary-500))"];
-                            const fontSizes = ["text-3xl", "text-xl", "text-lg"];
-                            const labelSizes = ["text-xs", "text-[11px]", "text-[10px]"];
-                            const size = sizes[idx] ?? 90;
-                            return (
-                              <div key={e.label} style={{ transform: `translateY(${yOffsets[idx] ?? 0}px)`, marginRight: margins[idx] ?? "0px", zIndex: 3 - idx, position: "relative" }}>
-                                <div
-                                  className="animate-pulse-bubble flex flex-col items-center justify-center rounded-full"
-                                  style={{ width: size, height: size, backgroundColor: colorVars[idx] ?? colorVars[0], animationDelay: `${idx * 0.5}s` }}
-                                >
-                                  <span className={`text-white font-label ${labelSizes[idx] ?? "text-xs"} leading-none mb-1`}>{e.label}</span>
-                                  <span className={`text-white font-label font-bold ${fontSizes[idx] ?? "text-lg"} leading-none`}>{e.value}%</span>
-                                </div>
+                      <div className="flex items-center">
+                        {(emotionDist.length > 0 ? emotionDist.slice(0, 3) : MOCK_EMOTION_DIST).map((e, idx) => {
+                          const sizes = [140, 110, 90];
+                          const yOffsets = [0, 22, -18];
+                          const margins = ["-24px", "-18px", "0px"];
+                          const colorVars = ["oklch(var(--primary-500))", "oklch(var(--accent-500))", "oklch(var(--secondary-500))"];
+                          const fontSizes = ["text-3xl", "text-xl", "text-lg"];
+                          const labelSizes = ["text-xs", "text-[11px]", "text-[10px]"];
+                          const size = sizes[idx] ?? 90;
+                          return (
+                            <div key={e.label} style={{ transform: `translateY(${yOffsets[idx] ?? 0}px)`, marginRight: margins[idx] ?? "0px", zIndex: 3 - idx, position: "relative" }}>
+                              <div
+                                className="animate-pulse-bubble flex flex-col items-center justify-center rounded-full"
+                                style={{ width: size, height: size, backgroundColor: colorVars[idx] ?? colorVars[0], animationDelay: `${idx * 0.5}s` }}
+                              >
+                                <span className={`text-white font-label ${labelSizes[idx] ?? "text-xs"} leading-none mb-1`}>{e.label}</span>
+                                <span className={`text-white font-label font-bold ${fontSizes[idx] ?? "text-lg"} leading-none`}>{e.value}%</span>
                               </div>
-                            );
-                          })}
-                        </div>
-                      )}
+                            </div>
+                          );
+                        })}
+                      </div>
                     </div>
                   </div>
 
@@ -553,18 +540,11 @@ export default function DashboardPage() {
                   <div className="text-center">
                     <p className="text-xs font-label text-foreground-500 mb-2">최근 좋아한 감정</p>
                     <div className="flex flex-wrap gap-1.5 justify-center">
-                      {recentEmotions.length === 0 ? (
-                        <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-accent-100 text-accent-900 text-sm font-label">
-                          {CHILD_PROFILE.recentEmotion}
-                          <i className="ri-emotion-laugh-line text-base"></i>
+                      {["기쁨", "따뜻함", "평온"].map((emotion) => (
+                        <span key={emotion} className="inline-flex items-center px-2.5 py-1 rounded-full bg-accent-100 text-accent-900 text-xs font-label">
+                          {emotion}
                         </span>
-                      ) : (
-                        recentEmotions.map((emotion) => (
-                          <span key={emotion} className="inline-flex items-center px-2.5 py-1 rounded-full bg-accent-100 text-accent-900 text-xs font-label">
-                            {emotion}
-                          </span>
-                        ))
-                      )}
+                      ))}
                     </div>
                   </div>
                 </div>
@@ -661,9 +641,9 @@ export default function DashboardPage() {
 
                     {/* AI 독서 코멘트 */}
                     {(analysis?.readingInsight || analysisLoading) && (
-                      <div className="rounded-xl bg-primary-50 dark:bg-primary-950/30 border border-primary-100 dark:border-primary-900/40 p-3.5 flex items-start gap-2">
-                        <i className="ri-sparkling-2-line text-primary-400 text-sm flex-shrink-0 mt-0.5"></i>
-                        <p className="text-xs font-label text-foreground-800 dark:text-primary-300 leading-relaxed">
+                      <div className="rounded-xl bg-primary-50/20 dark:bg-primary-950/30 border border-background-200/70 dark:border-primary-900/40 p-3.5 flex items-start gap-2">
+                        <i className="ri-sparkling-2-line text-primary-500 text-sm flex-shrink-0 mt-0.5"></i>
+                        <p className="text-xs font-label text-foreground-900 dark:text-primary-300 leading-relaxed">
                           {analysisLoading ? "AI가 독서 패턴을 분석 중이에요..." : analysis?.readingInsight}
                         </p>
                       </div>
