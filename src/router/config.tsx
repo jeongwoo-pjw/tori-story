@@ -17,6 +17,9 @@ import Vocabulary from "../pages/report/vocabulary/page";
 import Settings from "../pages/settings/page";
 import ProfileEdit from "../pages/profile/edit/page";
 import Subscription from "../pages/subscription/page";
+import DummyBooks from "../pages/dummy-books/page";
+import DummyViewer from "../pages/dummy-viewer/page";
+import Result from "../pages/result/page";
 
 const routes: RouteObject[] = [
   {
@@ -86,6 +89,18 @@ const routes: RouteObject[] = [
   {
     path: "/subscription",
     element: <Subscription />,
+  },
+  {
+    path: "/result",
+    element: <Result />,
+  },
+  {
+    path: "/dummy-books",
+    element: <DummyBooks />,
+  },
+  {
+    path: "/dummy-viewer",
+    element: <DummyViewer />,
   },
   {
     path: "*",

@@ -55,7 +55,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     const { error } = await supabase.auth.signInWithOAuth({
       provider: "kakao",
       options: {
-        redirectTo: window.location.origin + window.location.pathname,
+        redirectTo: window.location.origin + __BASE_PATH__,
         scopes: "profile_nickname profile_image account_email openid",
       },
     });

@@ -2,7 +2,8 @@ import { useEffect, useState, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import TopNav from "@/components/feature/TopNav";
 import FoldSidebar from "@/components/feature/FoldSidebar";
-import { generateStory, STORY_REQUEST_KEY, STORY_RESULT_KEY } from "@/services/solar";
+import { STORY_REQUEST_KEY, STORY_RESULT_KEY, type StoryRequest } from "@/services/solar";
+import { findDummyBook } from "@/services/dummyLookup";
 import { addToLibrary } from "@/services/library";
 
 const SAFETY_CHECKS = [
@@ -31,12 +32,14 @@ const PROGRESS_IMAGES = [
   "https://readdy.ai/api/search-image?query=Complete%20beautiful%20Korean%20fairy%20tale%20illustration%20cute%20rabbit%20in%20magical%20starlight%20forest%20with%20warm%20glowing%20lanterns%20soft%20pastel%20colors%20fully%20rendered%20polished%20children%20book%20art%20dreamy%20whimsical%20final%20version&width=800&height=500&seq=progress-final-v3&orientation=landscape",
 ];
 
+const FAKE_DURATION_MS = 3000;
+
 export default function CreateProgressPage() {
   const navigate = useNavigate();
   const [progress, setProgress] = useState(0);
   const [done, setDone] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [currentId, setCurrentId] = useState<string | null>(null);
+  const [entryId, setEntryId] = useState<string | null>(null);
   const called = useRef(false);
 
   useEffect(() => {
@@ -49,31 +52,48 @@ export default function CreateProgressPage() {
       return;
     }
 
-    const request = JSON.parse(raw);
+    const request = JSON.parse(raw) as StoryRequest;
 
-    // 가짜 진행률: 0% → 88% 까지 천천히 올림 (실제 API 응답 전까지)
+    // 가짜 진행률: 0% → 88% 천천히
     const timer = setInterval(() => {
       setProgress((prev) => {
         if (prev >= 88) return 88;
-        return prev + Math.random() * 2;
+        return prev + Math.random() * 3;
       });
-    }, 400);
+    }, FAKE_DURATION_MS / 30);
 
-    generateStory(request)
-      .then((story) => {
-        clearInterval(timer);
-        localStorage.setItem(STORY_RESULT_KEY, JSON.stringify(story));
-        const entry = addToLibrary(story, request);
-        setCurrentId(entry.id);
-        setProgress(100);
-        setDone(true);
-      })
-      .catch((err: Error) => {
-        clearInterval(timer);
-        setError(err.message);
-      });
+    // 더미 조회 (지연 시뮬레이션)
+    const lookup = setTimeout(() => {
+      clearInterval(timer);
+      const book = findDummyBook(request);
+      if (!book) {
+        setError("조건을 다시 선택해주세요!");
+        return;
+      }
+      // 기존 뷰어가 읽는 GeneratedStory 형식으로 변환
+      const story = {
+        title: book.title,
+        pages: book.pages.map((p) => ({
+          text: p.text,
+          image: `/books/${p.image}`,
+        })),
+      };
+      const thumbnailImage = `/books/${book.thumbnail}`;
+      try {
+        const entry = addToLibrary(story, request, thumbnailImage);
+        setEntryId(entry.id);
+      } catch (e) {
+        console.error("[create-progress] addToLibrary failed:", e);
+      }
+      localStorage.setItem(STORY_RESULT_KEY, JSON.stringify(story));
+      setProgress(100);
+      setDone(true);
+    }, FAKE_DURATION_MS);
 
-    return () => clearInterval(timer);
+    return () => {
+      clearInterval(timer);
+      // clearTimeout 생략: called.current 가드로 재실행을 막기 때문에 취소 불필요
+    };
   }, []);
 
   const stepIdx = Math.min(
@@ -233,7 +253,7 @@ export default function CreateProgressPage() {
                 <div className="flex justify-end">
                   <button
                     type="button"
-                    onClick={() => navigate(currentId ? `/viewer?id=${currentId}` : "/viewer")}
+                    onClick={() => navigate(entryId ? `/viewer?id=${entryId}` : "/viewer")}
                     disabled={!done}
                     className={`inline-flex items-center gap-2 px-7 py-3.5 rounded-full font-label text-sm transition-all whitespace-nowrap cursor-pointer ${
                       done

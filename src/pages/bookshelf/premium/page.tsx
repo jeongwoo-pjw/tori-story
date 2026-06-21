@@ -25,7 +25,7 @@ export default function BookshelfPremiumPage() {
   const [activeCardTab, setActiveCardTab] = useState("recent");
   const [activeFilter, setActiveFilter] = useState("all");
   const [searchQuery, setSearchQuery] = useState("");
-  const [likedStories, setLikedStories] = useState<Set<number>>(
+  const [likedStories, setLikedStories] = useState<Set<string>>(
     () => new Set(ALL_STORIES.filter((s) => s.liked).map((s) => s.id))
   );
 
@@ -38,7 +38,7 @@ export default function BookshelfPremiumPage() {
     return story.title.includes(searchQuery);
   });
 
-  const toggleLike = (id: number) => {
+  const toggleLike = (id: string) => {
     setLikedStories((prev) => {
       const next = new Set(prev);
       if (next.has(id)) next.delete(id);

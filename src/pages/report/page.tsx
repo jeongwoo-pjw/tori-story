@@ -1,8 +1,10 @@
 import { useState, useEffect, useRef } from "react";
 import TopNav from "@/components/feature/TopNav";
 import FoldSidebar from "@/components/feature/FoldSidebar";
-import { getLibrary, getStoryById, saveAnalyticsRecord } from "@/services/library";
+import { getStoryById, saveAnalyticsRecord } from "@/services/library";
+import { useLibrary } from "@/hooks/useLibrary";
 import { getActivityData, generateActivityData, type ActivityData } from "@/services/activity";
+import { getDummyThumbnail } from "@/services/dummyLookup";
 
 /* ── 상수 ─────────────────────────────────────────────── */
 
@@ -229,7 +231,7 @@ function BreakoutGame({ onExit }: { onExit: () => void }) {
 /* ── 컴포넌트 ──────────────────────────────────────────── */
 
 export default function PlaygroundPage() {
-  const library = getLibrary();
+  const library = useLibrary();
 
   const [selectedStory, setSelectedStory] = useState<string | null>(null);
   const [currentActivity, setCurrentActivity] = useState<string | null>(null);
@@ -310,7 +312,7 @@ export default function PlaygroundPage() {
   const handleCongratsClose = () => { setShowCongrats(false); setCurrentActivity(null); };
 
   /* ── 게임 뷰 ─────────────────────────────────────────── */
-  if (gameView && selectedStory && currentStory) {
+  if (gameView && selectedStory && currentEntry) {
     return <BreakoutGame onExit={() => setGameView(false)} />;
   }
 
@@ -502,7 +504,7 @@ export default function PlaygroundPage() {
   }
 
   /* ── 4가지 활동 카드 뷰 ───────────────────────────────── */
-  if (selectedStory && currentStory) {
+  if (selectedStory && currentEntry) {
     return (
       <main className="min-h-screen bg-background-100 dark:bg-background-50 text-foreground-950 flex flex-col">
         <TopNav isLoggedIn={true} />
@@ -523,7 +525,7 @@ export default function PlaygroundPage() {
                     동화 목록으로
                   </button>
                   <h1 className="font-heading text-lg md:text-2xl font-bold text-foreground-950 text-center flex-1 min-w-0 line-clamp-1">
-                    {currentStory.title}
+                    {currentEntry.title}
                   </h1>
                   <button
                     type="button"
@@ -666,13 +668,16 @@ export default function PlaygroundPage() {
                       className="rounded-2xl bg-background-50 dark:bg-background-100 border border-background-200/70 dark:border-background-300/50 overflow-hidden flex flex-col"
                     >
                       <div className="w-full aspect-[4/3] relative overflow-hidden bg-secondary-50 flex items-center justify-center">
-                        {entry.image ? (
-                          <img src={entry.image} alt={entry.title} className="w-full h-full object-cover" />
-                        ) : (
-                          <div className="w-full h-full flex items-center justify-center bg-primary-50">
-                            <i className="ri-book-open-line text-3xl text-primary-300"></i>
-                          </div>
-                        )}
+                        {(() => {
+                          const src = entry.image || getDummyThumbnail(entry.title);
+                          return src ? (
+                            <img src={src} alt={entry.title} className="w-full h-full object-cover" />
+                          ) : (
+                            <div className="w-full h-full flex items-center justify-center bg-primary-50">
+                              <i className="ri-book-open-line text-3xl text-primary-300"></i>
+                            </div>
+                          );
+                        })()}
                         <span className="absolute top-2 left-2 px-2 py-0.5 rounded-full bg-background-50/95 backdrop-blur text-xs font-label text-foreground-900 whitespace-nowrap">
                           {entry.tag}
                         </span>

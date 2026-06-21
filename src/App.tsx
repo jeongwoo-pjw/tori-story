@@ -1,9 +1,9 @@
-import { BrowserRouter } from "react-router-dom";
+import { BrowserRouter, useNavigate } from "react-router-dom";
 import { AppRoutes } from "./router";
 import { I18nextProvider } from "react-i18next";
 import i18n from "./i18n";
-import { AuthProvider } from "./contexts/AuthContext";
-import { useEffect, useState } from "react";
+import { AuthProvider, useAuth } from "./contexts/AuthContext";
+import { useEffect, useRef, useState } from "react";
 
 function AuthErrorBanner() {
   const [message, setMessage] = useState<string | null>(null);
@@ -43,12 +43,40 @@ function AuthErrorBanner() {
   );
 }
 
+function AuthRedirect() {
+  const { user, loading } = useAuth();
+  const navigate = useNavigate();
+  // undefined = 아직 초기 세션 체크 전, null = 로그아웃 상태, string = 로그인된 유저 ID
+  const knownUserId = useRef<string | null | undefined>(undefined);
+
+  useEffect(() => {
+    if (loading) return;
+
+    const currentId = user?.id ?? null;
+
+    if (knownUserId.current === undefined) {
+      // 첫 세션 체크 완료 — 현재 로그인 상태를 기준으로 저장 (페이지 새로고침 시 이동 안 함)
+      knownUserId.current = currentId;
+      return;
+    }
+
+    // 로그아웃 → 로그인으로 전환된 경우에만 홈으로 이동
+    if (currentId && !knownUserId.current) {
+      navigate("/");
+    }
+    knownUserId.current = currentId;
+  }, [user?.id, loading, navigate]);
+
+  return null;
+}
+
 function App() {
   return (
     <I18nextProvider i18n={i18n}>
       <BrowserRouter basename={__BASE_PATH__}>
         <AuthProvider>
           <AuthErrorBanner />
+          <AuthRedirect />
           <AppRoutes />
         </AuthProvider>
       </BrowserRouter>

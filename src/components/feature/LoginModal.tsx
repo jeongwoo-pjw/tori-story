@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 
 interface LoginModalProps {
@@ -6,6 +7,7 @@ interface LoginModalProps {
 }
 
 export default function LoginModal({ onClose }: LoginModalProps) {
+  const navigate = useNavigate();
   const { signInWithEmail, signUpWithEmail, signInWithKakao } = useAuth();
   const [tab, setTab] = useState<"login" | "signup">("login");
   const [email, setEmail] = useState("");
@@ -32,6 +34,7 @@ export default function LoginModal({ onClose }: LoginModalProps) {
         setError("이메일 또는 비밀번호가 올바르지 않습니다.");
       } else {
         onClose();
+        navigate("/", { replace: true });
       }
     } else {
       const { error } = await signUpWithEmail(email, password);

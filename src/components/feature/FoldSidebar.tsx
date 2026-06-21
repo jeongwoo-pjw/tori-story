@@ -80,7 +80,7 @@ export default function FoldSidebar() {
       </div>
 
       {/* Menu items */}
-      <nav className="flex-1 py-3 flex flex-col gap-0.5">
+      <nav className="flex-1 py-3 flex flex-col gap-0.5 overflow-y-auto">
         {sidebarMenus.map((item) => {
           const hasSub = !!item.subItems;
           const isSubOpen = openSub === item.label;
@@ -113,7 +113,7 @@ export default function FoldSidebar() {
                 </button>
               ) : (
                 <Link
-                  to={item.path}
+                  to={item.path!}
                   className={`w-full flex items-center gap-3 rounded-xl transition-colors cursor-pointer whitespace-nowrap ${
                     active
                       ? "bg-primary-500 text-background-50 hover:bg-primary-600"

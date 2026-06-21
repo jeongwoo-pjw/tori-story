@@ -150,6 +150,32 @@ ${tier === 3 ? "※ 3단계: 어휘와 서사의 깊이를 높이되, 초등 2~3
 - imageKeyword와 sceneKeyword는 영어로만 작성`;
 }
 
+// ── JSON 추출 헬퍼 ───────────────────────────────────────────────
+function extractFirstJSON(text: string): string {
+  // 마크다운 코드펜스 제거
+  const cleaned = text.replace(/```(?:json)?\s*/g, "").replace(/```/g, "");
+  const start = cleaned.indexOf("{");
+  if (start === -1) throw new Error("JSON 시작 위치를 찾을 수 없습니다.");
+
+  let depth = 0;
+  let inString = false;
+  let escape = false;
+
+  for (let i = start; i < cleaned.length; i++) {
+    const ch = cleaned[i];
+    if (escape) { escape = false; continue; }
+    if (ch === "\\" && inString) { escape = true; continue; }
+    if (ch === '"') { inString = !inString; continue; }
+    if (inString) continue;
+    if (ch === "{") depth++;
+    if (ch === "}") {
+      depth--;
+      if (depth === 0) return cleaned.slice(start, i + 1);
+    }
+  }
+  throw new Error("JSON 닫힘 괄호를 찾을 수 없습니다.");
+}
+
 // ── API 호출 ──────────────────────────────────────────────────────
 
 export async function generateStory(req: StoryRequest): Promise<GeneratedStory> {
@@ -185,11 +211,9 @@ export async function generateStory(req: StoryRequest): Promise<GeneratedStory> 
   };
 
   try {
-    const jsonMatch = content.match(/\{[\s\S]*\}/);
-    if (!jsonMatch) throw new Error("JSON을 찾을 수 없습니다.");
-    parsed = JSON.parse(jsonMatch[0]);
+    parsed = JSON.parse(extractFirstJSON(content));
   } catch {
-    throw new Error("Solar API 응답 파싱 실패: " + content.slice(0, 200));
+    throw new Error("Solar API 응답 파싱 실패: " + content.slice(0, 300));
   }
 
   const styleDesc = ART_STYLE_DESC[req.artStyle] ?? ART_STYLE_DESC.watercolor;
@@ -281,10 +305,8 @@ export async function analyzeChildData(params: {
   const content: string = data.choices[0].message.content;
 
   try {
-    const jsonMatch = content.match(/\{[\s\S]*\}/);
-    if (!jsonMatch) throw new Error("JSON 없음");
-    return JSON.parse(jsonMatch[0]) as DashboardAnalysis;
+    return JSON.parse(extractFirstJSON(content)) as DashboardAnalysis;
   } catch {
-    throw new Error("Solar 응답 파싱 실패: " + content.slice(0, 200));
+    throw new Error("Solar 응답 파싱 실패: " + content.slice(0, 300));
   }
 }

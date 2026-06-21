@@ -37,9 +37,10 @@ export function getLibrary(): LibraryEntry[] {
 
 function saveLibrary(entries: LibraryEntry[]) {
   localStorage.setItem(LIBRARY_KEY, JSON.stringify(entries));
+  window.dispatchEvent(new CustomEvent("tori:library-updated"));
 }
 
-export function addToLibrary(story: GeneratedStory, request: StoryRequest): LibraryEntry {
+export function addToLibrary(story: GeneratedStory, request: StoryRequest, thumbnailImage?: string): LibraryEntry {
   const id = `s-${Date.now()}`;
   const now = new Date();
   const createdAt = `${now.getFullYear()}.${String(now.getMonth() + 1).padStart(2, "0")}.${String(now.getDate()).padStart(2, "0")}`;
@@ -55,15 +56,16 @@ export function addToLibrary(story: GeneratedStory, request: StoryRequest): Libr
     createdAt,
     status: "reading",
     lastReadAt: now.toISOString(),
-    image: story.pages[0]?.image ?? "",
+    image: thumbnailImage ?? story.pages[0]?.image ?? "",
     liked: false,
     progress: 0,
     age: request.age ?? 5,
   };
 
   localStorage.setItem(`${STORY_PREFIX}${id}`, JSON.stringify(story));
-  const library = getLibrary();
-  saveLibrary([entry, ...library]);
+  // 같은 주인공 이름의 기존 항목을 제거하고 새 항목으로 교체
+  const existing = getLibrary().filter((e) => !e.title.includes(request.name));
+  saveLibrary([entry, ...existing]);
   return entry;
 }
 

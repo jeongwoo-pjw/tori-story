@@ -2,8 +2,10 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import TopNav from "@/components/feature/TopNav";
 import FoldSidebar from "@/components/feature/FoldSidebar";
-import { getLibrary, getLastReadLabel } from "@/services/library";
+import { getLastReadLabel } from "@/services/library";
+import { getDummyThumbnail } from "@/services/dummyLookup";
 import { BOOKSHELF_FILTERS } from "@/mocks/bookshelf";
+import { useLibrary } from "@/hooks/useLibrary";
 
 const STATUS_LABEL: Record<string, string> = {
   reading: "읽는 중",
@@ -20,7 +22,7 @@ export default function BookshelfPage() {
   const [activeFilter, setActiveFilter] = useState("all");
   const [searchQuery, setSearchQuery] = useState("");
 
-  const library = getLibrary();
+  const library = useLibrary();
 
   const matchesSearch = (title: string, tag: string) =>
     !searchQuery || title.includes(searchQuery) || tag.includes(searchQuery);
@@ -99,13 +101,16 @@ export default function BookshelfPage() {
                       className="rounded-2xl bg-background-50 dark:bg-background-100 border border-background-200/70 dark:border-background-300/50 overflow-hidden"
                     >
                       <div className="w-full aspect-[4/3] relative overflow-hidden bg-secondary-50 flex items-center justify-center">
-                        {entry.image ? (
-                          <img src={entry.image} alt={entry.title} className="w-full h-full object-cover" />
-                        ) : (
-                          <div className="w-full h-full flex items-center justify-center bg-primary-50">
-                            <i className="ri-book-open-line text-3xl text-primary-300"></i>
-                          </div>
-                        )}
+                        {(() => {
+                          const src = entry.image || getDummyThumbnail(entry.title);
+                          return src ? (
+                            <img src={src} alt={entry.title} className="w-full h-full object-cover" />
+                          ) : (
+                            <div className="w-full h-full flex items-center justify-center bg-primary-50">
+                              <i className="ri-book-open-line text-3xl text-primary-300"></i>
+                            </div>
+                          );
+                        })()}
                         <span className="absolute top-2 left-2 px-2 py-0.5 rounded-full bg-background-50/95 backdrop-blur text-xs font-label text-foreground-900 whitespace-nowrap">
                           {entry.tag}
                         </span>

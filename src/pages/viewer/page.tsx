@@ -1,5 +1,5 @@
 import { useState, useRef, useCallback, useEffect } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate, Link, useSearchParams } from "react-router-dom";
 import TopNav from "@/components/feature/TopNav";
 import FoldSidebar from "@/components/feature/FoldSidebar";
 import { STORY_RESULT_KEY, type GeneratedStory } from "@/services/solar";
@@ -67,7 +67,8 @@ const formatText = (text: string) => {
 export default function StoryViewerPage() {
   const [searchParams] = useSearchParams();
   const storyId = searchParams.get("id");
-  const STORY = toViewerStory(loadStory(storyId));
+  const [story, setStory] = useState(() => toViewerStory(loadStory(storyId)));
+  const STORY = story;
   const [currentPage, setCurrentPage] = useState(0);
   const [liked, setLiked] = useState(false);
   const [sleepMode, setSleepMode] = useState(false);
@@ -75,6 +76,95 @@ export default function StoryViewerPage() {
   const [showCompletePopup, setShowCompletePopup] = useState(false);
   const [selectedLang, setSelectedLang] = useState<LangCode>("ko");
   const [fullscreen, setFullscreen] = useState(false);
+  const [editOpen, setEditOpen] = useState(false);
+  const [editPageIdx, setEditPageIdx] = useState(0);
+  const [editDrafts, setEditDrafts] = useState<string[]>([]);
+  const [translationCache, setTranslationCache] = useState<Record<number, Partial<Record<LangCode, string>>>>({});
+  const [translating, setTranslating] = useState(false);
+
+  const LANG_PAIR: Record<LangCode, string> = { ko: "ko", en: "en", ja: "ja", zh: "zh-CN" };
+  const TTS_LANG: Record<LangCode, string> = { ko: "ko-KR", en: "en-US", ja: "ja-JP", zh: "zh-CN" };
+
+  function getDisplayText(pageIdx: number): string {
+    const page = story.pages[pageIdx];
+    if (selectedLang === "ko") return page.texts.ko;
+    return translationCache[pageIdx]?.[selectedLang] ?? page.texts[selectedLang] ?? "";
+  }
+
+  async function translateAll(lang: LangCode) {
+    if (lang === "ko") return;
+    setTranslating(true);
+    const results: Record<number, string> = {};
+    for (let i = 0; i < story.pages.length; i++) {
+      if (translationCache[i]?.[lang] || story.pages[i].texts[lang]) continue;
+      const koText = story.pages[i].texts.ko;
+      if (!koText) continue;
+      try {
+        const res = await fetch(
+          `https://api.mymemory.translated.net/get?q=${encodeURIComponent(koText)}&langpair=ko|${LANG_PAIR[lang]}`
+        );
+        const data = await res.json();
+        results[i] = data.responseData?.translatedText ?? koText;
+      } catch {
+        results[i] = koText;
+      }
+    }
+    setTranslationCache((prev) => {
+      const next = { ...prev };
+      for (const [idx, text] of Object.entries(results)) {
+        next[Number(idx)] = { ...next[Number(idx)], [lang]: text };
+      }
+      return next;
+    });
+    setTranslating(false);
+  }
+
+  function handleLangSelect(lang: LangCode) {
+    setSelectedLang(lang);
+    translateAll(lang);
+  }
+
+  function handleListen() {
+    if (!listening) {
+      window.speechSynthesis.cancel();
+      const text = getDisplayText(currentPage);
+      if (!text) return;
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.lang = TTS_LANG[selectedLang];
+      utterance.onend = () => setListening(false);
+      utterance.onerror = () => setListening(false);
+      window.speechSynthesis.speak(utterance);
+      setListening(true);
+    } else {
+      window.speechSynthesis.cancel();
+      setListening(false);
+    }
+  }
+
+  function openEdit() {
+    setEditDrafts(story.pages.map((p) => p.texts.ko));
+    setEditPageIdx(currentPage);
+    setEditOpen(true);
+  }
+
+  function saveEdit() {
+    const updatedPages = story.pages.map((p, i) => ({
+      ...p,
+      texts: { ...p.texts, ko: editDrafts[i] },
+    }));
+    setStory({ ...story, pages: updatedPages });
+
+    const raw = loadStory(storyId);
+    if (raw) {
+      const updated: GeneratedStory = {
+        ...raw,
+        pages: raw.pages.map((p, i) => ({ ...p, text: editDrafts[i] })),
+      };
+      const key = storyId ? `tori_story_${storyId}` : STORY_RESULT_KEY;
+      localStorage.setItem(key, JSON.stringify(updated));
+    }
+    setEditOpen(false);
+  }
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -83,6 +173,11 @@ export default function StoryViewerPage() {
     if (fullscreen) window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [fullscreen]);
+
+  useEffect(() => {
+    window.speechSynthesis.cancel();
+    setListening(false);
+  }, [currentPage]);
 
   const touchStartX = useRef<number | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -179,7 +274,7 @@ export default function StoryViewerPage() {
               {/* 듣기 */}
               <button
                 type="button"
-                onClick={() => setListening(!listening)}
+                onClick={handleListen}
                 className={`hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-label font-semibold transition-all duration-200 cursor-pointer whitespace-nowrap border shadow-sm hover:scale-105 active:scale-95 ${
                   listening
                     ? "bg-emerald-500 text-white border-emerald-400"
@@ -204,6 +299,20 @@ export default function StoryViewerPage() {
               >
                 <i className="ri-fullscreen-line w-3.5 h-3.5 flex items-center justify-center"></i>
                 풀화면으로 보기
+              </button>
+
+              {/* 텍스트 편집 */}
+              <button
+                type="button"
+                onClick={openEdit}
+                className={`hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-label font-semibold transition-all duration-200 cursor-pointer whitespace-nowrap border shadow-sm hover:scale-105 active:scale-95 ${
+                  sleepMode
+                    ? "bg-foreground-800 text-foreground-300 border-foreground-700 hover:bg-foreground-700"
+                    : "bg-amber-50 text-amber-700 border-amber-200 hover:bg-amber-100"
+                }`}
+              >
+                <i className="ri-edit-line w-3.5 h-3.5 flex items-center justify-center"></i>
+                텍스트 편집
               </button>
             </div>
           </div>
@@ -271,7 +380,7 @@ export default function StoryViewerPage() {
                             <button
                               key={lang.code}
                               type="button"
-                              onClick={() => setSelectedLang(lang.code)}
+                              onClick={() => handleLangSelect(lang.code)}
                               title={lang.label}
                               className={`w-8 h-6 rounded overflow-hidden transition-all cursor-pointer flex-shrink-0 ${
                                 selectedLang === lang.code
@@ -291,9 +400,15 @@ export default function StoryViewerPage() {
 
                       {/* Story text - 상하 중앙 */}
                       <div className="flex-1 flex items-center">
-                        <p className={`text-xl md:text-2xl leading-loose font-body transition-colors ${sleepMode ? "text-foreground-300" : "text-foreground-700"}`}>
-                          {formatText(page.texts[selectedLang])}
-                        </p>
+                        {translating && selectedLang !== "ko" && !translationCache[idx]?.[selectedLang] && !page.texts[selectedLang] ? (
+                          <p className={`text-sm font-label animate-pulse ${sleepMode ? "text-foreground-500" : "text-foreground-400"}`}>
+                            번역 중...
+                          </p>
+                        ) : (
+                          <p className={`text-xl md:text-2xl leading-loose font-body transition-colors ${sleepMode ? "text-foreground-300" : "text-foreground-700"}`}>
+                            {formatText(getDisplayText(idx))}
+                          </p>
+                        )}
                       </div>
                     </div>
                   </div>
@@ -395,7 +510,7 @@ export default function StoryViewerPage() {
                 <button
                   key={lang.code}
                   type="button"
-                  onClick={() => setSelectedLang(lang.code)}
+                  onClick={() => handleLangSelect(lang.code)}
                   title={lang.label}
                   className={`w-8 h-6 rounded overflow-hidden transition-all cursor-pointer flex-shrink-0 ${selectedLang === lang.code ? "ring-2 ring-primary-400 ring-offset-1 ring-offset-foreground-900 scale-110" : "opacity-60 hover:opacity-100"}`}
                 >
@@ -406,9 +521,13 @@ export default function StoryViewerPage() {
 
             {/* Story text */}
             <div className="flex-1 flex items-center">
-              <p className="text-xl md:text-2xl leading-loose font-body text-foreground-100">
-                {formatText(STORY.pages[currentPage].texts[selectedLang])}
-              </p>
+              {translating && selectedLang !== "ko" && !getDisplayText(currentPage) ? (
+                <p className="text-sm font-label text-foreground-500 animate-pulse">번역 중...</p>
+              ) : (
+                <p className="text-xl md:text-2xl leading-loose font-body text-foreground-100">
+                  {formatText(getDisplayText(currentPage))}
+                </p>
+              )}
             </div>
 
             {/* Page dots */}
@@ -421,6 +540,77 @@ export default function StoryViewerPage() {
                   className={`rounded-full transition-all duration-300 cursor-pointer ${idx === currentPage ? "w-4 h-4 bg-primary-400" : "w-2.5 h-2.5 bg-foreground-700 hover:bg-foreground-500"}`}
                 />
               ))}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Text Edit Modal */}
+      {editOpen && (
+        <div className="fixed inset-0 z-[200] flex items-center justify-center bg-black/60 px-4">
+          <div className="relative w-full max-w-2xl rounded-3xl bg-background-50 shadow-2xl flex flex-col overflow-hidden" style={{ maxHeight: "90vh" }}>
+            {/* Header */}
+            <div className="flex items-center justify-between px-6 py-4 border-b border-background-200 flex-shrink-0">
+              <h2 className="font-heading text-lg font-bold text-foreground-950">텍스트 편집</h2>
+              <button
+                type="button"
+                onClick={() => setEditOpen(false)}
+                className="w-8 h-8 rounded-full flex items-center justify-center hover:bg-background-200 text-foreground-500 transition-colors cursor-pointer"
+              >
+                <i className="ri-close-line text-lg"></i>
+              </button>
+            </div>
+
+            {/* Page tab list */}
+            <div className="flex gap-1.5 px-6 py-3 border-b border-background-100 flex-shrink-0 overflow-x-auto">
+              {story.pages.map((_, idx) => (
+                <button
+                  key={idx}
+                  type="button"
+                  onClick={() => setEditPageIdx(idx)}
+                  className={`flex-shrink-0 px-3 py-1 rounded-full text-xs font-label font-semibold transition-all cursor-pointer border ${
+                    idx === editPageIdx
+                      ? "bg-amber-500 text-white border-amber-400"
+                      : "bg-background-100 text-foreground-500 border-background-200 hover:bg-background-200"
+                  }`}
+                >
+                  {idx + 1}쪽
+                </button>
+              ))}
+            </div>
+
+            {/* Textarea */}
+            <div className="flex-1 overflow-y-auto px-6 py-5">
+              <p className="text-xs text-foreground-400 mb-2">{editPageIdx + 1}쪽 / 총 {story.pages.length}쪽</p>
+              <textarea
+                className="w-full h-48 rounded-2xl border border-background-200 bg-background-100 px-4 py-3 text-base font-body text-foreground-800 leading-relaxed resize-none focus:outline-none focus:ring-2 focus:ring-amber-400"
+                value={editDrafts[editPageIdx] ?? ""}
+                onChange={(e) =>
+                  setEditDrafts((prev) => {
+                    const next = [...prev];
+                    next[editPageIdx] = e.target.value;
+                    return next;
+                  })
+                }
+              />
+            </div>
+
+            {/* Footer */}
+            <div className="flex items-center justify-end gap-3 px-6 py-4 border-t border-background-200 flex-shrink-0">
+              <button
+                type="button"
+                onClick={() => setEditOpen(false)}
+                className="px-5 py-2.5 rounded-xl border border-background-200 bg-background-50 hover:bg-background-100 text-foreground-700 font-label text-sm transition-colors cursor-pointer"
+              >
+                취소
+              </button>
+              <button
+                type="button"
+                onClick={saveEdit}
+                className="px-5 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-600 text-white font-label text-sm font-semibold transition-colors cursor-pointer"
+              >
+                저장
+              </button>
             </div>
           </div>
         </div>
