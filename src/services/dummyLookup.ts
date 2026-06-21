@@ -17,7 +17,7 @@ export function findDummyBook(req: LookupRequest): DummyBook | null {
 }
 
 const THUMBNAIL_BY_TITLE: Record<string, string> = Object.fromEntries(
-  books.map((b) => [b.title, `/books/${b.thumbnail}`])
+  books.map((b) => [b.title, `${__BASE_PATH__}books/${b.thumbnail}`])
 );
 
 export function getDummyThumbnail(title: string): string {

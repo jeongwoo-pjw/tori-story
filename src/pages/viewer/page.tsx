@@ -43,12 +43,21 @@ function loadStory(id: string | null): GeneratedStory | null {
   }
 }
 
+function fixImagePath(img: string): string {
+  if (!img || img.startsWith("http")) return img;
+  // Normalize legacy paths saved without __BASE_PATH__ (e.g. "/books/..." → "<BASE>/books/...")
+  if (img.startsWith("/books/") && !img.startsWith(`${__BASE_PATH__}books/`)) {
+    return `${__BASE_PATH__}${img.slice(1)}`;
+  }
+  return img;
+}
+
 function toViewerStory(story: GeneratedStory | null) {
   if (!story) return FALLBACK_STORY;
   return {
     title: story.title,
     pages: story.pages.map((p) => ({
-      image: p.image,
+      image: fixImagePath(p.image),
       texts: { ko: p.text, en: "", ja: "", zh: "" },
     })),
   };

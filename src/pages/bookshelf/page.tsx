@@ -102,7 +102,7 @@ export default function BookshelfPage() {
                     >
                       <div className="w-full aspect-[4/3] relative overflow-hidden bg-secondary-50 flex items-center justify-center">
                         {(() => {
-                          const src = entry.image || getDummyThumbnail(entry.title);
+                          const src = getDummyThumbnail(entry.title) || entry.image;
                           return src ? (
                             <img src={src} alt={entry.title} className="w-full h-full object-cover" />
                           ) : (

@@ -81,7 +81,7 @@ export default function RecentStories({ isLoggedIn }: RecentStoriesProps) {
           style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
         >
           {library.map((entry) => {
-            const cover = entry.image || getDummyThumbnail(entry.title);
+            const cover = getDummyThumbnail(entry.title) || entry.image;
             return (
               <div
                 key={entry.id}
